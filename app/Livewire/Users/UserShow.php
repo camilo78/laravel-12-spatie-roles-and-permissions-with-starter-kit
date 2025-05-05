@@ -14,6 +14,7 @@ class UserShow extends Component
     {
         $this->user = $user;
     }
+
     public function render(): View
     {
         return view('livewire.users.user-show');
