@@ -13,20 +13,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->superAdmin();
         $this->admin();
         $this->user();
-    }
-
-    protected function superAdmin(): void
-    {
-        $superAdmin = User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'super-admin@example.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        $superAdmin->assignRole('Super Admin');
+        $this->manager();
+        $this->teamLead();
     }
 
     protected function admin(): void
@@ -49,5 +39,27 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole('User');
+    }
+
+    protected function manager(): void
+    {
+        $manager = User::factory()->create([
+            'name' => 'Manager',
+            'email' => 'manager@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $manager->assignRole('Manager');
+    }
+
+    protected function teamLead(): void
+    {
+        $teamLead = User::factory()->create([
+            'name' => 'Team Lead',
+            'email' => 'team-lead@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $teamLead->assignRole('Team Lead');
     }
 }

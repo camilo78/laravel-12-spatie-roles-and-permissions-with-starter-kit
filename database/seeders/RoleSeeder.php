@@ -16,9 +16,10 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $roles = [
-            'Super Admin',
             'Admin',
             'User',
+            'Manager',
+            'Team Lead',
         ];
 
         foreach ($roles as $role) {
@@ -33,26 +34,10 @@ class RoleSeeder extends Seeder
     protected function getPermission($role): Collection
     {
         return match ($role) {
-            'Super Admin' => Permission::all(),
-            'Admin' => Permission::where([
-                ['name', '!=', 'users.delete'],
-                ['name', '!=', 'products.delete'],
-                ['name', '!=', 'roles.delete'],
-            ])->get(),
-            'User' => Permission::where([
-                ['name', '!=', 'users.create'],
-                ['name', '!=', 'users.edit'],
-                ['name', '!=', 'users.show'],
-                ['name', '!=', 'users.delete'],
-                ['name', '!=', 'products.create'],
-                ['name', '!=', 'products.edit'],
-                ['name', '!=', 'products.show'],
-                ['name', '!=', 'products.delete'],
-                ['name', '!=', 'roles.create'],
-                ['name', '!=', 'roles.edit'],
-                ['name', '!=', 'roles.show'],
-                ['name', '!=', 'roles.delete'],
-            ])->get(),
+            'Admin' => Permission::all(),
+            'User' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->get(),
+            'Manager' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->orWhere('name', '=', 'products.edit')->orWhere('name', '=', 'products.delete')->get(),
+            'Team Lead' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'roles.create')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->orWhere('name', '=', 'products.edit')->orWhere('name', '=', 'products.delete')->get(),
         };
     }
 }
