@@ -16,6 +16,11 @@
                 <flux:input label="Email" type="email" name="email" placeholder="Enter Email" wire:model="email" />
                 <flux:input label="Password" type="password" name="password" placeholder="Enter Password" wire:model="password" />
                 <flux:input label="Confirm Password" type="password" name="confirm_password" placeholder="Enter Password (Again)" wire:model="confirm_password" />
+                <flux:checkbox.group wire:model="roles" label="Roles">
+                    @foreach($allRoles as $allRole)
+                        <flux:checkbox value="{{ $allRole->name }}" label="{{ $allRole->name }}" />
+                    @endforeach
+                </flux:checkbox.group>
                 <flux:button type="submit" variant="primary">Create User</flux:button>
             </form>
         </div>

@@ -5,10 +5,17 @@ namespace App\Livewire\Users;
 use App\Models\User;
 use Illuminate\View\View;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class UserCreate extends Component
 {
-    public $name, $email, $password, $confirm_password;
+    public $name, $email, $password, $confirm_password, $allRoles;
+    public $roles = [];
+
+    public function mount()
+    {
+        $this->allRoles = Role::latest()->get();
+    }
 
     public function render(): View
     {
@@ -21,13 +28,16 @@ class UserCreate extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|same:confirm_password',
+            'roles' => 'required',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
         ]);
+
+        $user->syncRoles($this->roles);
 
         return to_route('users.index')->with('success', 'User created successfully.');
     }

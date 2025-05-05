@@ -26,6 +26,7 @@
                     <th scope="col" class="px-6 py-3">ID</th>
                     <th scope="col" class="px-6 py-3">Name</th>
                     <th scope="col" class="px-6 py-3">Email</th>
+                    <th scope="col" class="px-6 py-3">Roles</th>
                     <th scope="col" class="px-6 py-3 w-80">Actions</th>
                 </tr>
                 </thead>
@@ -35,6 +36,19 @@
                         <td class="px-6 py-2 font-medium text-gray-900 dark:text-white">{{ $loop->iteration }}</td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $user->name }}</td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $user->email }}</td>
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                            @if ($user->roles->isEmpty())
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    No Roles
+                                </span>
+                            @else
+                                @foreach ($user->roles as $role)
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                        {{ $role->name }}
+                                    </span>
+                                @endforeach
+                            @endif
+                        </td>
                         <td class="px-6 py-2">
                             <a wire:navigate href="{{ route('users.show', $user->id) }}" class="mr-1 cursor-pointer px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                 Show

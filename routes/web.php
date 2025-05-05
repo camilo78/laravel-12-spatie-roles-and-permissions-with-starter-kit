@@ -4,6 +4,10 @@ use App\Livewire\Products\ProductCreate;
 use App\Livewire\Products\ProductEdit;
 use App\Livewire\Products\ProductIndex;
 use App\Livewire\Products\ProductShow;
+use App\Livewire\Roles\RoleCreate;
+use App\Livewire\Roles\RoleEdit;
+use App\Livewire\Roles\RoleIndex;
+use App\Livewire\Roles\RoleShow;
 use App\Livewire\Users\UserCreate;
 use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
@@ -37,6 +41,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('products/create', ProductCreate::class)->name('products.create');
     Route::get('products/{product}/edit', ProductEdit::class)->name('products.edit');
     Route::get('products/{product}/show', ProductShow::class)->name('products.show');
+
+    /*
+     * Role Management
+     * */
+    Route::get('roles', RoleIndex::class)->name('roles.index');
+    Route::get('roles/create', RoleCreate::class)->name('roles.create');
+    Route::get('roles/{role}/edit', RoleEdit::class)->name('roles.edit');
+    Route::get('roles/{role}/show', RoleShow::class)->name('roles.show');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
