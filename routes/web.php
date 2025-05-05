@@ -29,26 +29,26 @@ Route::middleware(['auth'])->group(function () {
     /*
      * User Management
      * */
-    Route::get('users', UserIndex::class)->name('users.index');
-    Route::get('users/create', UserCreate::class)->name('users.create');
-    Route::get('users/{user}/edit', UserEdit::class)->name('users.edit');
-    Route::get('users/{user}/show', UserShow::class)->name('users.show');
+    Route::get('users', UserIndex::class)->name('users.index')->middleware('permission:users.index|users.create|users.edit|users.delete');
+    Route::get('users/create', UserCreate::class)->name('users.create')->middleware('permission:users.create');
+    Route::get('users/{user}/edit', UserEdit::class)->name('users.edit')->middleware('permission:users.edit');
+    Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
 
     /*
      * Product Management
      * */
-    Route::get('products', ProductIndex::class)->name('products.index');
-    Route::get('products/create', ProductCreate::class)->name('products.create');
-    Route::get('products/{product}/edit', ProductEdit::class)->name('products.edit');
-    Route::get('products/{product}/show', ProductShow::class)->name('products.show');
+    Route::get('products', ProductIndex::class)->name('products.index')->middleware('permission:products.index|products.create|products.edit|products.delete');
+    Route::get('products/create', ProductCreate::class)->name('products.create')->middleware('permission:products.create');
+    Route::get('products/{product}/edit', ProductEdit::class)->name('products.edit')->middleware('permission:products.edit');
+    Route::get('products/{product}/show', ProductShow::class)->name('products.show')->middleware('permission:products.show');
 
     /*
      * Role Management
      * */
-    Route::get('roles', RoleIndex::class)->name('roles.index');
-    Route::get('roles/create', RoleCreate::class)->name('roles.create');
-    Route::get('roles/{role}/edit', RoleEdit::class)->name('roles.edit');
-    Route::get('roles/{role}/show', RoleShow::class)->name('roles.show');
+    Route::get('roles', RoleIndex::class)->name('roles.index')->middleware('permission:roles.index|roles.create|roles.edit|roles.delete');
+    Route::get('roles/create', RoleCreate::class)->name('roles.create')->middleware('permission:roles.create');
+    Route::get('roles/{role}/edit', RoleEdit::class)->name('roles.edit')->middleware('permission:roles.edit');
+    Route::get('roles/{role}/show', RoleShow::class)->name('roles.show')->middleware('permission:roles.show');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
