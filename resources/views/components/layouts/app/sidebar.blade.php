@@ -25,16 +25,24 @@
 
             <flux:spacer />
 
+            @role('Admin')
+            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
+                <flux:navlist.group :heading="__('Settings')"  class="grid">
+                    <flux:navlist.item icon="locate-fixed" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                    Departamentos
+                    </flux:navlist.item>
 
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
+                    <flux:navlist.item icon="map-pin-house" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
+                    Municipios
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="clipboard-plus" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
+                    Patologías
+                    </flux:navlist.item>
+
+                </flux:navlist.group>
             </flux:navlist>
-
+            @endrole
             <!-- Desktop User Menu -->
             <flux:dropdown position="bottom" align="start">
                 <flux:profile

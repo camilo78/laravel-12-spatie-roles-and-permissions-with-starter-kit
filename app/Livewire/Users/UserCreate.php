@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class UserCreate extends Component
 {
-    public $name, $email, $password, $confirm_password, $allRoles;
+    public $name, $email, $gender, $password, $confirm_password, $allRoles;
     public $roles = [];
 
     public function mount()
@@ -28,12 +28,14 @@ class UserCreate extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|same:confirm_password',
+            'gender' => 'required|in:Masculino,Femenino',
             'roles' => 'required',
         ]);
 
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
+            'email' => $this->gender,
             'password' => bcrypt($this->password),
         ]);
 

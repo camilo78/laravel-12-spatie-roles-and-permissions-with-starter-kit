@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class UserEdit extends Component
 {
-    public $user, $name, $email, $password, $confirm_password, $allRoles;
+    public $user, $name, $email, $gender, $password, $confirm_password, $allRoles;
     public $roles = [];
 
     public function mount(User $user): void
@@ -17,6 +17,7 @@ class UserEdit extends Component
         $this->user = $user;
         $this->name = $this->user->name;
         $this->email = $this->user->email;
+        $this->gender = $this->user->gender;
         $this->allRoles = Role::latest()->get();
         $this->roles = $this->user->roles->pluck('name')->toArray();
     }
@@ -31,12 +32,14 @@ class UserEdit extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
+            'gender' => 'required|in:Masculino,Femenino',
             'password' => 'same:confirm_password',
             'roles' => 'required',
         ]);
 
         $this->user->name = $this->name;
         $this->user->email = $this->email;
+        $this->user->gender = $this->gender;
 
         if ($this->password) {
             $this->user->password = bcrypt($this->password);
@@ -46,6 +49,6 @@ class UserEdit extends Component
 
         $this->user->syncRoles($this->roles);
 
-        return to_route('users.index')->with('success', 'User updated successfully.');
+        return to_route('users.index')->with('success', 'Usuario actualizado.');
     }
 }

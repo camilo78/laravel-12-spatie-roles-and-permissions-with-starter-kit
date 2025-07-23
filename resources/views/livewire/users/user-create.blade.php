@@ -14,6 +14,11 @@
             <form class="mt-6 space-y-6" wire:submit="createUser">
                 <flux:input label="Name" type="text" name="name" placeholder="Enter Name" wire:model="name" />
                 <flux:input label="Email" type="email" name="email" placeholder="Enter Email" wire:model="email" />
+                <flux:select label="Gender" name="gender" wire:model="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </flux:select>
                 <flux:input label="Password" type="password" name="password" placeholder="Enter Password" wire:model="password" />
                 <flux:input label="Confirm Password" type="password" name="confirm_password" placeholder="Enter Password (Again)" wire:model="confirm_password" />
                 <flux:checkbox.group wire:model="roles" label="Roles">
