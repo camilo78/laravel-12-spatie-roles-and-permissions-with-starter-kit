@@ -20,9 +20,6 @@
                     @if(auth()->user()->can('roles.index') || auth()->user()->can('roles.create') || auth()->user()->can('roles.edit') || auth()->user()->can('roles.show') || auth()->user()->can('roles.delete'))
                     <flux:navlist.item wire:navigate icon="link-slash" :href="route('roles.index')" :current="request()->routeIs('roles.index')" wire:navigate>{{ __('Roles') }}</flux:navlist.item>
                     @endif
-                    @if(auth()->user()->can('products.index') || auth()->user()->can('products.create') || auth()->user()->can('products.edit') || auth()->user()->can('products.show') || auth()->user()->can('products.delete'))
-                    <flux:navlist.item wire:navigate icon="list-bullet" :href="route('products.index')" :current="request()->routeIs('products.index')" wire:navigate>{{ __('Products') }}</flux:navlist.item>
-                    @endif
                 </flux:navlist.group>
             </flux:navlist>
 

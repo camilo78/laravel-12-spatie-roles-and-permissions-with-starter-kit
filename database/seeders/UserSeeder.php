@@ -15,16 +15,14 @@ class UserSeeder extends Seeder
     {
         $this->admin();
         $this->user();
-        $this->manager();
-        $this->teamLead();
     }
 
     protected function admin(): void
     {
         $admin = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
+            'name' => 'Camilo Gabriel Alvarado Ramírez',
+            'email' => 'camilo.alvarado0501@gmail.com',
+            'password' => bcrypt('milogaqw12'),
         ]);
 
         $admin->assignRole('Admin');
@@ -41,25 +39,5 @@ class UserSeeder extends Seeder
         $user->assignRole('User');
     }
 
-    protected function manager(): void
-    {
-        $manager = User::factory()->create([
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => bcrypt('password'),
-        ]);
 
-        $manager->assignRole('Manager');
-    }
-
-    protected function teamLead(): void
-    {
-        $teamLead = User::factory()->create([
-            'name' => 'Team Lead',
-            'email' => 'team-lead@example.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        $teamLead->assignRole('Team Lead');
-    }
 }

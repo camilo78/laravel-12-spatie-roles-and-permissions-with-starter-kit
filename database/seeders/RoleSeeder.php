@@ -18,8 +18,6 @@ class RoleSeeder extends Seeder
         $roles = [
             'Admin',
             'User',
-            'Manager',
-            'Team Lead',
         ];
 
         foreach ($roles as $role) {
@@ -35,9 +33,7 @@ class RoleSeeder extends Seeder
     {
         return match ($role) {
             'Admin' => Permission::all(),
-            'User' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->get(),
-            'Manager' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->orWhere('name', '=', 'products.edit')->orWhere('name', '=', 'products.delete')->get(),
-            'Team Lead' => Permission::where('name', '=', 'roles.index')->orWhere('name', '=', 'roles.create')->orWhere('name', '=', 'products.index')->orWhere('name', '=', 'products.create')->orWhere('name', '=', 'products.edit')->orWhere('name', '=', 'products.delete')->get(),
+            'User' => Permission::where('name', '=', 'users.edit')->get(),
         };
     }
 }

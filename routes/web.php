@@ -1,9 +1,5 @@
 <?php
 
-use App\Livewire\Products\ProductCreate;
-use App\Livewire\Products\ProductEdit;
-use App\Livewire\Products\ProductIndex;
-use App\Livewire\Products\ProductShow;
 use App\Livewire\Roles\RoleCreate;
 use App\Livewire\Roles\RoleEdit;
 use App\Livewire\Roles\RoleIndex;
@@ -33,14 +29,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/create', UserCreate::class)->name('users.create')->middleware('permission:users.create');
     Route::get('users/{user}/edit', UserEdit::class)->name('users.edit')->middleware('permission:users.edit');
     Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
-
-    /*
-     * Product Management
-     * */
-    Route::get('products', ProductIndex::class)->name('products.index')->middleware('permission:products.index|products.create|products.edit|products.delete');
-    Route::get('products/create', ProductCreate::class)->name('products.create')->middleware('permission:products.create');
-    Route::get('products/{product}/edit', ProductEdit::class)->name('products.edit')->middleware('permission:products.edit');
-    Route::get('products/{product}/show', ProductShow::class)->name('products.show')->middleware('permission:products.show');
 
     /*
      * Role Management
