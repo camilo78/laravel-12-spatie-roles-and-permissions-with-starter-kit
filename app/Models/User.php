@@ -54,9 +54,19 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
-            ->implode('');
+         return strtoupper(
+            collect(explode(' ', $this->name))
+                ->take(2)
+                ->map(fn ($word) => Str::substr($word, 0, 1))
+                ->implode('')
+        );
+
+    }
+    
+    public function gravatarUrl($size = 80)
+    {
+        $email = strtolower(trim($this->email));
+        $hash = md5($email);
+        return "https://www.gravatar.com/avatar/$hash?s=$size&d=404";
     }
 }

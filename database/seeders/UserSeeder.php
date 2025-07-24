@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
     protected function user(): void
     {
         $user = User::factory()->create([
-            'name' => 'User',
+            'name' => 'John Doe Smith',
             'email' => 'user@example.com',
             'gender' => 'Masculino',
             'password' => bcrypt('password'),

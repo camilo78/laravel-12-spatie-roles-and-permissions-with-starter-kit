@@ -33,7 +33,7 @@ class RoleSeeder extends Seeder
     {
         return match ($role) {
             'Admin' => Permission::all(),
-            'User' => Permission::where('name', '=', 'users.edit')->get(),
+            'User' => Permission::where('name', '=', 'users.show')->get(),
         };
     }
 }
