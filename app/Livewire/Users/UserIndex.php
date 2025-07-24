@@ -2,23 +2,37 @@
 
 namespace App\Livewire\Users;
 
-use App\Models\User;
-use Illuminate\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Models\User;
 
 class UserIndex extends Component
 {
-    public function render(): View
+    use WithPagination;
+
+    public $search = '';
+    public $perPage = 10;
+    protected $paginationTheme = 'tailwind';
+
+    public function updatedSearch()
     {
-        return view('livewire.users.user-index', [
-            'users' => User::latest()->get(),
-        ]);
+
+    $this->resetPage();
     }
-
-    public function deleteUser(User $user)
+    public function render()
     {
-        $user->delete();
+        $users = User::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($subQuery) {
+                    $subQuery->where('name', 'like', '%' . trim($this->search) . '%')
+                             ->orWhere('email', 'like', '%' . trim($this->search) . '%');
+                });
+            })
+            ->with('roles')
+            ->orderBy('name', 'asc')
+            ->paginate($this->perPage);
 
-        session()->flash('success', 'User deleted successfully.');
+        return view('livewire.users.user-index', compact('users'));
     }
 }
+

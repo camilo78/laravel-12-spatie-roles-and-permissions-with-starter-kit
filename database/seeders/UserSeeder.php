@@ -15,6 +15,10 @@ class UserSeeder extends Seeder
     {
         $this->admin();
         $this->user();
+
+        User::factory(500)->create()->each(function ($user) {
+        $user->assignRole('User');
+    });
     }
 
     protected function admin(): void
@@ -40,6 +44,5 @@ class UserSeeder extends Seeder
 
         $user->assignRole('User');
     }
-
 
 }

@@ -74,9 +74,9 @@
     $avatarSrc = $gravatarExists ? $gravatarUrl : null;
 @endphp
 
-<flux:profile 
-    :name="auth()->user()->name" 
-    :initials="auth()->user()->initials()" 
+<flux:profile
+    :name="auth()->user()->name"
+    :initials="auth()->user()->initials()"
     :avatar="$avatarSrc"
     icon-trailing="chevrons-up-down" />
 
@@ -140,9 +140,9 @@
     $avatarSrc = $gravatarExists ? $gravatarUrl : null;
 @endphp
 
-<flux:profile 
-    :name="auth()->user()->name" 
-    :initials="auth()->user()->initials()" 
+<flux:profile
+    :name="auth()->user()->name"
+    :initials="auth()->user()->initials()"
     :avatar="$avatarSrc"
     icon-trailing="chevrons-up-down" />
             <flux:menu>
@@ -193,7 +193,7 @@
     </flux:header>
 
     {{ $slot }}
-    
+
     @fluxScripts
 </body>
 

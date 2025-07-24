@@ -52,21 +52,24 @@ class User extends Authenticatable
     /**
      * Get the user's initials
      */
+  public function gravatarUrl(int $size = 64): string
+    {
+        $hash = md5(strtolower(trim($this->email)));
+        return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d=mp"; // 'd=mp' para imagen de "persona misteriosa" por defecto
+    }
+
+    /**
+     * Get the initials of the user's name.
+     *
+     * @return string
+     */
     public function initials(): string
     {
-         return strtoupper(
-            collect(explode(' ', $this->name))
-                ->take(2)
-                ->map(fn ($word) => Str::substr($word, 0, 1))
-                ->implode('')
-        );
-
-    }
-    
-    public function gravatarUrl($size = 80)
-    {
-        $email = strtolower(trim($this->email));
-        $hash = md5($email);
-        return "https://www.gravatar.com/avatar/$hash?s=$size&d=404";
+        $nameParts = explode(' ', $this->name);
+        $initials = '';
+        foreach ($nameParts as $part) {
+            $initials .= strtoupper(substr($part, 0, 1));
+        }
+        return Str::limit($initials, 2, ''); // Limita a las dos primeras iniciales, por ejemplo "JD" para John Doe
     }
 }
