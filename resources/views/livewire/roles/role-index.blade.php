@@ -7,13 +7,22 @@
 
     <div>
         @session('success')
-            <div class="flex items-center p-2 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-green-900 dark:text-green-300 dark:border-green-800"
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition:leave="transition ease-out duration-500" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="flex items-center p-2 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-green-900 dark:text-green-300 dark:border-green-800"
                 role="alert">
-                <svg class="flex-shrink-0 w-8 h-8 mr-1 text-green-700 dark:text-green-300" xmlns="http://www.w3.org/2000/svg"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="flex-shrink-0 w-8 h-8 mr-1 text-green-700 dark:text-green-300"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
                 </svg>
-                <span class="font-medium"> {{ $value }} </span>
+                <span class="font-medium flex-1"> {{ $value }} </span>
+                <button @click="show = false" type="button"
+                    class="ml-2 text-green-800 hover:text-green-900 dark:text-green-300 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         @endsession
 

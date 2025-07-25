@@ -63,5 +63,21 @@
     "to": "a",
     "of": "de",
     "results": "resultados",
-    "Go to page :page": "Ir a la página :page"
+    "Go to page :page": "Ir a la página :page",
+    "Edit User": "Editar Usuario",
+    "Form For Edit User": "Formulario para editar usuario",
+    "Regresar a Usuarios": "Regresar a Usuarios",
+    "Email": "Correo electrónico",
+    "Address": "Dirección",
+    "Seleccione Genero": "Seleccione género",
+    "Masculino": "Masculino",
+    "Femenino": "Femenino",
+    "Enter Name": "Ingrese nombre",
+    "Enter Email": "Ingrese correo electrónico",
+    "Enter DUI": "Ingrese DUI",
+    "Enter Phone": "Ingrese teléfono",
+    "Enter Address": "Ingrese dirección",
+    "Enter Password": "Ingrese contraseña",
+    "Enter Password (Again)": "Ingrese contraseña (nuevamente)",
+    "Actualizar Usuario": "Actualizar Usuario"
 }

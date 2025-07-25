@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('dui', 13)->nullable();
+            $table->string('dui', 13)->require()->unique();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
+            $table->string('address')->require();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('gender', ['Masculino', 'Femenino'])->nullable();
             $table->string('password');
