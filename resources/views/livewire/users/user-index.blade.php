@@ -127,7 +127,7 @@
                                         <a wire:navigate href="{{ route('users.show', $user->id) }}"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800
                                            flex-grow sm:flex-none">
-                                            Show
+                                            Mostrar
                                         </a>
                                     @endcan
 
@@ -136,7 +136,7 @@
                                         <a wire:navigate href="{{ route('users.edit', $user->id) }}"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
                                            flex-grow sm:flex-none">
-                                            Edit
+                                            Editar
                                         </a>
                                     @endcan
 
@@ -147,7 +147,7 @@
                                             wire:confirm="Are you sure to remove this user?"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
                                            flex-grow sm:flex-none">
-                                            Delete
+                                            Eliminar
                                         </button>
                                     @endcan
                                 </div>
@@ -176,7 +176,7 @@
             </div>
         </div>
         <div class="mt-4">
-            {{ $users->links() }}        
+            {{ $users->links() }}
         </div>
     </div>
 </div>
