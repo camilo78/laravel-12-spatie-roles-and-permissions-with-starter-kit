@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class UserCreate extends Component
 {
-    public $name, $email, $gender, $password, $confirm_password, $allRoles;
+    public $name, $email, $dui, $phone, $address, $gender, $password, $confirm_password, $allRoles;
     public $roles = [];
 
     public function mount()
@@ -27,7 +27,7 @@ class UserCreate extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'dui' => 'nullable|string|max:13',
+            'dui' => 'required|unique:users,dui',
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
             'password' => 'required|string|min:8|same:confirm_password',

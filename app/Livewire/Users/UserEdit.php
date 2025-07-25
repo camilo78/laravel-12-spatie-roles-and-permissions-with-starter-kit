@@ -35,7 +35,7 @@ class UserEdit extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
-            'dui' => 'nullable|string|max:13',
+            'dui' => 'required|unique:users,dui',
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
             'gender' => 'required|in:Masculino,Femenino',
@@ -45,6 +45,9 @@ class UserEdit extends Component
 
         $this->user->name = $this->name;
         $this->user->email = $this->email;
+        $this->user->dui = $this->dui;
+        $this->user->phone = $this->phone;
+        $this->user->address = $this->address;
         $this->user->gender = $this->gender;
 
         if ($this->password) {
