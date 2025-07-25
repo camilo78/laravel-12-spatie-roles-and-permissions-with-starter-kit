@@ -34,5 +34,12 @@ class UserIndex extends Component
 
         return view('livewire.users.user-index', compact('users'));
     }
+
+        public function deleteUser(User $user)
+    {
+        $user->delete();
+
+        session()->flash('success', 'User deleted successfully.');
+    }
 }
 

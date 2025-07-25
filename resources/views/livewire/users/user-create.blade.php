@@ -14,6 +14,9 @@
             <form class="mt-6 space-y-6" wire:submit="createUser">
                 <flux:input label="Name" type="text" name="name" placeholder="Enter Name" wire:model="name" />
                 <flux:input label="Email" type="email" name="email" placeholder="Enter Email" wire:model="email" />
+                <flux:input label="DUI" type="text" name="dui" placeholder="Enter DUI" wire:model="dui" />
+                <flux:input label="Phone" type="text" name="phone" placeholder="Enter Phone" wire:model="phone" />
+                <flux:input label="Address" type="text" name="address" placeholder="Enter Address" wire:model="address" />
                 <flux:select label="Gender" name="gender" wire:model="gender">
                     <option value="">Select Gender</option>
                     <option value="Masculino">Masculino</option>

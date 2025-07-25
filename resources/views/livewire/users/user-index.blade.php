@@ -37,141 +37,146 @@
             </div>
             <div class="relative  order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
                 <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
-                    class=" px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700" />
+
             </div>
         </div>
-        <div class="overflow-x-auto mt-4">
+        <div class="relative overflow-x-auto rounded-lg shadow-md dark:shadow-none mt-4 w-full"> {{-- Aseguramos w-full para el contenedor --}}
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">ID</th>
                         <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">DUI</th>
+                        <th scope="col" class="px-6 py-3">Phone</th>
                         <th scope="col" class="px-6 py-3">Genero</th>
                         <th scope="col" class="px-6 py-3">Roles</th>
-                        <th scope="col" class="px-6 py-3">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($users as $user)
+                    @forelse ($users as $key => $user) {{-- Añadimos $key para el estilo de rayas --}}
                         <tr
-                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                            <td class="px-6 py-2 font-medium text-gray-900 dark:text-white">
-                                {{ $loop->iteration }}</td>
-
-                            <td class="px-6 py-2 font-medium text-gray-900 dark:text-white flex items-center gap-2">
-
-                                {{ $user->name }}
-
+                            class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                             </td>
+                            <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <div class="flex items-center gap-2 h-full">
 
+                                    @php
+                                        // Asegúrate de que $user tiene los métodos gravatarUrl y initials
+                                        $gravatarUrl = method_exists($user, 'gravatarUrl')
+                                            ? $user->gravatarUrl(64)
+                                            : '';
+                                        $headers = @get_headers($gravatarUrl);
+                                        $gravatarExists = $headers && Str::contains($headers[0], '200');
+                                        $avatarSrc = $gravatarExists ? $gravatarUrl : null;
+                                        $initials = method_exists($user, 'initials')
+                                            ? $user->initials()
+                                            : Str::limit(
+                                                strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $user->name)),
+                                                2,
+                                                '',
+                                            );
+                                    @endphp
+                                    @if ($avatarSrc)
+                                        <img src="{{ $avatarSrc }}" alt="{{ $user->name }}"
+                                            class="w-8 h-8 rounded-full object-cover" />
+                                    @else
+                                        <span
+                                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-bold text-sm">
+                                            {{ $initials }}
+                                        </span>
+                                    @endif
+                                    <span>{{ $user->name }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $user->email }}</td>
-
+                                {{ $user->dui ?? 'Not Specified' }}
+                            </td>
+                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                                {{ $user->phone ?? 'Not Specified' }}
+                            </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300 capitalize">
-
                                 {{ $user->gender ?? 'Not Specified' }}
-
                             </td>
-
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-
                                 @if ($user->roles->isEmpty())
                                     <span
                                         class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-
                                         No Roles
-
                                     </span>
                                 @else
                                     @foreach ($user->roles as $role)
                                         <span
                                             class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-
                                             {{ $role->name }}
-
                                         </span>
                                     @endforeach
                                 @endif
-
                             </td>
-
-                            <td class="px-6 py-2">
-
-                                {{-- Contenedor de los botones de acción --}}
-
-                                {{-- Por defecto (móvil): flex-col (apilados), w-full (ancho completo). --}}
-
-                                {{-- En sm (tablet): sm:flex-row (en fila), sm:w-full (ancho completo). --}}
-
-                                {{-- En lg (escritorio): lg:w-auto (ancho autoajustado al contenido), lg:flex-nowrap (asegura que no se envuelvan). --}}
-
+                            <td class="px-6 py-2 text-center">
                                 <div
-                                    class="flex flex-col gap-2 w-fullsm:flex-row sm:w-full sm:gap-1
-
-lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
-
-
+                                    class="flex flex-col gap-2 w-full
+                                    sm:flex-row sm:w-auto sm:justify-center
+                                    lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
 
                                     @can('users.index')
+                                        {{-- `wire:navigate` se mantiene porque 'show' es una navegación a otra página --}}
                                         <a wire:navigate href="{{ route('users.show', $user->id) }}"
-                                            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 text-center flex-grow
-sm:flex-grow
-
-lg:flex-grow-0">
-
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800
+                                           flex-grow sm:flex-none">
                                             Show
-
                                         </a>
                                     @endcan
-
-
 
                                     @can('users.edit')
+                                        {{-- `wire:navigate` se mantiene porque 'edit' es una navegación a otra página --}}
                                         <a wire:navigate href="{{ route('users.edit', $user->id) }}"
-                                            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-
-text-center flex-grow
-
-sm:flex-grow
-
-lg:flex-grow-0">
-
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
+                                           flex-grow sm:flex-none">
                                             Edit
-
                                         </a>
                                     @endcan
 
-
-
                                     @can('users.delete')
-                                        <button wire:navigate wire:click="deleteUser({{ $user->id }})"
+                                        {{-- ¡Importante! `wire:navigate` se ELIMINA de este botón. --}}
+                                        {{-- Solo se usa `wire:click` para ejecutar el método en el componente actual. --}}
+                                        <button wire:click="deleteUser({{ $user->id }})"
                                             wire:confirm="Are you sure to remove this user?"
-                                            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
-
-text-center flex-grow
-
-sm:flex-grow
-
-lg:flex-grow-0">
-
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
+                                           flex-grow sm:flex-none">
                                             Delete
-
                                         </button>
                                     @endcan
-
-
                                 </div>
-
                             </td>
-
-                    @endforeach
-
+                        </tr>
+                    @empty
+                        <tr class="bg-white dark:bg-gray-800">
+                            <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                No se encontraron usuarios.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
-
             </table>
-
+            <div wire:loading wire:target="search, previousPage, nextPage, gotoPage"
+                class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 dark:bg-gray-800 dark:bg-opacity-40 z-10">
+                <div class="flex items-center justify-center w-full h-full">
+                    <!-- Contenedor adicional para centrado seguro -->
+                    <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                </div>
+            </div>
         </div>
-
+        <div class="mt-4">
+            {{ $users->links() }}
+        </div>
     </div>
 </div>

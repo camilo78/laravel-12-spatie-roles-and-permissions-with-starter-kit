@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         $this->admin();
         $this->user();
 
-        User::factory(500)->create()->each(function ($user) {
+        User::factory(1600)->create()->each(function ($user) {
         $user->assignRole('User');
     });
     }
@@ -26,6 +26,9 @@ class UserSeeder extends Seeder
         $admin = User::factory()->create([
             'name' => 'Camilo Gabriel Alvarado Ramírez',
             'email' => 'camilo.alvarado0501@gmail.com',
+            'dui' => '0501197809263',
+            'phone' => '96645637 87886036 96585441',
+            'address' => '123 Main St, San Salvador',
             'gender' => 'Masculino',
             'password' => bcrypt('milogaqw12'),
         ]);
@@ -38,6 +41,9 @@ class UserSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'John Doe Smith',
             'email' => 'user@example.com',
+            'dui' => '1234567890123',
+            'phone' => '555-1234',
+            'address' => '456 Elm St, San Salvador',
             'gender' => 'Masculino',
             'password' => bcrypt('password'),
         ]);

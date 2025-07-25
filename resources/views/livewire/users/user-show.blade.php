@@ -27,6 +27,18 @@
                         <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->email }}</td>
                     </tr>
                     <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
+                        <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">DUI</th>
+                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->dui ?? 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
+                        <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Phone</th>
+                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->phone ?? 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
+                        <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Address</th>
+                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->address ?? 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
                         <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Roles</th>
                         <td class="px-6 py-3 text-gray-600 dark:text-gray-300">
                             @if ($user->roles->isEmpty())
