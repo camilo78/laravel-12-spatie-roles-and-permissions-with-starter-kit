@@ -30,7 +30,7 @@
                 class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
                 @can('users.create')
                     <a wire:navigate href="{{ route('users.create') }}"
-                        class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0">
+                        class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
                         Crear Usuario
                     </a>
                 @endcan
@@ -39,7 +39,7 @@
                     Importar Excel
                 </button>
                 <button type="button"
-                    class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
+                    class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0">
                     Exportar Excel
                 </button>
             </div>
@@ -55,7 +55,7 @@
                     <tr>
                         <th scope="col" class="px-6 py-3">ID</th>
                         <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">DUI</th>
+                        <th scope="col" class="px-6 py-3">DNI</th>
                         <th scope="col" class="px-6 py-3">Phone</th>
                         <th scope="col" class="px-6 py-3">Genero</th>
                         <th scope="col" class="px-6 py-3">Roles</th>
@@ -113,7 +113,7 @@
                                 @if ($user->roles->isEmpty())
                                     <span
                                         class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                                        No Roles
+                                        Sin Roles
                                     </span>
                                 @else
                                     @foreach ($user->roles as $role)
@@ -133,9 +133,9 @@
                                     @can('users.index')
                                         {{-- `wire:navigate` se mantiene porque 'show' es una navegación a otra página --}}
                                         <a wire:navigate href="{{ route('users.show', $user->id) }}"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-small text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800
                                            flex-grow sm:flex-none">
-                                            Mostrar
+                                            <flux:icon.eye variant="micro" />
                                         </a>
                                     @endcan
 
@@ -144,7 +144,7 @@
                                         <a wire:navigate href="{{ route('users.edit', $user->id) }}"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
                                            flex-grow sm:flex-none">
-                                            Editar
+                                            <flux:icon.square-pen variant="micro" />
                                         </a>
                                     @endcan
 
@@ -155,7 +155,7 @@
                                             wire:confirm="Are you sure to remove this user?"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
                                            flex-grow sm:flex-none">
-                                            Eliminar
+                                            <flux:icon.trash-2 variant="micro" />
                                         </button>
                                     @endcan
                                 </div>
@@ -172,14 +172,10 @@
             </table>
             <div wire:loading wire:target="search, previousPage, nextPage, gotoPage"
                 class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 dark:bg-gray-800 dark:bg-opacity-40 z-10">
-                <div class="flex items-center justify-center w-full h-full">
-                    <!-- Contenedor adicional para centrado seguro -->
-                    <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                            stroke-width="4" />
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
+                <div
+                    class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+                    <x-placeholder-pattern
+                        class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
                 </div>
             </div>
         </div>

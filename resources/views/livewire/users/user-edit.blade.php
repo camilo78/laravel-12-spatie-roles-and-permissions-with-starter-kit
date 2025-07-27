@@ -13,18 +13,18 @@
         <div>
             <form class="mt-6 space-y-6" wire:submit="editUser">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:input label="{{ __('Name') }}" type="text" name="name" placeholder="Enter Name" wire:model="name" />
-                    <flux:input label="{{ __('Email') }}" type="email" name="email" placeholder="Enter Email" wire:model="email" />
-                    <flux:input label="{{ __('DUI') }}" type="text" name="dui" placeholder="Enter DUI" wire:model="dui" />
-                    <flux:input label="{{ __('Phone') }}" type="text" name="phone" placeholder="Enter Phone" wire:model="phone" />
-                    <flux:textarea label="{{ __('Address') }}" type="text" name="address" placeholder="Enter Address" wire:model="address" class="lg:col-span-2" />
+                    <flux:input label="{{ __('Name') }}" type="text" name="name" placeholder="Digite el Nombre" wire:model="name" />
+                    <flux:input label="{{ __('Email') }}" type="email" name="email" placeholder="Digite el Correo" wire:model="email" />
+                    <flux:input label="{{ __('DNI') }}" type="text" name="dui" placeholder="Digite DNI" wire:model="dui" />
+                    <flux:input label="{{ __('Phone') }}" type="text" name="phone" placeholder="Digite el Teléfono" wire:model="phone" />
+                    <flux:textarea label="{{ __('Address') }}" type="text" name="address" placeholder="Digite la Dirección" wire:model="address" class="lg:col-span-2" />
                     <flux:select label="{{ __('Gender') }}" name="gender" wire:model="gender">
                         <option value="">Seleccione Genero</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
                     </flux:select>
-                    <flux:input label="{{ __('Password') }}" type="password" name="password" placeholder="Enter Password" wire:model="password" />
-                    <flux:input label="{{ __('Confirm Password') }}" type="password" name="confirm_password" placeholder="Enter Password (Again)" wire:model="confirm_password" />
+                    <flux:input label="{{ __('Password') }}" type="password" name="password" placeholder="Digite la Contraseña" wire:model="password" />
+                    <flux:input label="{{ __('Confirm Password') }}" type="password" name="confirm_password" placeholder="Digite la Contraseña (Nuevamente)" wire:model="confirm_password" />
                     <div class="lg:col-span-2">
                         <flux:checkbox.group wire:model="roles" label="Roles">
                             @foreach($allRoles as $allRole)

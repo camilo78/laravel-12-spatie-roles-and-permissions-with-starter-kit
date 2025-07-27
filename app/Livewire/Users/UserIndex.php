@@ -24,7 +24,9 @@ class UserIndex extends Component
         $users = User::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($subQuery) {
-                    $subQuery->where('name', 'like', '%' . trim($this->search) . '%')->orWhere('dui', 'like', '%' . trim($this->search) . '%');
+                    $subQuery->where('name', 'like', '%' . trim($this->search) . '%')
+                    ->orWhere('dui', 'like', '%' . trim($this->search) . '%')
+                    ->orWhere('email', 'like', '%' . trim($this->search) . '%');
                 });
             })
             ->with('roles')
