@@ -193,7 +193,6 @@
     </flux:header>
 
     {{ $slot }}
-
     @fluxScripts
 </body>
 

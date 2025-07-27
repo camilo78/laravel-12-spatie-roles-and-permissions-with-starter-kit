@@ -26,9 +26,9 @@
                 <flux:input label="Contraseña" type="password" name="password" placeholder="Digite la Contraseña" wire:model="password" />
                 <flux:input label="Confirma Contraseña" type="password" name="confirm_password" placeholder="Digite la Contraseña (Nuevamente)" wire:model="confirm_password" />
                 <div class="lg:col-span-2">
-                <flux:checkbox.group wire:model="roles" label="Roles">
+                <flux:checkbox.group wire:model="roles" label="Roles de Usuario">
                     @foreach($allRoles as $allRole)
-                        <flux:checkbox value="{{ $allRole->name }}" label="{{ $allRole->name }}" />
+                        <flux:checkbox value="{{ $allRole->name }}" label="{{ __($allRole->name) }}" />
                     @endforeach
                 </flux:checkbox.group>
                 </div>

@@ -41,7 +41,7 @@ class UserCreate extends Component
             'dui' => $this->dui,
             'phone' => $this->phone,
             'address' => $this->address,
-            'email' => $this->gender,
+            'gender' => $this->gender,
             'password' => bcrypt($this->password),
         ]);
 

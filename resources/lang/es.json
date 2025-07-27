@@ -79,5 +79,8 @@
     "Enter Password": "Ingrese contraseña",
     "Enter Password (Again)": "Ingrese contraseña (nuevamente)",
     "Actualizar Usuario": "Actualizar Usuario",
-    "Form For Create New User": "Formulario para crear Usuario"
+    "Form For Create New User": "Formulario para crear Usuario",
+    "User": "Usuario",
+    "Admin": "Administrador"
+
 }

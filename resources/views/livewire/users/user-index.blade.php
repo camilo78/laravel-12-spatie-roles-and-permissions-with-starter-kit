@@ -70,35 +70,7 @@
                                 {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                             </td>
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <div class="flex items-center gap-2 h-full">
-
-                                    @php
-                                        // Asegúrate de que $user tiene los métodos gravatarUrl y initials
-                                        $gravatarUrl = method_exists($user, 'gravatarUrl')
-                                            ? $user->gravatarUrl(64)
-                                            : '';
-                                        $headers = @get_headers($gravatarUrl);
-                                        $gravatarExists = $headers && Str::contains($headers[0], '200');
-                                        $avatarSrc = $gravatarExists ? $gravatarUrl : null;
-                                        $initials = method_exists($user, 'initials')
-                                            ? $user->initials()
-                                            : Str::limit(
-                                                strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $user->name)),
-                                                2,
-                                                '',
-                                            );
-                                    @endphp
-                                    @if ($avatarSrc)
-                                        <img src="{{ $avatarSrc }}" alt="{{ $user->name }}"
-                                            class="w-8 h-8 rounded-full object-cover" />
-                                    @else
-                                        <span
-                                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-bold text-sm">
-                                            {{ $initials }}
-                                        </span>
-                                    @endif
-                                    <span>{{ $user->name }}</span>
-                                </div>
+                                {{ $user->name }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $user->dui ?? 'Not Specified' }}
@@ -180,7 +152,7 @@
             </div>
         </div>
         <div class="mt-4">
-            {{ $users->links() }}
+            {{ $users->links('vendor.livewire.tailwind') }}
         </div>
     </div>
 </div>

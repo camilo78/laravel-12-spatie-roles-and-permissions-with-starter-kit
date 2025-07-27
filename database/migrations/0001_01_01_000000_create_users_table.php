@@ -39,6 +39,14 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->index('name');
+            $table->index('dui');
+            // Si ordenas por 'created_at' o 'id' (común en paginación)
+            $table->index('created_at');
+            $table->index('id');
+        });
     }
 
     /**

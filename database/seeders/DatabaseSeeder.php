@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
 
             RoleSeeder::class,
 
+            DepartmentSeeder::class,
+            MunicipalitySeeder::class,
             UserSeeder::class,
 
         ]);

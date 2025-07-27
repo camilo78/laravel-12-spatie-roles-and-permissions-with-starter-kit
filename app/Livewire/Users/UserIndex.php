@@ -25,13 +25,10 @@ class UserIndex extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($subQuery) {
                     $subQuery->where('name', 'like', '%' . trim($this->search) . '%')
-                    ->orWhere('dui', 'like', '%' . trim($this->search) . '%')
-                    ->orWhere('email', 'like', '%' . trim($this->search) . '%');
+                    ->orWhere('dui', 'like', '%' . trim($this->search) . '%');
                 });
             })
-            ->with('roles')
-            ->orderBy('name', 'asc')
-            ->paginate($this->perPage);
+            ->paginate($this->perPage)->onEachSide(1);
 
         return view('livewire.users.user-index', compact('users'));
     }
