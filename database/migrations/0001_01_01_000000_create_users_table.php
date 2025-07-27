@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('dui', 13)->require()->unique();
             $table->string('phone')->nullable();
+            $table->foreignId('department_id')
+              ->nullable()
+              ->constrained('departments')
+              ->cascadeOnDelete();
             $table->string('address')->require();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('gender', ['Masculino', 'Femenino'])->nullable();

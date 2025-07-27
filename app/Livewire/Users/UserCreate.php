@@ -6,15 +6,22 @@ use App\Models\User;
 use Illuminate\View\View;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
+use App\Models\Department;
+
 
 class UserCreate extends Component
 {
     public $name, $email, $dui, $phone, $address, $gender, $password, $confirm_password, $allRoles;
     public $roles = [];
+    public array $departments = [];
+    public ?int $department_id = null;
+
 
     public function mount()
     {
         $this->allRoles = Role::latest()->get();
+        $this->departments = Department::orderBy('name')->get()->toArray();
+
     }
 
     public function render(): View
@@ -29,7 +36,8 @@ class UserCreate extends Component
             'email' => 'required|email|unique:users,email',
             'dui' => 'required|unique:users,dui',
             'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'address' => 'required|string|max:255',
             'password' => 'required|string|min:8|same:confirm_password',
             'gender' => 'required|in:Masculino,Femenino',
             'roles' => 'required',
@@ -40,6 +48,7 @@ class UserCreate extends Component
             'email' => $this->email,
             'dui' => $this->dui,
             'phone' => $this->phone,
+            'department_id' => $this->department_id,
             'address' => $this->address,
             'gender' => $this->gender,
             'password' => bcrypt($this->password),
@@ -47,6 +56,6 @@ class UserCreate extends Component
 
         $user->syncRoles($this->roles);
 
-        return to_route('users.index')->with('success', 'User created successfully.');
+        return to_route('users.index')->with('success', 'Usuario creado correctamente.');
     }
 }

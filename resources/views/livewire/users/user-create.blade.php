@@ -17,6 +17,12 @@
                 <flux:input label="Correo Electrónico" type="email" name="email" placeholder="Digite el Correo" wire:model="email" />
                 <flux:input label="DNI" type="text" name="dui" placeholder="Enter DUI" wire:model="dui" />
                 <flux:input label="Teléfono" type="text" name="phone" placeholder="Digite el teléfono" wire:model="phone" />
+                <flux:select label="Departamento" name="department_id" wire:model="department_id">
+                    <option value="">Seleccione el Departamento</option>
+                    @foreach($departments as $dep)
+                        <option value="{{ $dep['id'] }}">{{ $dep['name'] }}</option>
+                    @endforeach
+                </flux:select>
                 <flux:textarea label="Dirección" type="text" name="address" placeholder="Digite la Dirección" wire:model="address" class="lg:col-span-2" />
                 <flux:select label="Género" name="gender" wire:model="gender">
                     <option value="">Selecione el Género</option>

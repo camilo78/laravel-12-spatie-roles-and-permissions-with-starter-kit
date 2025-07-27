@@ -22,4 +22,10 @@ class Department extends Model
     {
         return $query->orderBy('code');
     }
+    
+     public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
 }
