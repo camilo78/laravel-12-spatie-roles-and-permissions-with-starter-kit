@@ -13,4 +13,12 @@ class Zone extends Model
     {
         return $this->belongsTo(Municipality::class);
     }
+    public function localities()
+    {
+        return $this->hasMany(Locality::class);
+    }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

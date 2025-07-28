@@ -21,29 +21,68 @@
                     <flux:input label="DNI" type="text" name="dui" placeholder="Enter DUI" wire:model="dui" />
                     <flux:input label="Teléfono" type="text" name="phone" placeholder="Digite el teléfono"
                         wire:model="phone" />
+                    {{-- 📍 Departamento --}}
                     <flux:select label="Departamento" name="department_id" wire:model.live="department_id">
                         <option value="">Seleccione el Departamento</option>
                         @foreach ($departments as $department)
-                            {{-- Usamos ->id y ->name porque ahora es una colección de objetos --}}
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </flux:select>
-                    <flux:select label="Municipio" name="municipality_id" wire:model="municipality_id"
+
+                    <div wire:loading wire:target="department_id" class="text-sm text-gray-500 mt-1">
+                        Cargando municipios...
+                    </div>
+
+                    {{-- 🏙️ Municipio --}}
+                    <flux:select label="Municipio" name="municipality_id" wire:model.live="municipality_id"
                         :disabled="!$department_id">
                         <option value="">
-                            {{-- Mensaje dinámico según si se ha elegido un departamento --}}
                             @if (!$department_id)
                                 Seleccione un departamento primero
                             @else
                                 Seleccione el Municipio
                             @endif
                         </option>
-                        {{-- Solo se itera si la colección de municipios no está vacía --}}
-                        @if ($municipalities)
-                            @foreach ($municipalities as $municipality)
-                                <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
-                            @endforeach
-                        @endif
+                        @foreach ($municipalities as $municipality)
+                            <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
+                        @endforeach
+                    </flux:select>
+
+                    <div wire:loading wire:target="municipality_id" class="text-sm text-gray-500 mt-1">
+                        Cargando zonas...
+                    </div>
+
+                    {{-- 🌐 Zona --}}
+                    <flux:select label="Zona" name="zone_id" wire:model.live="zone_id" :disabled="!$municipality_id">
+                        <option value="">
+                            @if (!$municipality_id)
+                                Seleccione un municipio primero
+                            @else
+                                Seleccione la Zona
+                            @endif
+                        </option>
+                        @foreach ($zones as $zone)
+                            <option value="{{ $zone->id }}">{{ $zone->name }} - {{ $zone->description }}</option>
+                        @endforeach
+                    </flux:select>
+
+                    <div wire:loading wire:target="zone_id" class="text-sm text-gray-500 mt-1">
+                        Cargando localidades...
+                    </div>
+
+                    {{-- 🧭 Localidad --}}
+                    <flux:select label="Localidad" name="locality_id" wire:model.live="locality_id"
+                        :disabled="!$zone_id">
+                        <option value="">
+                            @if (!$zone_id)
+                                Seleccione una zona primero
+                            @else
+                                Seleccione la Localidad
+                            @endif
+                        </option>
+                        @foreach ($localities as $locality)
+                            <option value="{{ $locality->id }}">{{ $locality->name }}</option>
+                        @endforeach
                     </flux:select>
                     <flux:textarea label="Dirección" type="text" name="address" placeholder="Digite la Dirección"
                         wire:model="address" class="lg:col-span-2" />
@@ -64,7 +103,7 @@
                         </flux:checkbox.group>
                     </div>
                 </div>
-                <flux:button type="submit" variant="primary">Create User</flux:button>
+                <flux:button type="submit" variant="primary">{{ __('Create User') }}</flux:button>
             </form>
         </div>
     </div>

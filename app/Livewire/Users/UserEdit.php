@@ -7,45 +7,72 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
-use App\Models\Municipality; 
+use App\Models\Municipality;
+use App\Models\Zone;
+use App\Models\Locality;
+use Illuminate\Support\Facades\Hash;
 
 class UserEdit extends Component
 {
-    public $user, $name, $email, $dui, $phone, $address, $gender, $password, $confirm_password, $allRoles;
-    public $roles = [];
-    public $departments = [];
-    public ?int $department_id = null;
-    public ?int $municipality_id = null;
-    public $municipalities = [];
+    public User $user;
+    public string $name = '', $email = '', $dui = '', $address = '', $gender = 'Masculino';
+    public ?string $phone = null, $password = null, $confirm_password = null;
+    public $allRoles, $departments = [], $municipalities = [], $zones = [], $localities = [];
+    public array $roles = [];
+    public ?int $department_id = null, $municipality_id = null, $zone_id = null, $locality_id = null;
+
+    protected $listeners = ['refreshLocationData' => 'refreshLocations'];
 
     public function mount(User $user): void
     {
         $this->user = $user;
-        $this->name = $this->user->name;
-        $this->email = $this->user->email;
-        $this->dui = $this->user->dui;
-        $this->phone = $this->user->phone;
-        $this->address = $this->user->address;
-        $this->gender = $this->user->gender;
-        $this->department_id = $this->user->department_id;
+        $this->fill($user->only([
+            'name', 'email', 'dui', 'phone', 'address', 'gender',
+            'department_id', 'municipality_id', 'zone_id', 'locality_id'
+        ]));
+
+        $this->loadInitialData();
+    }
+
+    protected function loadInitialData(): void
+    {
         $this->allRoles = Role::latest()->get();
         $this->roles = $this->user->roles->pluck('name')->toArray();
         $this->departments = Department::orderBy('name')->get();
-        if ($this->department_id) {
-            $this->municipalities = Municipality::where('department_id', $this->department_id)->get();
-        }
-        $this->municipality_id = $this->user->municipality_id;
+        $this->refreshLocations();
     }
 
-    public function updatedDepartmentId($value)
+    protected function refreshLocations(): void
     {
-        $this->municipalities = Municipality::where('department_id', $value)->get();
-        $this->municipality_id = null; 
+        $this->municipalities = $this->department_id
+            ? Municipality::where('department_id', $this->department_id)->get()
+            : collect();
+
+        $this->zones = $this->municipality_id
+            ? Zone::where('municipality_id', $this->municipality_id)->get()
+            : collect();
+
+        $this->localities = $this->zone_id
+            ? Locality::where('zone_id', $this->zone_id)->get()
+            : collect();
     }
 
-    public function render(): View
+    public function updatedDepartmentId($value): void
     {
-        return view('livewire.users.user-edit');
+        $this->reset(['municipality_id', 'zone_id', 'locality_id']);
+        $this->refreshLocations();
+    }
+
+    public function updatedMunicipalityId($value): void
+    {
+        $this->reset(['zone_id', 'locality_id']);
+        $this->refreshLocations();
+    }
+
+    public function updatedZoneId($value): void
+    {
+        $this->locality_id = null;
+        $this->refreshLocations();
     }
 
     public function editUser()
@@ -54,16 +81,28 @@ class UserEdit extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
             'dui' => 'required|unique:users,dui,' . $this->user->id,
-            'phone' => 'nullable|string|max:15',
-            'address' => 'required|string|max:255', 
+            'phone' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
             'gender' => 'required|in:Masculino,Femenino',
-            'password' => 'nullable|string|min:8|same:confirm_password',
-            'roles' => 'required',
+            'password' => 'nullable|string|min:8|confirmed',
+            'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
+            'roles' => 'required|array|min:1',
             'department_id' => 'required|exists:departments,id',
             'municipality_id' => 'required|exists:municipalities,id',
+            'zone_id' => 'required|exists:zones,id',
+            'locality_id' => 'required|exists:localities,id',
         ]);
 
-        $updateData = [
+        $this->user->update($this->prepareUpdateData());
+        $this->user->syncRoles($this->roles);
+
+        session()->flash('success', 'Usuario actualizado correctamente.');
+        return redirect()->route('users.index');
+    }
+
+    protected function prepareUpdateData(): array
+    {
+        return array_filter([
             'name' => $this->name,
             'email' => $this->email,
             'dui' => $this->dui,
@@ -72,16 +111,14 @@ class UserEdit extends Component
             'gender' => $this->gender,
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
-        ];
+            'zone_id' => $this->zone_id,
+            'locality_id' => $this->locality_id,
+            'password' => $this->password ? Hash::make($this->password) : null
+        ]);
+    }
 
-        if (!empty($this->password)) {
-            $updateData['password'] = bcrypt($this->password);
-        }
-
-        $this->user->update($updateData);
-
-        $this->user->syncRoles($this->roles);
-
-        return to_route('users.index')->with('success', 'Usuario actualizado correctamente.');
+    public function render(): View
+    {
+        return view('livewire.users.user-edit');
     }
 }

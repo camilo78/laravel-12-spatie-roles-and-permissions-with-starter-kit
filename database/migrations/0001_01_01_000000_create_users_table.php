@@ -21,6 +21,18 @@ return new class extends Migration
               ->nullable()
               ->constrained('departments')
               ->cascadeOnDelete();
+            $table->foreignId('municipality_id')
+              ->nullable()
+              ->constrained('municipalities')
+              ->cascadeOnDelete();
+            $table->foreignId('zone_id')
+              ->nullable()
+              ->constrained('zones')
+              ->cascadeOnDelete();
+            $table->foreignId('locality_id')
+              ->nullable()
+              ->constrained('localities')
+              ->cascadeOnDelete();
             $table->string('address')->require();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('gender', ['Masculino', 'Femenino'])->nullable();

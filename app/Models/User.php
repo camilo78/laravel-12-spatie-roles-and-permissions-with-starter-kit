@@ -28,6 +28,9 @@ class User extends Authenticatable
         'phone',
         'address',
         'department_id',
+        'municipality_id',
+        'zone_id',
+        'locality_id',
         'gender',
         'password',
     ];
@@ -88,5 +91,24 @@ class User extends Authenticatable
     {
         return Attribute::get(fn () => $this->department?->name);
     }
-
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class);
+    }
+    public function municipalityName(): Attribute
+    {
+        return Attribute::get(fn () => $this->municipality?->name);
+    }
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
+    }
+    public function zoneName(): Attribute
+    {
+        return Attribute::get(fn () => $this->zone?->name);
+    }
+    public function locality()
+    {
+        return $this->belongsTo(Locality::class);
+    }
 }
