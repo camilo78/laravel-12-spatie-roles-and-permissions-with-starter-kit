@@ -35,7 +35,7 @@
                             <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">
                                 Departamento</th>
                             <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->departmentName }}</td>
-                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Address
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Dirección
                             </th>
                             <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $user->address }}</td>
                         </tr>

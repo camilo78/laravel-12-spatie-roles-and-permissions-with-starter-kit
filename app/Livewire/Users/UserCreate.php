@@ -7,21 +7,27 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
-
+use App\Models\Municipality;
 
 class UserCreate extends Component
 {
     public $name, $email, $dui, $phone, $address, $gender, $password, $confirm_password, $allRoles;
     public $roles = [];
-    public array $departments = [];
-    public ?int $department_id = null;
-
+    public $departments = []; 
+    public $department_id = '';
+    public $municipality_id = '';
+    public $municipalities = [];
 
     public function mount()
     {
         $this->allRoles = Role::latest()->get();
-        $this->departments = Department::orderBy('name')->get()->toArray();
+        $this->departments = Department::orderBy('name')->get(); 
+    }
 
+    public function updatedDepartmentId($value)
+    {
+        $this->municipalities = Municipality::where('department_id', $value)->get();
+        $this->municipality_id = ''; 
     }
 
     public function render(): View
@@ -36,11 +42,12 @@ class UserCreate extends Component
             'email' => 'required|email|unique:users,email',
             'dui' => 'required|unique:users,dui',
             'phone' => 'nullable|string|max:15',
-            'department_id' => 'required|exists:departments,id',
             'address' => 'required|string|max:255',
-            'password' => 'required|string|min:8|same:confirm_password',
             'gender' => 'required|in:Masculino,Femenino',
+            'password' => 'required|string|min:8|same:confirm_password',
             'roles' => 'required',
+            'department_id' => 'required|exists:departments,id',
+            'municipality_id' => 'required|exists:municipalities,id',
         ]);
 
         $user = User::create([
@@ -48,10 +55,11 @@ class UserCreate extends Component
             'email' => $this->email,
             'dui' => $this->dui,
             'phone' => $this->phone,
-            'department_id' => $this->department_id,
             'address' => $this->address,
             'gender' => $this->gender,
             'password' => bcrypt($this->password),
+            'department_id' => $this->department_id,
+            'municipality_id' => $this->municipality_id,
         ]);
 
         $user->syncRoles($this->roles);

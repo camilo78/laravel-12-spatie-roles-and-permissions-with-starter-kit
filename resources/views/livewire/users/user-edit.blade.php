@@ -17,6 +17,30 @@
                     <flux:input label="{{ __('Email') }}" type="email" name="email" placeholder="Digite el Correo" wire:model="email" />
                     <flux:input label="{{ __('DNI') }}" type="text" name="dui" placeholder="Digite DNI" wire:model="dui" />
                     <flux:input label="{{ __('Phone') }}" type="text" name="phone" placeholder="Digite el Teléfono" wire:model="phone" />
+                                        <flux:select label="Departamento" name="department_id" wire:model.live="department_id">
+                        <option value="">Seleccione el Departamento</option>
+                        @foreach ($departments as $department)
+                            {{-- Usamos ->id y ->name porque ahora es una colección de objetos --}}
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </flux:select>
+                    <flux:select label="Municipio" name="municipality_id" wire:model="municipality_id"
+                        :disabled="!$department_id">
+                        <option value="">
+                            {{-- Mensaje dinámico según si se ha elegido un departamento --}}
+                            @if (!$department_id)
+                                Seleccione un departamento primero
+                            @else
+                                Seleccione el Municipio
+                            @endif
+                        </option>
+                        {{-- Solo se itera si la colección de municipios no está vacía --}}
+                        @if ($municipalities)
+                            @foreach ($municipalities as $municipality)
+                                <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
+                            @endforeach
+                        @endif
+                    </flux:select>
                     <flux:textarea label="{{ __('Address') }}" type="text" name="address" placeholder="Digite la Dirección" wire:model="address" class="lg:col-span-2" />
                     <flux:select label="{{ __('Gender') }}" name="gender" wire:model="gender">
                         <option value="">Seleccione Genero</option>
@@ -28,7 +52,7 @@
                     <div class="lg:col-span-2">
                         <flux:checkbox.group wire:model="roles" label="Roles de Usuario">
                             @foreach($allRoles as $allRole)
-                                <flux:checkbox value="{{ $allRole->name }}" label="{{ $allRole->name }}" />
+                                <flux:checkbox value="{{ $allRole->name }}" label="{{ __($allRole->name) }}" />
                             @endforeach
                         </flux:checkbox.group>
                     </div>
