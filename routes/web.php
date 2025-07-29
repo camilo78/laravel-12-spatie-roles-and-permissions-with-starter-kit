@@ -8,6 +8,10 @@ use App\Livewire\Users\UserCreate;
 use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
+use App\Livewire\Zones\ZoneIndex;
+use App\Livewire\Zones\ZoneCreate;
+use App\Livewire\Zones\ZoneEdit;
+use App\Livewire\Zones\ZoneShow;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -29,6 +33,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/create', UserCreate::class)->name('users.create')->middleware('permission:users.create');
     Route::get('users/{user}/edit', UserEdit::class)->name('users.edit')->middleware('permission:users.edit');
     Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
+
+    /*
+     * Zone Management
+     * */
+    Route::get('zones', ZoneIndex::class)->name('zones.index');
+    Route::get('zones/create', ZoneCreate::class)->name('zones.create');
+    Route::get('zones/{zone}/edit', ZoneEdit::class)->name('zones.edit'); 
+    Route::get('zones/{zone}/show', ZoneShow::class)->name('zones.show');   
 
     /*
      * Role Management

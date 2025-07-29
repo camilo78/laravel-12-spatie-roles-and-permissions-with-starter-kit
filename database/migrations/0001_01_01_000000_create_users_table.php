@@ -18,19 +18,19 @@ return new class extends Migration
             $table->string('dui', 13)->require()->unique();
             $table->string('phone')->nullable();
             $table->foreignId('department_id')
-              ->nullable()
+              ->require()
               ->constrained('departments')
               ->cascadeOnDelete();
             $table->foreignId('municipality_id')
-              ->nullable()
+              ->require()
               ->constrained('municipalities')
               ->cascadeOnDelete();
             $table->foreignId('zone_id')
-              ->nullable()
+              ->require()
               ->constrained('zones')
               ->cascadeOnDelete();
             $table->foreignId('locality_id')
-              ->nullable()
+              ->require()
               ->constrained('localities')
               ->cascadeOnDelete();
             $table->string('address')->require();
