@@ -22,7 +22,7 @@
                         wire:model="dui" />
                     <flux:input label="{{ __('Phone') }}" type="text" name="phone"
                         placeholder="Digite el Teléfono" wire:model="phone" />
-                      {{-- 📍 Departamento --}}
+                    {{-- 📍 Departamento --}}
                     <flux:select label="Departamento" name="department_id" wire:model.live="department_id">
                         <option value="">Seleccione el Departamento</option>
                         @foreach ($departments as $department)
