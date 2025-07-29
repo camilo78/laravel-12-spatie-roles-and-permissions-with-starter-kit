@@ -33,7 +33,6 @@
                     <div wire:loading wire:target="department_id" class="text-sm text-gray-500 mt-1">
                         Cargando municipios...
                     </div>
-
                     {{-- 🏙️ Municipio --}}
                     <flux:select label="Municipio" name="municipality_id" wire:model.live="municipality_id"
                         :disabled="!$department_id">
@@ -48,35 +47,15 @@
                             <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
                         @endforeach
                     </flux:select>
-
                     <div wire:loading wire:target="municipality_id" class="text-sm text-gray-500 mt-1">
-                        Cargando zonas...
+                        Cargando localidades...
                     </div>
-
-                    {{-- 🌐 Zona --}}
-                    <flux:select label="Zona" name="zone_id" wire:model.live="zone_id" :disabled="!$municipality_id">
+                    {{-- 🧭 Localidad --}}
+                    <flux:select label="Localidad" name="locality_id" wire:model.live="locality_id"
+                        :disabled="!$municipality_id">
                         <option value="">
                             @if (!$municipality_id)
                                 Seleccione un municipio primero
-                            @else
-                                Seleccione la Zona
-                            @endif
-                        </option>
-                        @foreach ($zones as $zone)
-                            <option value="{{ $zone->id }}">{{ $zone->name }} - {{ $zone->description }}</option>
-                        @endforeach
-                    </flux:select>
-
-                    <div wire:loading wire:target="zone_id" class="text-sm text-gray-500 mt-1">
-                        Cargando localidades...
-                    </div>
-
-                    {{-- 🧭 Localidad --}}
-                    <flux:select label="Localidad" name="locality_id" wire:model.live="locality_id"
-                        :disabled="!$zone_id">
-                        <option value="">
-                            @if (!$zone_id)
-                                Seleccione una zona primero
                             @else
                                 Seleccione la Localidad
                             @endif

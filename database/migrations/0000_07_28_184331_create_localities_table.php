@@ -11,7 +11,7 @@ class CreateLocalitiesTable extends Migration
         Schema::create('localities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('zone_id')->constrained('zones')->onDelete('cascade');
+            $table->foreignId('municipality_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

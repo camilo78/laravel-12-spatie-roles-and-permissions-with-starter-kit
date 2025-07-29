@@ -23,9 +23,13 @@ class Department extends Model
         return $query->orderBy('code');
     }
     
-     public function users()
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class);
+    }
+
+    public function users()
     {
         return $this->hasMany(User::class);
     }
-
 }

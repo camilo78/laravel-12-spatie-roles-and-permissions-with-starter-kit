@@ -81,6 +81,14 @@
     "Actualizar Usuario": "Actualizar Usuario",
     "Form For Create New User": "Formulario para crear Usuario",
     "User": "Usuario",
-    "Admin": "Administrador"
-
+    "Admin": "Administrador",
+    "User Details": "Detalles de Usuario",
+    "Localities": "Localidades",
+    "Manage your localities": "Administra tus localidades",
+    "Create Locality": "Crear Localidad",
+    "Edit Locality": "Editar Localidad",
+    "Locality Details": "Detalles de Localidad",
+    "Add a new locality": "Agregar una nueva localidad",
+    "Update locality information": "Actualizar información de localidad",
+    "View locality information": "Ver información de localidad"
 }

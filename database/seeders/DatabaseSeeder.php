@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
 
             MunicipalitySeeder::class,
 
-            ZoneSeeder::class,
-
             LocalitySeeder::class,
 
             UserSeeder::class,

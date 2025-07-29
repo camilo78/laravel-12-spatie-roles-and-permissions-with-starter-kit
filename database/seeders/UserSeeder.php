@@ -28,6 +28,9 @@ class UserSeeder extends Seeder
             'email' => 'camilo.alvarado0501@gmail.com',
             'dui' => '0501197809263',
             'phone' => '96645637 87886036 96585441',
+            'department_id' => 1, // Atlántida
+            'municipality_id' => 1, // La Ceiba
+            'locality_id' => 1, // Locality ID for La Ceiba
             'address' => '123 Main St, San Salvador',
             'gender' => 'Masculino',
             'password' => bcrypt('milogaqw12'),
@@ -43,6 +46,9 @@ class UserSeeder extends Seeder
             'email' => 'user@example.com',
             'dui' => '1234567890123',
             'phone' => '555-1234',
+            'department_id' => 1, // Atlántida
+            'municipality_id' => 1, // La Ceiba
+            'locality_id' => 2, // Locality ID for La Ceiba
             'address' => '456 Elm St, San Salvador',
             'gender' => 'Masculino',
             'password' => bcrypt('password'),

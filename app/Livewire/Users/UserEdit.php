@@ -8,7 +8,6 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Models\Municipality;
-use App\Models\Zone;
 use App\Models\Locality;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,9 +16,9 @@ class UserEdit extends Component
     public User $user;
     public string $name = '', $email = '', $dui = '', $address = '', $gender = 'Masculino';
     public ?string $phone = null, $password = null, $confirm_password = null;
-    public $allRoles, $departments = [], $municipalities = [], $zones = [], $localities = [];
+    public $allRoles, $departments = [], $municipalities = [], $localities = [];
     public array $roles = [];
-    public ?int $department_id = null, $municipality_id = null, $zone_id = null, $locality_id = null;
+    public ?int $department_id = null, $municipality_id = null, $locality_id = null;
 
     protected $listeners = ['refreshLocationData' => 'refreshLocations'];
 
@@ -28,7 +27,7 @@ class UserEdit extends Component
         $this->user = $user;
         $this->fill($user->only([
             'name', 'email', 'dui', 'phone', 'address', 'gender',
-            'department_id', 'municipality_id', 'zone_id', 'locality_id'
+            'department_id', 'municipality_id', 'locality_id'
         ]));
 
         $this->loadInitialData();
@@ -48,32 +47,23 @@ class UserEdit extends Component
             ? Municipality::where('department_id', $this->department_id)->get()
             : collect();
 
-        $this->zones = $this->municipality_id
-            ? Zone::where('municipality_id', $this->municipality_id)->get()
-            : collect();
-
-        $this->localities = $this->zone_id
-            ? Locality::where('zone_id', $this->zone_id)->get()
+        $this->localities = $this->municipality_id
+            ? Locality::where('municipality_id', $this->municipality_id)->get()
             : collect();
     }
 
     public function updatedDepartmentId($value): void
     {
-        $this->reset(['municipality_id', 'zone_id', 'locality_id']);
+        $this->reset(['municipality_id', 'locality_id']);
         $this->refreshLocations();
     }
 
     public function updatedMunicipalityId($value): void
     {
-        $this->reset(['zone_id', 'locality_id']);
+        $this->reset(['locality_id']);
         $this->refreshLocations();
     }
 
-    public function updatedZoneId($value): void
-    {
-        $this->locality_id = null;
-        $this->refreshLocations();
-    }
 
     public function editUser()
     {
@@ -89,7 +79,6 @@ class UserEdit extends Component
             'roles' => 'required|array|min:1',
             'department_id' => 'required|exists:departments,id',
             'municipality_id' => 'required|exists:municipalities,id',
-            'zone_id' => 'required|exists:zones,id',
             'locality_id' => 'required|exists:localities,id',
         ]);
 
@@ -111,7 +100,6 @@ class UserEdit extends Component
             'gender' => $this->gender,
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
-            'zone_id' => $this->zone_id,
             'locality_id' => $this->locality_id,
             'password' => $this->password ? Hash::make($this->password) : null
         ]);

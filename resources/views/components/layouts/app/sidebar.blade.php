@@ -49,19 +49,18 @@
             <hr class="h-px  bg-gray-200 border-0 dark:bg-gray-700">
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Settings')" class="grid">
-                    <flux:navlist.item icon="locate-fixed" href="https://github.com/laravel/livewire-starter-kit"
+                 {{--    <flux:navlist.item icon="locate-fixed" href="https://github.com/laravel/livewire-starter-kit"
                         target="_blank">
                         Departamentos
-                    </flux:navlist.item>
+                    </flux:navlist.item> --}}
 
-                    <flux:navlist.item icon="map-pin-house" href="https://laravel.com/docs/starter-kits#livewire"
-                        target="_blank">
-                        Municipios
+                    <flux:navlist.item icon="map-pin-house" href="{{ route('localities.index') }}">
+                        Localidades
                     </flux:navlist.item>
-                    <flux:navlist.item icon="clipboard-plus" href="https://laravel.com/docs/starter-kits#livewire"
+{{--                     <flux:navlist.item icon="clipboard-plus" href="https://laravel.com/docs/starter-kits#livewire"
                         target="_blank">
                         Patologías
-                    </flux:navlist.item>
+                    </flux:navlist.item> --}}
 
                 </flux:navlist.group>
             </flux:navlist>

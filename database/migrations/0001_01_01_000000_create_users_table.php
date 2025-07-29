@@ -25,10 +25,6 @@ return new class extends Migration
               ->require()
               ->constrained('municipalities')
               ->cascadeOnDelete();
-            $table->foreignId('zone_id')
-              ->require()
-              ->constrained('zones')
-              ->cascadeOnDelete();
             $table->foreignId('locality_id')
               ->require()
               ->constrained('localities')

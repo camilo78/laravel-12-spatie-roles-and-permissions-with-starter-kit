@@ -16,9 +16,9 @@ class Municipality extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function zones()
+    public function localities()
     {
-        return $this->hasMany(Zone::class);
+        return $this->hasMany(Locality::class);
     }
 
     public function users()

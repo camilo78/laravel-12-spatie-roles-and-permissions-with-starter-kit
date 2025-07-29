@@ -8,16 +8,14 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Models\Municipality;
-use App\Models\Zone;
 use App\Models\Locality;
 
 class UserCreate extends Component
 {
     public $name, $email, $dui, $phone, $address, $gender, $password, $confirm_password, $allRoles;
-    public $roles = [], $departments = [], $municipalities = [], $zones = [], $localities = [];
+    public $roles = [], $departments = [], $municipalities = [], $localities = [];
     public ?int $department_id = null;
     public ?int $municipality_id = null;
-    public ?int $zone_id = null;
     public ?int $locality_id = null;
 
     public function mount(): void
@@ -30,18 +28,14 @@ class UserCreate extends Component
     {
         $this->municipality_id = null;
         $this->municipalities = Municipality::where('department_id', $value)->get();
+        $this->localities = [];
+        $this->locality_id = null;
     }
 
     public function updatedMunicipalityId($value)
     {
-        $this->zone_id = null;
-        $this->zones = Zone::where('municipality_id', $value)->get();
-    }
-
-    public function updatedZoneId($value)
-    {
         $this->locality_id = null;
-        $this->localities = Locality::where('zone_id', $value)->get();
+        $this->localities = Locality::where('municipality_id', $value)->get();
     }
 
     public function createUser()
@@ -58,7 +52,6 @@ class UserCreate extends Component
             'roles' => 'required|array|min:1',
             'department_id' => 'required|exists:departments,id',
             'municipality_id' => 'required|exists:municipalities,id',
-            'zone_id' => 'required|exists:zones,id',
             'locality_id' => 'required|exists:localities,id',
         ]);
 
@@ -72,7 +65,6 @@ class UserCreate extends Component
             'password' => bcrypt($this->password),
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
-            'zone_id' => $this->zone_id,
             'locality_id' => $this->locality_id,
         ]);
 
