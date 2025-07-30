@@ -34,4 +34,14 @@ class PatientPathology extends Model
     {
         return $this->hasMany(PatientMedicine::class);
     }
+
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    public function scopeWithPathology($query, $pathologyId)
+    {
+        return $query->where('pathology_id', $pathologyId);
+    }
 }

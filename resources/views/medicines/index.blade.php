@@ -40,9 +40,9 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">Nombre</th>
-                        <th scope="col" class="px-6 py-3">Comercial</th>
                         <th scope="col" class="px-6 py-3">Genérico</th>
                         <th scope="col" class="px-6 py-3">Presentación</th>
+                        <th scope="col" class="px-6 py-3">Concentración</th>
                         <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -53,13 +53,13 @@
                                 {{ $medicine->name }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $medicine->commercial_name ?: '-' }}
-                            </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $medicine->generic_name }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $medicine->presentation }}
+                            </td>
+                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                                {{ $medicine->concentration }}
                             </td>
                             <td class="px-6 py-2 text-center">
                                 <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">

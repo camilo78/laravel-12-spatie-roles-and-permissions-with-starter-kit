@@ -57,10 +57,15 @@
                     <flux:navlist.item icon="map-pin-house" href="{{ route('localities.index') }}">
                         Localidades
                     </flux:navlist.item>
-{{--                     <flux:navlist.item icon="clipboard-plus" href="https://laravel.com/docs/starter-kits#livewire"
-                        target="_blank">
+                    <flux:navlist.item icon="clipboard-plus" href="{{ route('pathologies.index') }}">
                         Patologías
-                    </flux:navlist.item> --}}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="pill" href="{{ route('medicines.index') }}">
+                        Medicamentos
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="truck" href="{{ route('deliveries.index') }}">
+                        Entregas
+                    </flux:navlist.item>
 
                 </flux:navlist.group>
             </flux:navlist>

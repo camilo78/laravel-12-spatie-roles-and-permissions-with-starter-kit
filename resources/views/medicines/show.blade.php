@@ -25,18 +25,14 @@
                     <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
                         <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Nombre</th>
                         <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $medicine->name }}</td>
-                        <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Nombre Comercial</th>
-                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $medicine->commercial_name ?: 'No especificado' }}</td>
-                    </tr>
-                    <tr>
                         <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Nombre Genérico</th>
                         <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $medicine->generic_name }}</td>
+                    </tr>
+                    <tr>
                         <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Presentación</th>
                         <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $medicine->presentation }}</td>
-                    </tr>
-                    <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
                         <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Concentración</th>
-                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300" colspan="3">{{ $medicine->concentration }}</td>
+                        <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $medicine->concentration }}</td>
                     </tr>
                 </tbody>
             </table>

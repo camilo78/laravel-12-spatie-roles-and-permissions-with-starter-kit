@@ -12,6 +12,7 @@ class LocalityCreate extends Component
     public $name = '';
     public $selectedDepartment = '';
     public $selectedMunicipality = '';
+    public $isSubmitting = false;
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -33,18 +34,27 @@ class LocalityCreate extends Component
 
     public function save()
     {
-        $this->validate();
+        if ($this->isSubmitting) return;
+        
+        $this->isSubmitting = true;
+        
+        try {
+            $this->validate();
 
-        Locality::create([
-            'name' => $this->name,
-            'municipality_id' => $this->selectedMunicipality,
-        ]);
+            Locality::create([
+                'name' => $this->name,
+                'municipality_id' => $this->selectedMunicipality,
+            ]);
 
-        session()->flash('success', 'Localidad creada exitosamente.');
-        return redirect()->route('localities.index', [
-            'department_id' => $this->selectedDepartment,
-            'municipality_id' => $this->selectedMunicipality
-        ]);
+            session()->flash('success', 'Localidad creada exitosamente.');
+            return redirect()->route('localities.index', [
+                'department_id' => $this->selectedDepartment,
+                'municipality_id' => $this->selectedMunicipality
+            ]);
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            throw $e;
+        }
     }
 
     public function render()

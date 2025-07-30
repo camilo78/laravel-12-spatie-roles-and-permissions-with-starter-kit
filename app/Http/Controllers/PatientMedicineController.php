@@ -33,6 +33,17 @@ class PatientMedicineController extends Controller
             'status' => 'required|in:active,suspended,completed',
         ]);
 
+        // Verificar si ya existe la combinación activa
+        $exists = PatientMedicine::where('patient_pathology_id', $request->patient_pathology_id)
+            ->where('medicine_id', $request->medicine_id)
+            ->where('status', 'active')
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('users.medicines', $user)
+                ->with('error', 'Este medicamento ya está activo para esta patología.');
+        }
+
         PatientMedicine::create($request->all());
 
         return redirect()->route('users.medicines', $user)->with('success', 'Medicamento asignado exitosamente.');
@@ -56,6 +67,20 @@ class PatientMedicineController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'status' => 'required|in:active,suspended,completed',
         ]);
+
+        // Verificar si ya existe la combinación activa (excluyendo el registro actual)
+        if ($request->status === 'active') {
+            $exists = PatientMedicine::where('patient_pathology_id', $request->patient_pathology_id)
+                ->where('medicine_id', $request->medicine_id)
+                ->where('status', 'active')
+                ->where('id', '!=', $patientMedicine->id)
+                ->exists();
+
+            if ($exists) {
+                return redirect()->route('users.medicines', $user)
+                    ->with('error', 'Este medicamento ya está activo para esta patología.');
+            }
+        }
 
         $patientMedicine->update($request->all());
 

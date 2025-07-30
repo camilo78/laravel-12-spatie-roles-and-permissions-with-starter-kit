@@ -22,7 +22,6 @@ class MedicineController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'commercial_name' => 'nullable|string|max:255',
             'generic_name' => 'required|string|max:255',
             'presentation' => 'required|string|max:255',
             'concentration' => 'required|string|max:255',
@@ -47,7 +46,6 @@ class MedicineController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'commercial_name' => 'nullable|string|max:255',
             'generic_name' => 'required|string|max:255',
             'presentation' => 'required|string|max:255',
             'concentration' => 'required|string|max:255',

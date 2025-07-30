@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         $this->admin();
         $this->user();
 
-        User::factory(1600)->create()->each(function ($user) {
+        User::factory(198)->create()->each(function ($user) {
         $user->assignRole('User');
     });
     }
@@ -33,6 +33,7 @@ class UserSeeder extends Seeder
             'locality_id' => 1, // Locality ID for La Ceiba
             'address' => '123 Main St, San Salvador',
             'gender' => 'Masculino',
+            'status' => true,
             'password' => bcrypt('milogaqw12'),
         ]);
 
@@ -51,6 +52,7 @@ class UserSeeder extends Seeder
             'locality_id' => 2, // Locality ID for La Ceiba
             'address' => '456 Elm St, San Salvador',
             'gender' => 'Masculino',
+            'status' => true,
             'password' => bcrypt('password'),
         ]);
 

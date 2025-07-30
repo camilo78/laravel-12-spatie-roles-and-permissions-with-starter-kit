@@ -13,6 +13,7 @@ class LocalityEdit extends Component
     public $name = '';
     public $selectedDepartment = '';
     public $selectedMunicipality = '';
+    public $isSubmitting = false;
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -36,18 +37,27 @@ class LocalityEdit extends Component
 
     public function update()
     {
-        $this->validate();
+        if ($this->isSubmitting) return;
+        
+        $this->isSubmitting = true;
+        
+        try {
+            $this->validate();
 
-        $this->locality->update([
-            'name' => $this->name,
-            'municipality_id' => $this->selectedMunicipality,
-        ]);
+            $this->locality->update([
+                'name' => $this->name,
+                'municipality_id' => $this->selectedMunicipality,
+            ]);
 
-        session()->flash('success', 'Localidad actualizada exitosamente.');
-        return redirect()->route('localities.index', [
-            'department_id' => $this->selectedDepartment,
-            'municipality_id' => $this->selectedMunicipality
-        ]);
+            session()->flash('success', 'Localidad actualizada exitosamente.');
+            return redirect()->route('localities.index', [
+                'department_id' => $this->selectedDepartment,
+                'municipality_id' => $this->selectedMunicipality
+            ]);
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            throw $e;
+        }
     }
 
     public function render()

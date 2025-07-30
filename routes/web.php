@@ -60,6 +60,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pathologies', PathologyController::class);
     Route::resource('medicines', MedicineController::class);
     
+    /*
+     * Delivery Management
+     * */
+    Route::get('deliveries', \App\Livewire\Deliveries\DeliveryIndex::class)->name('deliveries.index');
+    Route::get('deliveries/create', \App\Livewire\Deliveries\DeliveryCreate::class)->name('deliveries.create');
+    Route::get('deliveries/{delivery}', \App\Livewire\Deliveries\DeliveryShow::class)->name('deliveries.show');
+    
     // User Medical Management
     Route::get('users/{user}/pathologies', [PatientPathologyController::class, 'userPathologies'])->name('users.pathologies');
     Route::post('users/{user}/pathologies', [PatientPathologyController::class, 'assignPathology'])->name('users.pathologies.assign');

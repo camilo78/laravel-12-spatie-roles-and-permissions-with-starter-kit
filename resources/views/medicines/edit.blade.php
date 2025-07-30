@@ -19,14 +19,12 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <flux:input label="Nombre" type="text" name="name" placeholder="Digite el nombre del medicamento"
                         value="{{ old('name', $medicine->name) }}" required />
-                    <flux:input label="Nombre Comercial" type="text" name="commercial_name" placeholder="Digite el nombre comercial (opcional)"
-                        value="{{ old('commercial_name', $medicine->commercial_name) }}" />
                     <flux:input label="Nombre Genérico" type="text" name="generic_name" placeholder="Digite el nombre genérico"
                         value="{{ old('generic_name', $medicine->generic_name) }}" required />
                     <flux:input label="Presentación" type="text" name="presentation" placeholder="Ej: Tabletas, Jarabe, Cápsulas"
                         value="{{ old('presentation', $medicine->presentation) }}" required />
                     <flux:input label="Concentración" type="text" name="concentration" placeholder="Ej: 500mg, 250ml"
-                        value="{{ old('concentration', $medicine->concentration) }}" required class="lg:col-span-2" />
+                        value="{{ old('concentration', $medicine->concentration) }}" required />
                 </div>
                 <flux:button type="submit" variant="primary">Actualizar Medicamento</flux:button>
             </form>

@@ -24,6 +24,16 @@ class PatientPathologyController extends Controller
             'status' => 'required|in:active,inactive,controlled',
         ]);
 
+        // Verificar si ya existe la combinación
+        $exists = PatientPathology::where('user_id', $user->id)
+            ->where('pathology_id', $request->pathology_id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('users.pathologies', $user)
+                ->with('error', 'Esta patología ya está asignada al usuario.');
+        }
+
         PatientPathology::create([
             'user_id' => $user->id,
             'pathology_id' => $request->pathology_id,
@@ -47,6 +57,17 @@ class PatientPathologyController extends Controller
             'diagnosed_at' => 'required|date',
             'status' => 'required|in:active,inactive,controlled',
         ]);
+
+        // Verificar si ya existe la combinación (excluyendo el registro actual)
+        $exists = PatientPathology::where('user_id', $user->id)
+            ->where('pathology_id', $request->pathology_id)
+            ->where('id', '!=', $patientPathology->id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('users.pathologies', $user)
+                ->with('error', 'Esta patología ya está asignada al usuario.');
+        }
 
         $patientPathology->update($request->all());
 

@@ -33,4 +33,19 @@ class PatientMedicine extends Model
     {
         return $this->belongsTo(Medicine::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeForPathology($query, $pathologyId)
+    {
+        return $query->where('patient_pathology_id', $pathologyId);
+    }
+
+    public function scopeWithMedicine($query, $medicineId)
+    {
+        return $query->where('medicine_id', $medicineId);
+    }
 }

@@ -17,6 +17,8 @@ class UserCreate extends Component
     public ?int $department_id = null;
     public ?int $municipality_id = null;
     public ?int $locality_id = null;
+    public $status = true;
+    public $isSubmitting = false;
 
     public function mount(): void
     {
@@ -40,37 +42,48 @@ class UserCreate extends Component
 
     public function createUser()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'dui' => 'required|unique:users,dui',
-            'phone' => 'nullable|string|max:255',
-            'address' => 'required|string|max:255',
-            'gender' => 'required|in:Masculino,Femenino',
-            'password' => 'required|string|min:8|same:confirm_password',
-            'confirm_password' => 'required|string|min:8',
-            'roles' => 'required|array|min:1',
-            'department_id' => 'required|exists:departments,id',
-            'municipality_id' => 'required|exists:municipalities,id',
-            'locality_id' => 'required|exists:localities,id',
-        ]);
+        if ($this->isSubmitting) return;
+        
+        $this->isSubmitting = true;
+        
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'dui' => 'required|unique:users,dui',
+                'phone' => 'nullable|string|max:255',
+                'address' => 'required|string|max:255',
+                'gender' => 'required|in:Masculino,Femenino',
+                'password' => 'required|string|min:8|same:confirm_password',
+                'confirm_password' => 'required|string|min:8',
+                'roles' => 'required|array|min:1',
+                'department_id' => 'required|exists:departments,id',
+                'municipality_id' => 'required|exists:municipalities,id',
+                'locality_id' => 'required|exists:localities,id',
+                'status' => 'boolean',
+            ]);
 
-        $user = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'dui' => $this->dui,
-            'phone' => $this->phone,
-            'address' => $this->address,
-            'gender' => $this->gender,
-            'password' => bcrypt($this->password),
-            'department_id' => $this->department_id,
-            'municipality_id' => $this->municipality_id,
-            'locality_id' => $this->locality_id,
-        ]);
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'dui' => $this->dui,
+                'phone' => $this->phone,
+                'address' => $this->address,
+                'gender' => $this->gender,
+                'status' => $this->status,
+                'password' => bcrypt($this->password),
+                'department_id' => $this->department_id,
+                'municipality_id' => $this->municipality_id,
+                'locality_id' => $this->locality_id,
+            ]);
 
-        $user->syncRoles($this->roles);
+            $user->syncRoles($this->roles);
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
+            return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            throw $e;
+        }
     }
 
     public function render(): View

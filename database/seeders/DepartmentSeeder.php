@@ -12,11 +12,11 @@ class DepartmentSeeder extends Seeder {
     public function run(): void {
         $departments = [
             'Atlántida',
-            'Choluteca',
             'Colón',
             'Comayagua',
             'Copán',
             'Cortés',
+            'Choluteca',
             'El Paraíso',
             'Francisco Morazán',
             'Gracias a Dios',

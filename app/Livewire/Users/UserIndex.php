@@ -33,6 +33,13 @@ class UserIndex extends Component
         return view('livewire.users.user-index', compact('users'));
     }
 
+    public function toggleStatus(User $user)
+    {
+        $user->update(['status' => !$user->status]);
+        $status = $user->status ? 'activado' : 'desactivado';
+        session()->flash('success', "Usuario {$status} exitosamente.");
+    }
+
         public function deleteUser(User $user)
     {
         $user->delete();

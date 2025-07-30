@@ -49,9 +49,9 @@ class LocalityIndex extends Component
 
     public function render()
     {
-        $departments = Department::orderBy('name')->get();
+        $departments = Department::get();
         $municipalities = $this->selectedDepartment 
-            ? Municipality::where('department_id', $this->selectedDepartment)->orderBy('name')->get()
+            ? Municipality::where('department_id', $this->selectedDepartment)->get()
             : collect();
 
         $localities = collect();
@@ -61,7 +61,6 @@ class LocalityIndex extends Component
                 ->when($this->search, function ($query) {
                     $query->where('name', 'like', '%' . $this->search . '%');
                 })
-                ->orderBy('name')
                 ->paginate(10);
         }
 

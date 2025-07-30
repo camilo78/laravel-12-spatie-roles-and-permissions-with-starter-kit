@@ -16,9 +16,11 @@ class UserEdit extends Component
     public User $user;
     public string $name = '', $email = '', $dui = '', $address = '', $gender = 'Masculino';
     public ?string $phone = null, $password = null, $confirm_password = null;
+    public $status = true;
     public $allRoles, $departments = [], $municipalities = [], $localities = [];
     public array $roles = [];
     public ?int $department_id = null, $municipality_id = null, $locality_id = null;
+    public $isSubmitting = false;
 
     protected $listeners = ['refreshLocationData' => 'refreshLocations'];
 
@@ -26,7 +28,7 @@ class UserEdit extends Component
     {
         $this->user = $user;
         $this->fill($user->only([
-            'name', 'email', 'dui', 'phone', 'address', 'gender',
+            'name', 'email', 'dui', 'phone', 'address', 'gender', 'status',
             'department_id', 'municipality_id', 'locality_id'
         ]));
 
@@ -67,42 +69,58 @@ class UserEdit extends Component
 
     public function editUser()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->user->id,
-            'dui' => 'required|unique:users,dui,' . $this->user->id,
-            'phone' => 'nullable|string|max:255',
-            'address' => 'required|string|max:255',
-            'gender' => 'required|in:Masculino,Femenino',
-            'password' => 'nullable|string|min:8|confirmed',
-            'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
-            'roles' => 'required|array|min:1',
-            'department_id' => 'required|exists:departments,id',
-            'municipality_id' => 'required|exists:municipalities,id',
-            'locality_id' => 'required|exists:localities,id',
-        ]);
+        if ($this->isSubmitting) return;
+        
+        $this->isSubmitting = true;
+        
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $this->user->id,
+                'dui' => 'required|unique:users,dui,' . $this->user->id,
+                'phone' => 'nullable|string|max:255',
+                'address' => 'required|string|max:255',
+                'gender' => 'required|in:Masculino,Femenino',
+                'password' => 'nullable|string|min:8|confirmed',
+                'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
+                'roles' => 'required|array|min:1',
+                'department_id' => 'required|exists:departments,id',
+                'municipality_id' => 'required|exists:municipalities,id',
+                'locality_id' => 'required|exists:localities,id',
+                'status' => 'boolean',
+            ]);
 
-        $this->user->update($this->prepareUpdateData());
-        $this->user->syncRoles($this->roles);
+            $this->user->update($this->prepareUpdateData());
+            $this->user->syncRoles($this->roles);
 
-        session()->flash('success', 'Usuario actualizado correctamente.');
-        return redirect()->route('users.index');
+            session()->flash('success', 'Usuario actualizado correctamente.');
+            return redirect()->route('users.index');
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            throw $e;
+        }
     }
 
     protected function prepareUpdateData(): array
     {
-        return array_filter([
+        $data = [
             'name' => $this->name,
             'email' => $this->email,
             'dui' => $this->dui,
             'phone' => $this->phone,
             'address' => $this->address,
             'gender' => $this->gender,
+            'status' => $this->status,
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
             'locality_id' => $this->locality_id,
-            'password' => $this->password ? Hash::make($this->password) : null
-        ]);
+        ];
+        
+        if ($this->password) {
+            $data['password'] = Hash::make($this->password);
+        }
+        
+        return $data;
     }
 
     public function render(): View
