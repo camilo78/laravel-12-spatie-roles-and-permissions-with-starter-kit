@@ -106,4 +106,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Locality::class);
     }
+
+    public function patientPathologies()
+    {
+        return $this->hasMany(PatientPathology::class);
+    }
 }

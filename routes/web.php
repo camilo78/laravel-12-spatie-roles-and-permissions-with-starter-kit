@@ -12,6 +12,10 @@ use App\Livewire\Users\UserCreate;
 use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
+use App\Http\Controllers\PathologyController;
+use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\PatientPathologyController;
+use App\Http\Controllers\PatientMedicineController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -49,6 +53,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('localities/create', LocalityCreate::class)->name('localities.create');
     Route::get('localities/{locality}/edit', LocalityEdit::class)->name('localities.edit');
     Route::get('localities/{locality}/show', LocalityShow::class)->name('localities.show');
+
+    /*
+     * Medical Management
+     * */
+    Route::resource('pathologies', PathologyController::class);
+    Route::resource('medicines', MedicineController::class);
+    
+    // User Medical Management
+    Route::get('users/{user}/pathologies', [PatientPathologyController::class, 'userPathologies'])->name('users.pathologies');
+    Route::post('users/{user}/pathologies', [PatientPathologyController::class, 'assignPathology'])->name('users.pathologies.assign');
+    Route::get('users/{user}/pathologies/{patientPathology}/edit', [PatientPathologyController::class, 'editPathology'])->name('users.pathologies.edit');
+    Route::put('users/{user}/pathologies/{patientPathology}', [PatientPathologyController::class, 'updatePathology'])->name('users.pathologies.update');
+    Route::delete('users/{user}/pathologies/{patientPathology}', [PatientPathologyController::class, 'removePathology'])->name('users.pathologies.remove');
+    
+    Route::get('users/{user}/medicines', [PatientMedicineController::class, 'userMedicines'])->name('users.medicines');
+    Route::post('users/{user}/medicines', [PatientMedicineController::class, 'assignMedicine'])->name('users.medicines.assign');
+    Route::get('users/{user}/medicines/{patientMedicine}/edit', [PatientMedicineController::class, 'editMedicine'])->name('users.medicines.edit');
+    Route::put('users/{user}/medicines/{patientMedicine}', [PatientMedicineController::class, 'updateMedicine'])->name('users.medicines.update');
+    Route::delete('users/{user}/medicines/{patientMedicine}', [PatientMedicineController::class, 'removeMedicine'])->name('users.medicines.remove');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');

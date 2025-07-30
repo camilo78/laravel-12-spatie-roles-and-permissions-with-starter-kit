@@ -82,7 +82,9 @@
                         </flux:checkbox.group>
                     </div>
                 </div>
-                <flux:button type="submit" variant="primary">{{ __('Create User') }}</flux:button>
+                <div class="flex justify-end">
+                    <flux:button type="submit" variant="primary">{{ __('Create User') }}</flux:button>
+                </div>
             </form>
         </div>
     </div>

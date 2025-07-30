@@ -90,5 +90,13 @@
     "Locality Details": "Detalles de Localidad",
     "Add a new locality": "Agregar una nueva localidad",
     "Update locality information": "Actualizar información de localidad",
-    "View locality information": "Ver información de localidad"
+    "View locality information": "Ver información de localidad",
+    "Appearance": "Apariencia",
+    "Profile": "Perfil",
+    "Update the appearance settings for your account": "Actualizar la configuración de apariencia para tu cuenta",
+    "Update your profile information": "Actualizar tu información de perfil",
+    "Update Profile": "Actualizar Perfil",
+    "Update your profile information and preferences": "Actualizar tu información de perfil y preferencias",
+    "Profile updated successfully.": "Perfil actualizado con éxito.",
+    "Profile update failed.": "Error al actualizar el perfil."
 }

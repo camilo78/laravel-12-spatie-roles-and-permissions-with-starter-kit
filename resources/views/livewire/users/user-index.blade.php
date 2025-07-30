@@ -58,12 +58,11 @@
                         <th scope="col" class="px-6 py-3">DNI</th>
                         <th scope="col" class="px-6 py-3">Phone</th>
                         <th scope="col" class="px-6 py-3">Genero</th>
-                        <th scope="col" class="px-6 py-3">Roles</th>
                         <th scope="col" class="px-6 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($users as $key => $user) {{-- Añadimos $key para el estilo de rayas --}}
+                    @forelse ($users as $key => $user)
                         <tr
                             class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -81,7 +80,7 @@
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300 capitalize">
                                 {{ $user->gender ?? 'Not Specified' }}
                             </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                            {{-- <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 @if ($user->roles->isEmpty())
                                     <span
                                         class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
@@ -95,7 +94,7 @@
                                         </span>
                                     @endforeach
                                 @endif
-                            </td>
+                            </td> --}}
                             <td class="px-6 py-2 text-center">
                                 <div
                                     class="flex flex-col gap-2 w-full
@@ -103,31 +102,39 @@
                                     lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
 
                                     @can('users.index')
-                                        {{-- `wire:navigate` se mantiene porque 'show' es una navegación a otra página --}}
                                         <a wire:navigate href="{{ route('users.show', $user->id) }}"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-small text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800
-                                           flex-grow sm:flex-none">
-                                            <flux:icon.eye variant="micro" />
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-small text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-800 dark:focus:ring-gray-800
+                                           flex-grow sm:flex-none" title="Ver Usuario">
+                                            <flux:icon.eye variant="micro" title="Ver Usuario"/>
                                         </a>
                                     @endcan
 
                                     @can('users.edit')
-                                        {{-- `wire:navigate` se mantiene porque 'edit' es una navegación a otra página --}}
                                         <a wire:navigate href="{{ route('users.edit', $user->id) }}"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-                                           flex-grow sm:flex-none">
-                                            <flux:icon.square-pen variant="micro" />
+                                           flex-grow sm:flex-none" title="Editar Usuario">
+                                            <flux:icon.square-pen variant="micro" title="Editar Usuario"/>
                                         </a>
                                     @endcan
 
+                                    <a href="{{ route('users.pathologies', $user->id) }}"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-purple-300 rounded-lg hover:bg-purple-300 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800
+                                       flex-grow sm:flex-none" title="Gestionar Patologías">
+                                        <flux:icon.clipboard-plus variant="micro" title="Gestionar Patologías" />
+                                    </a>
+
+                                    <a href="{{ route('users.medicines', $user->id) }}"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800
+                                       flex-grow sm:flex-none" title="Gestionar Medicamentos">
+                                        <flux:icon.pill variant="micro" title="Gestionar Medicamentos"/>
+                                    </a>
+
                                     @can('users.delete')
-                                        {{-- ¡Importante! `wire:navigate` se ELIMINA de este botón. --}}
-                                        {{-- Solo se usa `wire:click` para ejecutar el método en el componente actual. --}}
                                         <button wire:click="deleteUser({{ $user->id }})"
-                                            wire:confirm="Are you sure to remove this user?"
+                                            wire:confirm="Esta seguro de eliminar el usuario {{ $user->name }}?"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
-                                           flex-grow sm:flex-none">
-                                            <flux:icon.trash-2 variant="micro" />
+                                           flex-grow sm:flex-none" title="Eliminar Usuario">
+                                            <flux:icon.trash-2 variant="micro" title="Eliminar Usuario"/>
                                         </button>
                                     @endcan
                                 </div>

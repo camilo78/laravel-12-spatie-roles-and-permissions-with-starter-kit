@@ -26,6 +26,10 @@ class DatabaseSeeder extends Seeder
 
             UserSeeder::class,
 
+            PathologySeeder::class,
+
+            MedicineSeeder::class,
+
         ]);
     }
 }

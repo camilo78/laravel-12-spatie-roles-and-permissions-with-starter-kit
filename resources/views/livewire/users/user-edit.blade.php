@@ -83,7 +83,9 @@
                         </flux:checkbox.group>
                     </div>
                 </div>
-                <flux:button type="submit" variant="primary">Actualizar Usuario</flux:button>
+                <div class="flex justify-end">
+                    <flux:button type="submit" variant="primary">Actualizar Usuario</flux:button>
+                </div>
             </form>
         </div>
     </div>
