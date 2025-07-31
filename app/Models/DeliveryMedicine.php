@@ -10,7 +10,7 @@ class DeliveryMedicine extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['delivery_patient_id', 'patient_medicine_id', 'included'];
+    protected $fillable = ['delivery_patient_id', 'patient_medicine_id', 'included', 'observations'];
 
     protected $casts = [
         'included' => 'boolean',

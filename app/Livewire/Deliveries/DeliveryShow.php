@@ -14,10 +14,17 @@ class DeliveryShow extends Component
 
     public MedicineDelivery $delivery;
     public $search = '';
+    
+    protected $listeners = ['medicinesUpdated' => '$refresh'];
 
     public function mount(MedicineDelivery $delivery)
     {
         $this->delivery = $delivery;
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
     }
 
     public function togglePatientInclusion($deliveryPatientId)
@@ -28,6 +35,22 @@ class DeliveryShow extends Component
         $deliveryPatient->update(['included' => !$deliveryPatient->included]);
     }
 
+    public function toggleMedicineInclusion($deliveryMedicineId)
+    {
+        if (!$this->delivery->isEditable()) return;
+        
+        $deliveryMedicine = DeliveryMedicine::find($deliveryMedicineId);
+        $deliveryMedicine->update(['included' => !$deliveryMedicine->included]);
+    }
+
+    public function updateObservations($deliveryMedicineId, $observations)
+    {
+        if (!$this->delivery->isEditable()) return;
+        
+        DeliveryMedicine::find($deliveryMedicineId)->update(['observations' => $observations]);
+        session()->flash('success', 'Observaciones actualizadas.');
+    }
+
     public function render()
     {
         $deliveryPatients = $this->delivery->deliveryPatients()
@@ -35,6 +58,7 @@ class DeliveryShow extends Component
             ->when($this->search, fn($query) => 
                 $query->whereHas('user', fn($q) => 
                     $q->where('name', 'like', "%{$this->search}%")
+                      ->orWhere('dui', 'like', "%{$this->search}%")
                 )
             )
             ->paginate(10);

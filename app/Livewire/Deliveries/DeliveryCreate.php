@@ -38,23 +38,27 @@ class DeliveryCreate extends Component
                     'end_date' => $this->end_date,
                 ]);
 
-                $activeUsers = User::where('status', true)->get();
+                $activeUsers = User::where('status', true)
+                    ->whereHas('patientPathologies', fn($q) => $q->where('status', 'active'))
+                    ->get();
                 
                 foreach ($activeUsers as $user) {
-                    $deliveryPatient = DeliveryPatient::create([
-                        'medicine_delivery_id' => $delivery->id,
-                        'user_id' => $user->id,
-                    ]);
-
                     $activeMedicines = \App\Models\PatientMedicine::where('user_id', $user->id)
                         ->where('status', 'active')
                         ->get();
 
-                    foreach ($activeMedicines as $medicine) {
-                        DeliveryMedicine::create([
-                            'delivery_patient_id' => $deliveryPatient->id,
-                            'patient_medicine_id' => $medicine->id,
+                    if ($activeMedicines->isNotEmpty()) {
+                        $deliveryPatient = DeliveryPatient::create([
+                            'medicine_delivery_id' => $delivery->id,
+                            'user_id' => $user->id,
                         ]);
+
+                        foreach ($activeMedicines as $medicine) {
+                            DeliveryMedicine::create([
+                                'delivery_patient_id' => $deliveryPatient->id,
+                                'patient_medicine_id' => $medicine->id,
+                            ]);
+                        }
                     }
                 }
             });

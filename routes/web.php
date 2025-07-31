@@ -16,6 +16,11 @@ use App\Http\Controllers\PathologyController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PatientPathologyController;
 use App\Http\Controllers\PatientMedicineController;
+use App\Livewire\Deliveries\DeliveryCreate;
+use App\Livewire\Deliveries\DeliveryEdit;
+use App\Livewire\Deliveries\DeliveryIndex;
+use App\Livewire\Deliveries\DeliveryShow;
+use App\Livewire\Deliveries\DeliveryPatientMedicines;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -63,11 +68,11 @@ Route::middleware(['auth'])->group(function () {
     /*
      * Delivery Management
      * */
-    Route::get('deliveries', \App\Livewire\Deliveries\DeliveryIndex::class)->name('deliveries.index');
-    Route::get('deliveries/create', \App\Livewire\Deliveries\DeliveryCreate::class)->name('deliveries.create');
-    Route::get('deliveries/{delivery}/edit', \App\Livewire\Deliveries\DeliveryEdit::class)->name('deliveries.edit');
-    Route::get('deliveries/{delivery}', \App\Livewire\Deliveries\DeliveryShow::class)->name('deliveries.show');
-    Route::get('deliveries/{delivery}/patients/{deliveryPatient}', \App\Livewire\Deliveries\DeliveryPatientMedicines::class)->name('deliveries.patient.medicines');
+    Route::get('deliveries', DeliveryIndex::class)->name('deliveries.index');
+    Route::get('deliveries/create', DeliveryCreate::class)->name('deliveries.create');
+    Route::get('deliveries/{delivery}/edit', DeliveryEdit::class)->name('deliveries.edit');
+    Route::get('deliveries/{delivery}', DeliveryShow::class)->name('deliveries.show');
+    Route::get('deliveries/{delivery}/patients/{deliveryPatient}', DeliveryPatientMedicines::class)->name('deliveries.patient.medicines');
     
     // User Medical Management
     Route::get('users/{user}/pathologies', [PatientPathologyController::class, 'userPathologies'])->name('users.pathologies');

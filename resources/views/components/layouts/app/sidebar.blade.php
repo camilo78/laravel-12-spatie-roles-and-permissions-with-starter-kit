@@ -23,12 +23,26 @@
                         auth()->user()->can('users.edit') ||
                         auth()->user()->can('users.delete'))
                     <flux:navlist.item wire:navigate icon="users" :href="route('users.index')"
-                        :current="request()->routeIs('users.index')" wire:navigate>{{ __('Users') }}
+                        :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}
                     </flux:navlist.item>
                 @endif
+                
+                    <flux:navlist.item wire:navigate icon="truck" :href="route('deliveries.index')"
+                        :current="request()->routeIs('deliveries.*')" wire:navigate>
+                        Entregas
+                    </flux:navlist.item>
+            </flux:navlist.group>
+        </flux:navlist>
+        <flux:spacer />
+
+        @role('Admin')
+            <hr class="h-px  bg-gray-200 border-0 dark:bg-gray-700">
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Settings')" class="grid">
+                 
                 @role('User')
                     <flux:navlist.item wire:navigate icon="users" :href="route('settings.profile')"
-                        :current="request()->routeIs('settings.profile')" wire:navigate>{{ __(' Editar mi Información') }}
+                        :current="request()->routeIs('settings.*')" wire:navigate>{{ __(' Editar mi Información') }}
                     </flux:navlist.item>
                 @endrole
                 @if (auth()->user()->can('roles.index') ||
@@ -36,36 +50,22 @@
                         auth()->user()->can('roles.edit') ||
                         auth()->user()->can('roles.show') ||
                         auth()->user()->can('roles.delete'))
-                    <flux:navlist.item wire:navigate icon="link-slash" :href="route('roles.index')"
-                        :current="request()->routeIs('roles.index')" wire:navigate>{{ __('Roles') }}
+                    <flux:navlist.item wire:navigate icon="map-pin-house" :href="route('localities.index')"
+                        :current="request()->routeIs('localities.*')" wire:navigate>Localidades
                     </flux:navlist.item>
-                @endif
-            </flux:navlist.group>
-        </flux:navlist>
-
-        <flux:spacer />
-
-        @role('Admin')
-            <hr class="h-px  bg-gray-200 border-0 dark:bg-gray-700">
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Settings')" class="grid">
-                 {{--    <flux:navlist.item icon="locate-fixed" href="https://github.com/laravel/livewire-starter-kit"
-                        target="_blank">
-                        Departamentos
-                    </flux:navlist.item> --}}
-
-                    <flux:navlist.item icon="map-pin-house" href="{{ route('localities.index') }}">
-                        Localidades
-                    </flux:navlist.item>
-                    <flux:navlist.item icon="clipboard-plus" href="{{ route('pathologies.index') }}">
+                    <flux:navlist.item wire:navigate icon="clipboard-plus" :href="route('pathologies.index')"
+                        :current="request()->routeIs('pathologies.*')" wire:navigate>
                         Patologías
                     </flux:navlist.item>
-                    <flux:navlist.item icon="pill" href="{{ route('medicines.index') }}">
+                    <flux:navlist.item wire:navigate icon="pill" :href="route('medicines.index')"
+                        :current="request()->routeIs('medicines.*')" wire:navigate>
                         Medicamentos
                     </flux:navlist.item>
-                    <flux:navlist.item icon="truck" href="{{ route('deliveries.index') }}">
-                        Entregas
+                    
+                    <flux:navlist.item wire:navigate icon="link-slash" :href="route('roles.index')"
+                        :current="request()->routeIs('roles.*')" wire:navigate>{{ __('Roles') }}
                     </flux:navlist.item>
+                @endif
 
                 </flux:navlist.group>
             </flux:navlist>
