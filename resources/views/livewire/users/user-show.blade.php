@@ -133,12 +133,8 @@
             </div>
             <div class="bg-white rounded-lg shadow dark:bg-gray-800">
                 @php
-                    $userMedicines = \App\Models\PatientMedicine::whereHas('patientPathology', function ($query) use (
-                        $user,
-                    ) {
-                        $query->where('user_id', $user->id);
-                    })
-                        ->with(['medicine', 'patientPathology.pathology'])
+                    $userMedicines = \App\Models\PatientMedicine::where('user_id', $user->id)
+                        ->with('medicine')
                         ->get();
                 @endphp
                 @if ($userMedicines->count() > 0)
@@ -148,7 +144,6 @@
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">Medicamento</th>
-                                    <th scope="col" class="px-6 py-3">Patología</th>
                                     <th scope="col" class="px-6 py-3">Dosis</th>
                                     <th scope="col" class="px-6 py-3">Estado</th>
                                 </tr>
@@ -160,9 +155,6 @@
                                         <td
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $medicine->medicine->name }}
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-                                            {{ $medicine->patientPathology->pathology->name }}
                                         </td>
                                         <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
                                             {{ $medicine->dosage }}

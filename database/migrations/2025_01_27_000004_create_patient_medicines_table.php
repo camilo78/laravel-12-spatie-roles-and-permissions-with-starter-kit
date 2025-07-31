@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('patient_medicines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_pathology_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('medicine_id')->constrained()->onDelete('cascade');
             $table->string('dosage');
             $table->integer('quantity');
@@ -18,6 +18,9 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->enum('status', ['active', 'suspended', 'completed'])->default('active');
             $table->timestamps();
+            
+            $table->unique(['user_id', 'medicine_id']);
+            $table->index(['user_id', 'medicine_id', 'status'], 'idx_user_medicine_status');
         });
     }
 

@@ -46,11 +46,9 @@ class DeliveryCreate extends Component
                         'user_id' => $user->id,
                     ]);
 
-                    $activeMedicines = $user->patientPathologies()
+                    $activeMedicines = \App\Models\PatientMedicine::where('user_id', $user->id)
                         ->where('status', 'active')
-                        ->with(['patientMedicines' => fn($q) => $q->where('status', 'active')])
-                        ->get()
-                        ->flatMap->patientMedicines;
+                        ->get();
 
                     foreach ($activeMedicines as $medicine) {
                         DeliveryMedicine::create([

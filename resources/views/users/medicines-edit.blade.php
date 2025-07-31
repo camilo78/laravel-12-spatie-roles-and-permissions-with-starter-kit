@@ -17,12 +17,6 @@
             <form class="mt-6 space-y-6" action="{{ route('users.medicines.update', [$user, $patientMedicine]) }}" method="POST">
                 @csrf @method('PUT')
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:select label="Patología" name="patient_pathology_id" required>
-                        @foreach($userPathologies as $pathology)
-                        <option value="{{ $pathology->id }}" {{ old('patient_pathology_id', $patientMedicine->patient_pathology_id) == $pathology->id ? 'selected' : '' }}>{{ $pathology->pathology->name }}</option>
-                        @endforeach
-                    </flux:select>
-
                     <flux:select label="Medicamento" name="medicine_id" required>
                         @foreach($medicines as $medicine)
                         <option value="{{ $medicine->id }}" {{ old('medicine_id', $patientMedicine->medicine_id) == $medicine->id ? 'selected' : '' }}>{{ $medicine->name }}</option>

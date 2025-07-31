@@ -38,13 +38,6 @@
             <form action="{{ route('users.medicines.assign', $user) }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:select label="Patología" name="patient_pathology_id" required>
-                        <option value="">Seleccionar patología</option>
-                        @foreach($userPathologies as $pathology)
-                        <option value="{{ $pathology->id }}">{{ $pathology->pathology->name }}</option>
-                        @endforeach
-                    </flux:select>
-
                     <flux:select label="Medicamento" name="medicine_id" required>
                         <option value="">Seleccionar medicamento</option>
                         @foreach($medicines as $medicine)
@@ -76,7 +69,6 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">Medicamento</th>
-                        <th scope="col" class="px-6 py-3">Patología</th>
                         <th scope="col" class="px-6 py-3">Dosis</th>
                         <th scope="col" class="px-6 py-3">Cantidad</th>
                         <th scope="col" class="px-6 py-3">Estado</th>
@@ -88,9 +80,6 @@
                         <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $userMedicine->medicine->name }}
-                            </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $userMedicine->patientPathology->pathology->name }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $userMedicine->dosage }}
@@ -121,7 +110,7 @@
                         </tr>
                     @empty
                         <tr class="bg-white dark:bg-gray-800">
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                 No hay medicamentos asignados a este paciente.
                             </td>
                         </tr>

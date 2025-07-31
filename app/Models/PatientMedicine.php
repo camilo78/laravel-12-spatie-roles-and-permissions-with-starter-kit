@@ -10,7 +10,7 @@ class PatientMedicine extends Model
     use HasFactory;
 
     protected $fillable = [
-        'patient_pathology_id',
+        'user_id',
         'medicine_id',
         'dosage',
         'quantity',
@@ -24,9 +24,9 @@ class PatientMedicine extends Model
         'end_date' => 'date',
     ];
 
-    public function patientPathology()
+    public function user()
     {
-        return $this->belongsTo(PatientPathology::class);
+        return $this->belongsTo(User::class);
     }
 
     public function medicine()
@@ -39,9 +39,9 @@ class PatientMedicine extends Model
         return $query->where('status', 'active');
     }
 
-    public function scopeForPathology($query, $pathologyId)
+    public function scopeForUser($query, $userId)
     {
-        return $query->where('patient_pathology_id', $pathologyId);
+        return $query->where('user_id', $userId);
     }
 
     public function scopeWithMedicine($query, $medicineId)

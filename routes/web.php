@@ -65,7 +65,9 @@ Route::middleware(['auth'])->group(function () {
      * */
     Route::get('deliveries', \App\Livewire\Deliveries\DeliveryIndex::class)->name('deliveries.index');
     Route::get('deliveries/create', \App\Livewire\Deliveries\DeliveryCreate::class)->name('deliveries.create');
+    Route::get('deliveries/{delivery}/edit', \App\Livewire\Deliveries\DeliveryEdit::class)->name('deliveries.edit');
     Route::get('deliveries/{delivery}', \App\Livewire\Deliveries\DeliveryShow::class)->name('deliveries.show');
+    Route::get('deliveries/{delivery}/patients/{deliveryPatient}', \App\Livewire\Deliveries\DeliveryPatientMedicines::class)->name('deliveries.patient.medicines');
     
     // User Medical Management
     Route::get('users/{user}/pathologies', [PatientPathologyController::class, 'userPathologies'])->name('users.pathologies');

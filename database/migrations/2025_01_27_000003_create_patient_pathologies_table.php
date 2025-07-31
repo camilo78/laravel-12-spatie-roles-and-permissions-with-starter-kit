@@ -15,6 +15,8 @@ return new class extends Migration
             $table->date('diagnosed_at');
             $table->enum('status', ['active', 'inactive', 'controlled'])->default('active');
             $table->timestamps();
+            
+            $table->unique(['user_id', 'pathology_id'], 'unique_user_pathology');
         });
     }
 

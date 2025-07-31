@@ -30,10 +30,7 @@ class PatientPathology extends Model
         return $this->belongsTo(Pathology::class);
     }
 
-    public function patientMedicines()
-    {
-        return $this->hasMany(PatientMedicine::class);
-    }
+
 
     public function scopeForUser($query, $userId)
     {

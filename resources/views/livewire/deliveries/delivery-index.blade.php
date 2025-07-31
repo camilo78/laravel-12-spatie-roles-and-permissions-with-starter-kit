@@ -39,10 +39,18 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <a wire:navigate href="{{ route('deliveries.show', $delivery) }}"
-                                class="inline-flex items-center px-3 py-2 text-xs bg-white border border-gray-600 rounded-lg hover:bg-gray-100">
-                                <flux:icon.eye variant="micro" class="text-gray-600" />
-                            </a>
+                            <div class="flex justify-center gap-1">
+                                @if($delivery->isEditable())
+                                    <a wire:navigate href="{{ route('deliveries.edit', $delivery) }}"
+                                        class="inline-flex items-center px-3 py-2 text-xs bg-white border border-green-600 rounded-lg hover:bg-green-100">
+                                        <flux:icon.square-pen variant="micro" class="text-green-600" />
+                                    </a>
+                                @endif
+                                <a wire:navigate href="{{ route('deliveries.show', $delivery) }}"
+                                    class="inline-flex items-center px-3 py-2 text-xs bg-white border border-gray-600 rounded-lg hover:bg-gray-100">
+                                    <flux:icon.eye variant="micro" class="text-gray-600" />
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 @empty

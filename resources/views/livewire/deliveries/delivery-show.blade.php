@@ -49,10 +49,10 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <button wire:click="selectPatient({{ $deliveryPatient->id }})"
+                            <a wire:navigate href="{{ route('deliveries.patient.medicines', [$delivery, $deliveryPatient]) }}"
                                 class="inline-flex items-center px-3 py-2 text-xs bg-white border border-gray-600 rounded-lg hover:bg-gray-100">
                                 <flux:icon.eye variant="micro" class="text-gray-600" />
-                            </button>
+                            </a>
                         </td>
                     </tr>
                 @empty
@@ -67,49 +67,5 @@
     <!-- Paginación -->
     <div class="mt-4">{{ $deliveryPatients->links() }}</div>
 
-    <!-- Modal de Medicamentos -->
-    @if($showMedicines && $selectedPatient)
-        <div class="fixed inset-0 z-50 overflow-y-auto" x-data="{ show: @entangle('showMedicines') }" x-show="show">
-            <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75" wire:click="closeMedicines"></div>
-                
-                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-96 overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-medium">Medicamentos - {{ $selectedPatient->user->name }}</h3>
-                            <button wire:click="closeMedicines" class="text-gray-400 hover:text-gray-600">
-                                <flux:icon.x-mark class="w-6 h-6" />
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            @foreach($selectedPatient->deliveryMedicines as $deliveryMedicine)
-                                <div class="flex items-center justify-between p-4 border rounded-lg dark:border-gray-600">
-                                    <div class="flex-1">
-                                        <h4 class="font-medium">{{ $deliveryMedicine->patientMedicine->medicine->name }}</h4>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $deliveryMedicine->patientMedicine->medicine->generic_name }}
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            Dosis: {{ $deliveryMedicine->patientMedicine->dosage }} | 
-                                            Cantidad: {{ $deliveryMedicine->patientMedicine->quantity }}
-                                        </p>
-                                    </div>
-                                    
-                                    @if($delivery->isEditable())
-                                        <flux:switch wire:click="toggleMedicineInclusion({{ $deliveryMedicine->id }})" 
-                                            :checked="$deliveryMedicine->included" />
-                                    @else
-                                        <span class="px-2 py-1 text-xs rounded-full {{ $deliveryMedicine->included ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ $deliveryMedicine->included ? 'Incluido' : 'Excluido' }}
-                                        </span>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
+
 </div>

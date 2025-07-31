@@ -13,18 +13,15 @@ class PatientMedicineController extends Controller
     public function userMedicines(User $user)
     {
         $medicines = Medicine::all();
-        $userPathologies = $user->patientPathologies()->with('pathology')->get();
-        $userMedicines = PatientMedicine::whereHas('patientPathology', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->with(['medicine', 'patientPathology.pathology'])->get();
+        $userMedicines = PatientMedicine::where('user_id', $user->id)
+            ->with('medicine')->get();
         
-        return view('users.medicines', compact('user', 'medicines', 'userPathologies', 'userMedicines'));
+        return view('users.medicines', compact('user', 'medicines', 'userMedicines'));
     }
 
     public function assignMedicine(Request $request, User $user)
     {
         $request->validate([
-            'patient_pathology_id' => 'required|exists:patient_pathologies,id',
             'medicine_id' => 'required|exists:medicines,id',
             'dosage' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
@@ -33,18 +30,17 @@ class PatientMedicineController extends Controller
             'status' => 'required|in:active,suspended,completed',
         ]);
 
-        // Verificar si ya existe la combinación activa
-        $exists = PatientMedicine::where('patient_pathology_id', $request->patient_pathology_id)
+        // Verificar si ya existe la combinación
+        $exists = PatientMedicine::where('user_id', $user->id)
             ->where('medicine_id', $request->medicine_id)
-            ->where('status', 'active')
             ->exists();
 
         if ($exists) {
             return redirect()->route('users.medicines', $user)
-                ->with('error', 'Este medicamento ya está activo para esta patología.');
+                ->with('error', 'Este medicamento ya está asignado al usuario.');
         }
 
-        PatientMedicine::create($request->all());
+        PatientMedicine::create(array_merge($request->all(), ['user_id' => $user->id]));
 
         return redirect()->route('users.medicines', $user)->with('success', 'Medicamento asignado exitosamente.');
     }
@@ -52,14 +48,12 @@ class PatientMedicineController extends Controller
     public function editMedicine(User $user, PatientMedicine $patientMedicine)
     {
         $medicines = Medicine::all();
-        $userPathologies = $user->patientPathologies()->with('pathology')->get();
-        return view('users.medicines-edit', compact('user', 'patientMedicine', 'medicines', 'userPathologies'));
+        return view('users.medicines-edit', compact('user', 'patientMedicine', 'medicines'));
     }
 
     public function updateMedicine(Request $request, User $user, PatientMedicine $patientMedicine)
     {
         $request->validate([
-            'patient_pathology_id' => 'required|exists:patient_pathologies,id',
             'medicine_id' => 'required|exists:medicines,id',
             'dosage' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
@@ -68,18 +62,15 @@ class PatientMedicineController extends Controller
             'status' => 'required|in:active,suspended,completed',
         ]);
 
-        // Verificar si ya existe la combinación activa (excluyendo el registro actual)
-        if ($request->status === 'active') {
-            $exists = PatientMedicine::where('patient_pathology_id', $request->patient_pathology_id)
-                ->where('medicine_id', $request->medicine_id)
-                ->where('status', 'active')
-                ->where('id', '!=', $patientMedicine->id)
-                ->exists();
+        // Verificar si ya existe la combinación (excluyendo el registro actual)
+        $exists = PatientMedicine::where('user_id', $user->id)
+            ->where('medicine_id', $request->medicine_id)
+            ->where('id', '!=', $patientMedicine->id)
+            ->exists();
 
-            if ($exists) {
-                return redirect()->route('users.medicines', $user)
-                    ->with('error', 'Este medicamento ya está activo para esta patología.');
-            }
+        if ($exists) {
+            return redirect()->route('users.medicines', $user)
+                ->with('error', 'Este medicamento ya está asignado al usuario.');
         }
 
         $patientMedicine->update($request->all());
