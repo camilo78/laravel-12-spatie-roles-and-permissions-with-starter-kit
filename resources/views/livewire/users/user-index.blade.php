@@ -7,7 +7,7 @@
 
     <div>
         @session('success')
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
                 x-transition:leave="transition ease-out duration-500" x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
                 class="flex items-center p-2 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-green-900 dark:text-green-300 dark:border-green-800"
@@ -25,6 +25,28 @@
                 </button>
             </div>
         @endsession
+        
+        @session('error')
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
+                x-transition:leave="transition ease-out duration-500" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="flex items-start p-2 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-red-900 dark:text-red-300 dark:border-red-800"
+                role="alert">
+                <svg class="flex-shrink-0 w-8 h-8 mr-1 text-red-700 dark:text-red-300"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div class="flex-1">
+                    <pre class="whitespace-pre-wrap font-medium">{{ $value }}</pre>
+                </div>
+                <button @click="show = false" type="button"
+                    class="ml-2 text-red-800 hover:text-red-900 dark:text-red-300 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        @endsession
         <div class="flex flex-col sm:flex-col lg:flex-row sm:items-start lg:items-center justify-between gap-4 mb-4">
             <div
                 class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
@@ -34,14 +56,18 @@
                         Crear Usuario
                     </a>
                 @endcan
-                <button type="button"
+                <button @click="$refs.importModal.showModal()" type="button"
                     class="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 flex-grow sm:flex-grow lg:flex-grow-0">
                     Importar Excel
                 </button>
-                <button type="button"
-                    class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0">
+                <a href="{{ route('users.template.excel') }}"
+                    class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center">
+                    Descargar Muestra Excel
+                </a>
+                <a href="{{ route('users.export.excel') }}"
+                    class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center">
                     Exportar Excel
-                </button>
+                </a>
             </div>
             <div class="relative  order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
                 <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
@@ -161,4 +187,33 @@
             {{ $users->links('vendor.livewire.tailwind') }}
         </div>
     </div>
+
+    <dialog x-ref="importModal" class="modal backdrop:bg-black/50">
+        <div class="modal-box w-11/12 max-w-md">
+            <h3 class="font-bold text-lg mb-4">Importar Usuarios desde Excel</h3>
+            
+            <form action="{{ route('users.import.excel') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Seleccionar archivo Excel</span>
+                    </label>
+                    <input type="file" name="file" accept=".csv,.txt,.xlsx,.xls" required
+                        class="file-input file-input-bordered w-full" />
+                    <label class="label">
+                        <span class="label-text-alt">Archivos CSV, TXT, XLSX o XLS</span>
+                    </label>
+                </div>
+                
+                <div class="modal-action">
+                    <button type="button" @click="$refs.importModal.close()" 
+                        class="btn btn-ghost">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Importar</button>
+                </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
 </div>

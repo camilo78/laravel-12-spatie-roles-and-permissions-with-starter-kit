@@ -16,6 +16,7 @@ use App\Http\Controllers\PathologyController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PatientPathologyController;
 use App\Http\Controllers\PatientMedicineController;
+use App\Http\Controllers\UserExcelController;
 use App\Livewire\Deliveries\DeliveryCreate;
 use App\Livewire\Deliveries\DeliveryEdit;
 use App\Livewire\Deliveries\DeliveryIndex;
@@ -42,6 +43,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/create', UserCreate::class)->name('users.create')->middleware('permission:users.create');
     Route::get('users/{user}/edit', UserEdit::class)->name('users.edit')->middleware('permission:users.edit');
     Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
+    
+    // Excel Routes
+    Route::get('users/export/excel', [UserExcelController::class, 'export'])->name('users.export.excel');
+    Route::get('users/template/excel', [UserExcelController::class, 'template'])->name('users.template.excel');
+    Route::post('users/import/excel', [UserExcelController::class, 'import'])->name('users.import.excel');
 
     /*
      * Role Management
