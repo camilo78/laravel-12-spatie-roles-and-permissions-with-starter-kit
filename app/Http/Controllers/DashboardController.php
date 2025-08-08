@@ -158,7 +158,7 @@ class DashboardController extends Controller
                 'scales' => [
                     'yAxes' => [[
                         'ticks' => [
-                            'beginAtZero' => true
+                            'beginAtZero' => true,
                         ]
                     ]]
                 ],
