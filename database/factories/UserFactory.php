@@ -28,12 +28,13 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'dui' => fake()->numerify('###########'),
             'phone' => fake()->phoneNumber(),
-            'department_id' => 1,
-            'municipality_id' => 1,
+            'department_id' => 1, // Atlántida
+            'municipality_id' => \App\Models\Municipality::where('department_id', 1)->inRandomOrder()->first()->id,
             'locality_id' => fake()->numberBetween(1, 20),
             'address' => fake()->address(),
             'email_verified_at' => now(),
             'gender' => fake()->randomElement(['Masculino', 'Femenino']),
+            'status' => fake()->boolean(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

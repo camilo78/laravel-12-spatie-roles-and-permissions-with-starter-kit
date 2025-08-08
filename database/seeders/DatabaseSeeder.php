@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
 
             PatientMedicineSeeder::class,
 
+            MedicineDeliverySeeder::class,
+
         ]);
     }
 }

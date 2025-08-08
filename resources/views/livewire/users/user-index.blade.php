@@ -83,7 +83,7 @@
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">DNI</th>
                         <th scope="col" class="px-6 py-3">Phone</th>
-                        <th scope="col" class="px-6 py-3">Genero</th>
+                    {{--     <th scope="col" class="px-6 py-3">Genero</th> --}}
                         <th scope="col" class="px-6 py-3">Estado</th>
                         <th scope="col" class="px-6 py-3 text-center">Actions</th>
                     </tr>
@@ -107,9 +107,9 @@
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300 capitalize">
                                 {{ $user->gender ?? 'Not Specified' }}
                             </td>
-                            <td class="px-6 py-2">
+                          {{--   <td class="px-6 py-2">
                                 <flux:switch wire:click="toggleStatus({{ $user->id }})" :checked="$user->status" size="sm" />
-                            </td>
+                            </td> --}}
                             {{-- <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 @if ($user->roles->isEmpty())
                                     <span

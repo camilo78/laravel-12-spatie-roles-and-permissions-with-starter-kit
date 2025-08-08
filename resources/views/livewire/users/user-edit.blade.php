@@ -76,8 +76,7 @@
                     <flux:input label="{{ __('Confirm Password') }}" type="password" name="confirm_password"
                         placeholder="Digite la Contraseña (Nuevamente)" wire:model="confirm_password" />
                     <div class="flex items-center space-x-3">
-                        <flux:switch wire:model="status" />
-                        <flux:label>Estado Activo</flux:label>
+                        <flux:switch wire:model="status" label="Estado Activo"/>
                     </div>
                     <div class="lg:col-span-2">
                         <flux:checkbox.group wire:model="roles" label="Roles de Usuario">

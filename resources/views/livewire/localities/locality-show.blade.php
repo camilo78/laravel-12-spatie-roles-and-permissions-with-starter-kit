@@ -25,12 +25,12 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha de Creación</label>
-                    <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $locality->created_at->format('d/m/Y H:i') }}</p>
+                    <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $locality->created_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Última Actualización</label>
-                    <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $locality->updated_at->format('d/m/Y H:i') }}</p>
+                    <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $locality->updated_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>
