@@ -134,10 +134,10 @@
                                 @forelse($topPathologies as $index => $pathology)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-2 sm:px-4 py-3 text-sm font-medium text-purple-600 dark:text-purple-400">{{ $index + 1 }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm font-mono text-gray-900 dark:text-white">{{ $pathology->clave }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ Str::limit($pathology->descripcion, 50) }}</td>
+                                    <td class="px-2 sm:px-4 py-3 text-sm font-mono text-gray-900 dark:text-white">{{ $pathology->pathology->clave ?? 'N/A' }}</td>
+                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ Str::limit($pathology->pathology->descripcion ?? 'Sin descripción', 50) }}</td>
                                     <td class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-center">
-                                            {{ $pathology->frequency_count }}
+                                            {{ $pathology->usage_count }}
                                     </td>
                                 </tr>
                                 @empty

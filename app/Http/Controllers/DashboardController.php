@@ -65,6 +65,14 @@ class DashboardController extends Controller
             $backgroundColors = ['#8B5CF6'];
         }
 
+        // Top 5 patologías más comunes
+        $topPathologies = \App\Models\PatientPathology::with('pathology')
+            ->selectRaw('pathology_id, COUNT(*) as usage_count')
+            ->groupBy('pathology_id')
+            ->orderBy('usage_count', 'desc')
+            ->limit(5)
+            ->get();
+
         // Top 5 medicamentos más utilizados en entregas
         $topMedicines = \App\Models\DeliveryMedicine::join('patient_medicines', 'delivery_medicines.patient_medicine_id', '=', 'patient_medicines.id')
             ->join('medicines', 'patient_medicines.medicine_id', '=', 'medicines.id')
