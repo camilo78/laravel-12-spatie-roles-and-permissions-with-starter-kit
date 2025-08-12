@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('pathologies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->string('code')->unique();
+            $table->string('clave', 10);
+            $table->string('descripcion', 256);
+            $table->integer('idCategoria');
             $table->timestamps();
         });
     }

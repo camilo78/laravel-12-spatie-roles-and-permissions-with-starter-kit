@@ -38,70 +38,60 @@
             <form action="{{ route('users.pathologies.assign', $user) }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:select label="Patología" name="pathology_id" required>
-                        <option value="">Seleccionar patología</option>
-                        @foreach ($pathologies as $pathology)
-                            <option value="{{ $pathology->id }}">{{ $pathology->name }}</option>
-                        @endforeach
-                    </flux:select>
+                    @livewire('components.pathology-search')
 
                     <flux:input label="Fecha de Diagnóstico" type="date" name="diagnosed_at" required />
 
-                    <flux:select label="Estado" name="status" required>
+                    <flux:select label="Estado" name="status" required class="lg:col-span-2">
                         <option value="active">Activa</option>
                         <option value="inactive">Inactiva</option>
                         <option value="controlled">Controlada</option>
                     </flux:select>
-                    <div class="flex justify-end mt-6">
-                        <flux:button type="submit" variant="primary">Asignar Patología</flux:button>
-
-                    </div>
-
+                    <button type="submit" class="mt-6 w-auto px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">
+                        Asignar Patología
+                    </button>
                 </div>
-
             </form>
         </div>
 
         <!-- Lista de patologías asignadas -->
-        <div class="relative overflow-x-auto rounded-lg shadow-md dark:shadow-none mt-4 w-full mt-6">
+        <div class="relative overflow-x-auto rounded-lg shadow-md dark:shadow-none mt-4 w-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Patología</th>
-                        <th scope="col" class="px-6 py-3">Código</th>
+                        <th scope="col" class="px-6 py-3">Código CIE-10</th>
+                        <th scope="col" class="px-6 py-3">Descripción</th>
                         <th scope="col" class="px-6 py-3">Fecha Diagnóstico</th>
                         <th scope="col" class="px-6 py-3">Estado</th>
                         <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($userPathologies as $key => $userPathology)
-                        <tr
-                            class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+                    @forelse($patientPathologies as $key => $patientPathology)
+                        <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $userPathology->pathology->name }}
+                                {{ $patientPathology->pathology->clave }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $userPathology->pathology->code }}
+                                {{ $patientPathology->pathology->descripcion }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $userPathology->diagnosed_at->format('d/m/Y') }}
+                                {{ $patientPathology->diagnosed_at->format('d/m/Y') }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                                    {{ ucfirst($userPathology->status) }}
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    @if($patientPathology->status === 'active') Activa
+                                    @elseif($patientPathology->status === 'controlled') Controlada
+                                    @else Inactiva @endif
                                 </span>
                             </td>
                             <td class="px-6 py-2 text-center">
-                                <div
-                                    class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
-                                    <a href="{{ route('users.pathologies.edit', [$user, $userPathology]) }}"
+                                <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
+                                    <a href="{{ route('users.pathologies.edit', [$user, $patientPathology]) }}"
                                         class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-none">
                                         <flux:icon.square-pen variant="micro" />
                                     </a>
-                                    <form action="{{ route('users.pathologies.remove', [$user, $userPathology]) }}"
-                                        method="POST" class="inline">
+                                    <form action="{{ route('users.pathologies.remove', [$user, $patientPathology]) }}" method="POST" class="inline">
                                         @csrf @method('DELETE')
                                         <button type="submit" onclick="return confirm('¿Remover patología?')"
                                             class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex-grow sm:flex-none">

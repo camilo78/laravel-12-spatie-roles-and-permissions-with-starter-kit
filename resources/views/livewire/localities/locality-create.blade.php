@@ -1,57 +1,52 @@
 <div>
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('Create Locality') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Add a new locality') }}</flux:subheading>
+        <flux:heading size="xl" level="1">Nueva Localidad</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Formulario para crear nueva localidad</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
 
-    <div class="max-w-2xl">
-        <form wire:submit="save">
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Departamento</label>
-                    <select wire:model.live="selectedDepartment" 
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white">
+    <div>
+        {{-- Botón para regresar al listado de localidades --}}
+        <div class="mt-6">
+            <a wire:navigate href="{{ route('localities.index') }}"
+                class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Regresar a Localidades
+            </a>
+        </div>
+
+        {{-- Formulario para crear nueva localidad --}}
+        <div class="mt-6">
+            <form wire:submit="save" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {{-- Campo departamento --}}
+                    <flux:select label="Departamento" wire:model.live="selectedDepartment" required>
                         <option value="">Seleccionar Departamento</option>
                         @foreach($departments as $department)
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
-                    </select>
-                </div>
+                    </flux:select>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Municipio</label>
-                    <select wire:model.live="selectedMunicipality" 
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                        {{ !$selectedDepartment ? 'disabled' : '' }}>
+                    {{-- Campo municipio --}}
+                    <flux:select label="Municipio" wire:model.live="selectedMunicipality" required>
                         <option value="">Seleccionar Municipio</option>
                         @foreach($municipalities as $municipality)
                             <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
                         @endforeach
-                    </select>
-                    @error('selectedMunicipality') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
+                    </flux:select>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre de la Localidad</label>
-                    <input type="text" wire:model="name" 
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                        placeholder="Ingrese el nombre de la localidad">
-                    @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    {{-- Campo nombre de la localidad (ocupa 2 columnas) --}}
+                    <flux:input label="Nombre de la Localidad" type="text" wire:model="name" 
+                        placeholder="Digite el nombre de la localidad" class="lg:col-span-2" required />
+                    
+                    {{-- Botón de envío --}}
+                    <div class="flex justify-end mt-6 lg:col-span-2">
+                        <flux:button type="submit" variant="primary" wire:loading.attr="disabled" wire:target="save">
+                            <span wire:loading.remove wire:target="save">Crear Localidad</span>
+                            <span wire:loading wire:target="save">Creando...</span>
+                        </flux:button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="flex justify-end gap-3 mt-6">
-                <a wire:navigate href="{{ route('localities.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
-                    Cancelar
-                </a>
-                <button type="submit" wire:loading.attr="disabled" wire:target="save" :disabled="$isSubmitting"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-                    <span wire:loading.remove wire:target="save">Crear Localidad</span>
-                    <span wire:loading wire:target="save">Creando...</span>
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

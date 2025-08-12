@@ -99,5 +99,19 @@
     "Update your profile information and preferences": "Actualizar tu información de perfil y preferencias",
     "Profile updated successfully.": "Perfil actualizado con éxito.",
     "Profile update failed.": "Error al actualizar el perfil.",
-    "start date.": " fecha de inicio."
+    "start date.": " fecha de inicio.",
+    "Manage your profile and account settings": "Administra tu perfil y configuración de cuenta",
+    "Delete account": "Eliminar cuenta",
+    "Delete your account and all of its resources": "Eliminar tu cuenta y todos sus recursos",
+    "Light": "Claro",
+    "Dark": "Oscuro",
+    "System": "Sistema",
+    "active": "activo",
+    "inactive": "inactivo",
+    "suspended": "suspendido",
+    "completed": "completado",
+    "Active": "Activo",
+    "Inactive": "Inactivo",
+    "Suspended": "Suspendido",
+    "Completed": "Completado"
 }

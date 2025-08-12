@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('dui', 13)->require()->unique();
+            $table->string('email')->nullable()->unique();
+            $table->string('dni', 13)->require()->unique();
             $table->string('phone')->nullable();
             $table->foreignId('department_id')
               ->require()
@@ -55,7 +55,7 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             $table->index('name');
-            $table->index('dui');
+            $table->index('dni');
             // Si ordenas por 'created_at' o 'id' (común en paginación)
             $table->index('created_at');
             $table->index('id');

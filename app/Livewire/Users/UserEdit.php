@@ -3,112 +3,242 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Illuminate\View\View;
-use Livewire\Component;
-use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Models\Municipality;
 use App\Models\Locality;
+use Illuminate\View\View;
+use Livewire\Component;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Componente Livewire para editar usuarios
+ * 
+ * Gestiona el formulario de edición de usuarios con validación,
+ * actualización de ubicación geográfica y modificación de roles.
+ */
 class UserEdit extends Component
 {
+    // Usuario a editar
     public User $user;
-    public string $name = '', $email = '', $dui = '', $address = '', $gender = 'Masculino';
-    public ?string $phone = null, $password = null, $confirm_password = null;
-    public $status = true;
-    public $allRoles, $departments = [], $municipalities = [], $localities = [];
+    
+    // Datos del usuario
+    public string $name = '';
+    public string $email = '';
+    public string $dni = '';
+    public string $phone = '';
+    public string $address = '';
+    public string $gender = '';
+    
+    // Campos de contraseña (opcionales en edición)
+    public ?string $password = null;
+    public ?string $confirm_password = null;
+    
+    // Ubicación geográfica
+    public ?int $department_id = null;
+    public ?int $municipality_id = null;
+    public ?int $locality_id = null;
+    
+    // Estado y roles
+    public bool $status = true;
     public array $roles = [];
-    public ?int $department_id = null, $municipality_id = null, $locality_id = null;
-    public $isSubmitting = false;
+    
+    // Colecciones para selects
+    public $allRoles;
+    public $departments = [];
+    public $municipalities = [];
+    public $localities = [];
+    
+    // Control de envío
+    public bool $isSubmitting = false;
 
-    protected $listeners = ['refreshLocationData' => 'refreshLocations'];
-
+    /**
+     * Inicializa el componente con los datos del usuario a editar
+     */
     public function mount(User $user): void
     {
         $this->user = $user;
+        
+        // Llenar propiedades con datos del usuario
         $this->fill($user->only([
-            'name', 'email', 'dui', 'phone', 'address', 'gender', 'status',
+            'name', 'email', 'dni', 'phone', 'address', 'gender', 'status',
             'department_id', 'municipality_id', 'locality_id'
         ]));
 
         $this->loadInitialData();
     }
 
+    /**
+     * Carga los datos iniciales necesarios para el formulario
+     */
     protected function loadInitialData(): void
     {
-        $this->allRoles = Role::latest()->get();
+        $this->allRoles = Role::orderBy('name')->get();
         $this->roles = $this->user->roles->pluck('name')->toArray();
         $this->departments = Department::orderBy('name')->get();
         $this->refreshLocations();
     }
 
+    /**
+     * Actualiza las colecciones de municipios y localidades
+     * basado en las selecciones actuales
+     */
     protected function refreshLocations(): void
     {
         $this->municipalities = $this->department_id
-            ? Municipality::where('department_id', $this->department_id)->get()
+            ? Municipality::where('department_id', $this->department_id)
+                ->orderBy('name')
+                ->get()
             : collect();
 
         $this->localities = $this->municipality_id
-            ? Locality::where('municipality_id', $this->municipality_id)->get()
+            ? Locality::where('municipality_id', $this->municipality_id)
+                ->orderBy('name')
+                ->get()
             : collect();
     }
 
-    public function updatedDepartmentId($value): void
+    /**
+     * Se ejecuta cuando cambia el departamento seleccionado
+     * Carga los municipios correspondientes y resetea selecciones dependientes
+     */
+    public function updatedDepartmentId(?int $value): void
     {
-        $this->reset(['municipality_id', 'locality_id']);
+        $this->resetLocationSelections();
         $this->refreshLocations();
     }
 
-    public function updatedMunicipalityId($value): void
+    /**
+     * Se ejecuta cuando cambia el municipio seleccionado
+     * Carga las localidades correspondientes
+     */
+    public function updatedMunicipalityId(?int $value): void
     {
-        $this->reset(['locality_id']);
+        $this->locality_id = null;
+        $this->localities = [];
         $this->refreshLocations();
     }
 
-
-    public function editUser()
+    /**
+     * Resetea las selecciones de ubicación dependientes
+     */
+    private function resetLocationSelections(): void
     {
-        if ($this->isSubmitting) return;
+        $this->municipality_id = null;
+        $this->locality_id = null;
+        $this->municipalities = [];
+        $this->localities = [];
+    }
+
+    /**
+     * Reglas de validación para el formulario de edición
+     */
+    protected function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|unique:users,email,' . $this->user->id,
+            'dni' => 'required|string|unique:users,dni,' . $this->user->id . '|max:13',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'required|string|max:500',
+            'gender' => 'required|in:Masculino,Femenino',
+            'password' => 'nullable|string|min:8|same:confirm_password',
+            'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
+            'department_id' => 'required|exists:departments,id',
+            'municipality_id' => 'required|exists:municipalities,id',
+            'locality_id' => 'required|exists:localities,id',
+            'status' => 'boolean',
+        ];
+    }
+
+    /**
+     * Mensajes de validación personalizados
+     */
+    protected function messages(): array
+    {
+        return [
+            'name.required' => 'El nombre es obligatorio.',
+            'email.unique' => 'Este email ya está registrado por otro usuario.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.unique' => 'Este DNI ya está registrado por otro usuario.',
+            'address.required' => 'La dirección es obligatoria.',
+            'gender.required' => 'Debe seleccionar un género.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.same' => 'Las contraseñas no coinciden.',
+            'confirm_password.required' => 'Debe confirmar la nueva contraseña.',
+            'roles.required' => 'Debe seleccionar al menos un rol.',
+            'department_id.required' => 'Debe seleccionar un departamento.',
+            'municipality_id.required' => 'Debe seleccionar un municipio.',
+            'locality_id.required' => 'Debe seleccionar una localidad.',
+        ];
+    }
+
+    /**
+     * Actualiza el usuario en el sistema
+     */
+    public function editUser(): void
+    {
+        // Prevenir envíos múltiples
+        if ($this->isSubmitting) {
+            return;
+        }
         
         $this->isSubmitting = true;
         
         try {
-            $this->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $this->user->id,
-                'dui' => 'required|unique:users,dui,' . $this->user->id,
-                'phone' => 'nullable|string|max:255',
-                'address' => 'required|string|max:255',
-                'gender' => 'required|in:Masculino,Femenino',
-                'password' => 'nullable|string|min:8|confirmed',
-                'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
-                'roles' => 'required|array|min:1',
-                'department_id' => 'required|exists:departments,id',
-                'municipality_id' => 'required|exists:municipalities,id',
-                'locality_id' => 'required|exists:localities,id',
-                'status' => 'boolean',
-            ]);
+            // Validar datos
+            $this->validate();
+            
+            // Usar transacción para garantizar consistencia
+            DB::transaction(function () {
+                // Actualizar usuario
+                $this->user->update($this->prepareUpdateData());
+                
+                // Sincronizar roles
+                $this->user->syncRoles($this->roles);
+                
+                // Mensaje de éxito
+                session()->flash('success', "Usuario '{$this->user->name}' actualizado exitosamente.");
+            });
 
-            $this->user->update($this->prepareUpdateData());
-            $this->user->syncRoles($this->roles);
-
-            session()->flash('success', 'Usuario actualizado correctamente.');
-            return redirect()->route('users.index');
-        } catch (\Exception $e) {
+            // Redireccionar con navegación SPA
+            $this->redirect(route('users.index'), navigate: true);
+            
+        } catch (ValidationException $e) {
             $this->isSubmitting = false;
             throw $e;
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            session()->flash('error', 'Error al actualizar el usuario. Inténtelo nuevamente.');
+            
+            // Log del error para debugging
+            Log::error('Error actualizando usuario: ' . $e->getMessage(), [
+                'user_id' => $this->user->id,
+                'user_data' => [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'dni' => $this->dni,
+                ]
+            ]);
         }
     }
 
+    /**
+     * Prepara los datos para la actualización del usuario
+     */
     protected function prepareUpdateData(): array
     {
         $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'dui' => $this->dui,
-            'phone' => $this->phone,
-            'address' => $this->address,
+            'name' => ucwords(trim($this->name)),
+            'email' => $this->email ? strtolower(trim($this->email)) : null,
+            'dni' => $this->dni,
+            'phone' => $this->phone ?: null,
+            'address' => trim($this->address),
             'gender' => $this->gender,
             'status' => $this->status,
             'department_id' => $this->department_id,
@@ -116,6 +246,7 @@ class UserEdit extends Component
             'locality_id' => $this->locality_id,
         ];
         
+        // Solo actualizar contraseña si se proporcionó una nueva
         if ($this->password) {
             $data['password'] = Hash::make($this->password);
         }
@@ -123,6 +254,9 @@ class UserEdit extends Component
         return $data;
     }
 
+    /**
+     * Renderiza la vista del componente
+     */
     public function render(): View
     {
         return view('livewire.users.user-edit');

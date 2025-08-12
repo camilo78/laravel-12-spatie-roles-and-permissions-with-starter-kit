@@ -15,15 +15,15 @@
             <hr class="h-px  bg-gray-200 border-0 dark:bg-gray-700">
 
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Platform')" class="grid">
+            <flux:navlist.group heading="Plataforma" class="grid">
                 <flux:navlist.item wire:navigate icon="home" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    :current="request()->routeIs('dashboard')" wire:navigate>Panel de Control</flux:navlist.item>
                 @if (auth()->user()->can('users.index') ||
                         auth()->user()->can('users.create') ||
                         auth()->user()->can('users.edit') ||
                         auth()->user()->can('users.delete'))
                     <flux:navlist.item wire:navigate icon="users" :href="route('users.index')"
-                        :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}
+                        :current="request()->routeIs('users.*')" wire:navigate>Usuarios
                     </flux:navlist.item>
                 @endif
                 
@@ -38,11 +38,11 @@
         @role('Admin')
             <hr class="h-px  bg-gray-200 border-0 dark:bg-gray-700">
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Settings')" class="grid">
+                <flux:navlist.group heading="Configuración" class="grid">
                  
                 @role('User')
                     <flux:navlist.item wire:navigate icon="users" :href="route('settings.profile')"
-                        :current="request()->routeIs('settings.*')" wire:navigate>{{ __(' Editar mi Información') }}
+                        :current="request()->routeIs('settings.*')" wire:navigate>Editar mi Información
                     </flux:navlist.item>
                 @endrole
                 @if (auth()->user()->can('roles.index') ||
@@ -53,6 +53,7 @@
                     <flux:navlist.item wire:navigate icon="map-pin-house" :href="route('localities.index')"
                         :current="request()->routeIs('localities.*')" wire:navigate>Localidades
                     </flux:navlist.item>
+
                     <flux:navlist.item wire:navigate icon="clipboard-plus" :href="route('pathologies.index')"
                         :current="request()->routeIs('pathologies.*')" wire:navigate>
                         Patologías
@@ -63,7 +64,7 @@
                     </flux:navlist.item>
                     
                     <flux:navlist.item wire:navigate icon="link-slash" :href="route('roles.index')"
-                        :current="request()->routeIs('roles.*')" wire:navigate>{{ __('Roles') }}
+                        :current="request()->routeIs('roles.*')" wire:navigate>Roles
                     </flux:navlist.item>
                 @endif
 
@@ -115,7 +116,7 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>Configuración
                     </flux:menu.item>
                 </flux:menu.radio.group>
 
@@ -124,7 +125,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                        {{ __('Log Out') }}
+                        Cerrar Sesión
                     </flux:menu.item>
                 </form>
             </flux:menu>
@@ -181,7 +182,7 @@
 
                 <flux:menu.radio.group>
                     <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
-                        {{ __('Settings') }}</flux:menu.item>
+                        Configuración</flux:menu.item>
                 </flux:menu.radio.group>
 
                 <flux:menu.separator />
@@ -189,7 +190,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                        {{ __('Log Out') }}
+                        Cerrar Sesión
                     </flux:menu.item>
                 </form>
             </flux:menu>

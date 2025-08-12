@@ -7,12 +7,6 @@ use Illuminate\Http\Request;
 
 class PathologyController extends Controller
 {
-    public function index()
-    {
-        $pathologies = Pathology::paginate(10);
-        return view('pathologies.index', compact('pathologies'));
-    }
-
     public function create()
     {
         return view('pathologies.create');
@@ -21,14 +15,13 @@ class PathologyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:pathologies',
-            'description' => 'nullable|string',
+            'clave' => 'required|string|max:10|unique:pathologies',
+            'descripcion' => 'required|string|max:500'
         ]);
 
         Pathology::create($request->all());
 
-        return redirect()->route('pathologies.index')->with('success', 'Patología creada exitosamente.');
+        return redirect()->route('pathologies.index')->with('success', 'Patología creada correctamente');
     }
 
     public function show(Pathology $pathology)
@@ -44,19 +37,18 @@ class PathologyController extends Controller
     public function update(Request $request, Pathology $pathology)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:pathologies,code,' . $pathology->id,
-            'description' => 'nullable|string',
+            'clave' => 'required|string|max:10|unique:pathologies,clave,' . $pathology->id,
+            'descripcion' => 'required|string|max:500'
         ]);
 
         $pathology->update($request->all());
 
-        return redirect()->route('pathologies.index')->with('success', 'Patología actualizada exitosamente.');
+        return redirect()->route('pathologies.index')->with('success', 'Patología actualizada correctamente');
     }
 
     public function destroy(Pathology $pathology)
     {
         $pathology->delete();
-        return redirect()->route('pathologies.index')->with('success', 'Patología eliminada exitosamente.');
+        return redirect()->route('pathologies.index')->with('success', 'Patología eliminada correctamente');
     }
 }

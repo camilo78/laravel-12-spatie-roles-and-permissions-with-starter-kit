@@ -11,6 +11,7 @@ use Livewire\Volt\Component;
 new #[Layout('components.layouts.auth')] class extends Component {
     public string $name = '';
     public string $email = '';
+    public string $dni = '';
     public string $password = '';
     public string $password_confirmation = '';
 
@@ -21,7 +22,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'dni' => ['required', 'string', 'max:13', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -36,7 +38,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <x-auth-header title="Crear una cuenta" description="Ingrese sus datos para crear su cuenta" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -45,55 +47,67 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Name -->
         <flux:input
             wire:model="name"
-            :label="__('Name')"
+            label="Nombre"
             type="text"
             required
             autofocus
             autocomplete="name"
-            :placeholder="__('Full name')"
+            placeholder="Nombre completo"
         />
 
         <!-- Email Address -->
         <flux:input
             wire:model="email"
-            :label="__('Email address')"
+            label="Email (Opcional)"
             type="email"
-            required
             autocomplete="email"
             placeholder="email@example.com"
+        />
+
+        <!-- DNI -->
+        <flux:input
+            wire:model="dni"
+            label="DNI"
+            type="text"
+            required
+            autocomplete="username"
+            placeholder="0000000000000"
+            pattern="[0-9]{13}"
+            maxlength="13"
+            title="Ingrese su DNI de 13 dígitos"
         />
 
         <!-- Password -->
         <flux:input
             wire:model="password"
-            :label="__('Password')"
+            label="Contraseña"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Password')"
+            placeholder="Contraseña"
             viewable
         />
 
         <!-- Confirm Password -->
         <flux:input
             wire:model="password_confirmation"
-            :label="__('Confirm password')"
+            label="Confirmar contraseña"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Confirm password')"
+            placeholder="Confirmar contraseña"
             viewable
         />
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Create account') }}
+                Crear cuenta
             </flux:button>
         </div>
     </form>
 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-        {{ __('Already have an account?') }}
-        <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
+        ¿Ya tiene una cuenta?
+        <flux:link :href="route('login')" wire:navigate>Iniciar sesión</flux:link>
     </div>
 </div>

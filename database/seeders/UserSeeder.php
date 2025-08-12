@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         $admin = User::factory()->create([
             'name' => 'Camilo Gabriel Alvarado Ramírez',
             'email' => 'camilo.alvarado0501@gmail.com',
-            'dui' => '0501197809263',
+            'dni' => '0501197809263',
             'phone' => '96645637 87886036 96585441',
             'department_id' => 1, // Atlántida
             'municipality_id' => 1, // La Ceiba
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'John Doe Smith',
             'email' => 'user@example.com',
-            'dui' => '1234567890123',
+            'dni' => '1234567890123',
             'phone' => '555-1234',
             'department_id' => 1, // Atlántida
             'municipality_id' => 1, // La Ceiba

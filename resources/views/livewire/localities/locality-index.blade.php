@@ -1,7 +1,7 @@
 <div>
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('Localities') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Manage your localities') }}</flux:subheading>
+        <flux:heading size="xl" level="1">Localidades</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Gestiona todas las localidades del sistema</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
 
@@ -58,7 +58,7 @@
                     class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
                     <a wire:navigate href="{{ route('localities.create', ['department_id' => $selectedDepartment, 'municipality_id' => $selectedMunicipality]) }}"
                         class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
-                        Crear Localidad
+                        Nueva Localidad
                     </a>
                 </div>
                 <div class="relative order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
@@ -94,17 +94,17 @@
                                     <div
                                         class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
                                         <a wire:navigate href="{{ route('localities.show', $locality->id) }}"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-small text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 flex-grow sm:flex-none">
-                                            <flux:icon.eye variant="micro" />
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Ver Localidad">
+                                            <flux:icon.eye variant="micro" class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"/>
                                         </a>
                                         <a wire:navigate href="{{ route('localities.edit', $locality->id) }}"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-none">
-                                            <flux:icon.square-pen variant="micro" />
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Editar Localidad">
+                                            <flux:icon.square-pen variant="micro" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"/>
                                         </a>
                                         <button wire:click="deleteLocality({{ $locality->id }})"
                                             wire:confirm="¿Estás seguro de eliminar esta localidad?"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex-grow sm:flex-none">
-                                            <flux:icon.trash-2 variant="micro" />
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Localidad">
+                                            <flux:icon.trash-2 variant="micro" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"/>
                                         </button>
                                     </div>
                                 </td>

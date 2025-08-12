@@ -1,7 +1,7 @@
 <div>
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('Roles') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Manage your all your Roles') }}</flux:subheading>
+        <flux:heading size="xl" level="1">Roles</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Gestiona todos los roles del sistema</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
 
@@ -29,7 +29,7 @@
         @can('roles.create')
             <a wire:navigate href="{{ route('roles.create') }}"
                 class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                Create Role
+                Crear Rol
             </a>
         @endcan
 
@@ -38,9 +38,9 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">ID</th>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Permissions</th>
-                        <th scope="col" class="px-6 py-3 w-80">Actions</th>
+                        <th scope="col" class="px-6 py-3">Nombre</th>
+                        <th scope="col" class="px-6 py-3">Permisos</th>
+                        <th scope="col" class="px-6 py-3 w-80">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,7 +74,7 @@
                        text-center flex-grow
                        sm:flex-grow
                        lg:flex-grow-0">
-                                            Show
+                                            Ver
                                         </a>
                                     @endcan
 
@@ -84,19 +84,21 @@
                        text-center flex-grow
                        sm:flex-grow
                        lg:flex-grow-0">
-                                            Edit
+                                            Editar
                                         </a>
                                     @endcan
 
                                     @can('roles.delete')
-                                        <button wire:navigate wire:click="deleteRole({{ $role->id }})"
-                                            wire:confirm="Are you sure to remove this role?"
-                                            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
-                       text-center flex-grow
-                       sm:flex-grow
-                       lg:flex-grow-0">
-                                            Delete
-                                        </button>
+                                        @if(!in_array(strtolower($role->name), ['administrador', 'administrator']) && $role->users()->count() === 0)
+                                            <button wire:navigate wire:click="deleteRole({{ $role->id }})"
+                                                wire:confirm="¿Está seguro de eliminar este rol?"
+                                                class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
+                           text-center flex-grow
+                           sm:flex-grow
+                           lg:flex-grow-0">
+                                                Eliminar
+                                            </button>
+                                        @endif
                                     @endcan
                                 </div>
                             </td>

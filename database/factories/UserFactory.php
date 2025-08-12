@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'dui' => fake()->numerify('###########'),
+            'dni' => fake()->numerify('#############'),
             'phone' => fake()->phoneNumber(),
             'department_id' => 1, // Atlántida
             'municipality_id' => \App\Models\Municipality::where('department_id', 1)->inRandomOrder()->first()->id,

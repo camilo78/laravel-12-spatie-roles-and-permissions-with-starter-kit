@@ -1,92 +1,180 @@
 <div>
+    {{-- Encabezado de la página de edición --}}
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('Edit User') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Form For Edit User') }}</flux:subheading>
+        <flux:heading size="xl" level="1">Editar Usuario</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Formulario para Editar Usuario</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
 
     <div>
+        {{-- Botón para regresar al listado de usuarios --}}
         <a wire:navigate href="{{ route('users.index') }}"
             class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Regresar a Usuarios
         </a>
 
         <div>
+            {{-- Formulario principal para editar usuario --}}
             <form class="mt-6 space-y-6" wire:submit="editUser">
+                {{-- Grid responsivo de 2 columnas en pantallas grandes --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:input label="{{ __('Name') }}" type="text" name="name" placeholder="Digite el Nombre"
-                        wire:model="name" />
-                    <flux:input label="{{ __('Email') }}" type="email" name="email" placeholder="Digite el Correo"
-                        wire:model="email" />
-                    <flux:input label="{{ __('DNI') }}" type="text" name="dui" placeholder="Digite DNI"
-                        wire:model="dui" />
-                    <flux:input label="{{ __('Phone') }}" type="text" name="phone"
-                        placeholder="Digite el Teléfono" wire:model="phone" />
-                    {{-- 📍 Departamento --}}
-                    <flux:select label="Departamento" name="department_id" wire:model.live="department_id">
-                        <option value="">Seleccione el Departamento</option>
+                    
+                    {{-- Campo de nombre completo con validaciones --}}
+                    <flux:input 
+                        label="Nombre Completo" 
+                        type="text" 
+                        name="name" 
+                        placeholder="Ingrese el nombre completo"
+                        wire:model="name" 
+                        required 
+                        minlength="2" 
+                        maxlength="255" 
+                        pattern="[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+" 
+                        title="Solo se permiten letras y espacios" />
+                    
+                    {{-- Campo de correo electrónico (opcional) --}}
+                    <flux:input 
+                        label="Correo Electrónico (Opcional)" 
+                        type="email" 
+                        name="email" 
+                        placeholder="ejemplo@correo.com"
+                        wire:model="email" 
+                        maxlength="255" />
+                    
+                    {{-- Campo de DNI con validación de formato --}}
+                    <flux:input 
+                        label="DNI" 
+                        type="text" 
+                        name="dni" 
+                        placeholder="0000000000000"
+                        wire:model="dni" 
+                        required 
+                        pattern="[0-9]{13}" 
+                        maxlength="13" 
+                        title="Formato: 0501197809263" />
+                    
+                    {{-- Campo de teléfono --}}
+                    <flux:input 
+                        label="Teléfonos" 
+                        type="tel" 
+                        name="phone" 
+                        placeholder="00000000"
+                        wire:model="phone" />
+                    
+                    {{-- Selector de departamento con validación requerida --}}
+                    <flux:select 
+                        label="Departamento" 
+                        name="department_id" 
+                        wire:model.live="department_id" 
+                        required>
+                        <option value="">Seleccione el departamento</option>
                         @foreach ($departments as $department)
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </flux:select>
 
+                    {{-- Indicador de carga para municipios --}}
                     <div wire:loading wire:target="department_id" class="text-sm text-gray-500 mt-1">
                         Cargando municipios...
                     </div>
-                    {{-- 🏙️ Municipio --}}
-                    <flux:select label="Municipio" name="municipality_id" wire:model.live="municipality_id"
-                        :disabled="!$department_id">
+                    
+                    {{-- Selector de municipio (depende del departamento seleccionado) --}}
+                    <flux:select 
+                        label="Municipio" 
+                        name="municipality_id" 
+                        wire:model.live="municipality_id"
+                        :disabled="!$department_id" 
+                        required>
                         <option value="">
-                            @if (!$department_id)
-                                Seleccione un departamento primero
-                            @else
-                                Seleccione el Municipio
-                            @endif
+                            {{ !$department_id ? 'Seleccione un departamento primero' : 'Seleccione el municipio' }}
                         </option>
                         @foreach ($municipalities as $municipality)
                             <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
                         @endforeach
                     </flux:select>
+                    
+                    {{-- Indicador de carga para localidades --}}
                     <div wire:loading wire:target="municipality_id" class="text-sm text-gray-500 mt-1">
                         Cargando localidades...
                     </div>
-                    {{-- 🧭 Localidad --}}
-                    <flux:select label="Localidad" name="locality_id" wire:model.live="locality_id"
-                        :disabled="!$municipality_id">
+                    
+                    {{-- Selector de localidad (depende del municipio seleccionado) --}}
+                    <flux:select 
+                        label="Localidad" 
+                        name="locality_id" 
+                        wire:model="locality_id"
+                        :disabled="!$municipality_id" 
+                        required>
                         <option value="">
-                            @if (!$municipality_id)
-                                Seleccione un municipio primero
-                            @else
-                                Seleccione la Localidad
-                            @endif
+                            {{ !$municipality_id ? 'Seleccione un municipio primero' : 'Seleccione la localidad' }}
                         </option>
                         @foreach ($localities as $locality)
                             <option value="{{ $locality->id }}">{{ $locality->name }}</option>
                         @endforeach
                     </flux:select>
-                    <flux:textarea label="{{ __('Address') }}" type="text" name="address"
-                        placeholder="Digite la Dirección" wire:model="address" class="lg:col-span-2" />
-                    <flux:select label="{{ __('Gender') }}" name="gender" wire:model="gender">
-                        <option value="">Seleccione Genero</option>
+                    
+                    {{-- Campo de dirección completa (ocupa 2 columnas en pantallas grandes) --}}
+                    <flux:textarea 
+                        label="Dirección Completa" 
+                        name="address" 
+                        placeholder="Ingrese la dirección detallada"
+                        wire:model="address" 
+                        class="lg:col-span-2" 
+                        required 
+                        minlength="10" 
+                        maxlength="500" 
+                        rows="3" />
+                    
+                    {{-- Selector de género con validación requerida --}}
+                    <flux:select 
+                        label="Género" 
+                        name="gender" 
+                        wire:model="gender" 
+                        required>
+                        <option value="">Seleccione el género</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
                     </flux:select>
-                    <flux:input label="{{ __('Password') }}" type="password" name="password"
-                        placeholder="Digite la Contraseña" wire:model="password" />
-                    <flux:input label="{{ __('Confirm Password') }}" type="password" name="confirm_password"
-                        placeholder="Digite la Contraseña (Nuevamente)" wire:model="confirm_password" />
+                    
+                    {{-- Campo de nueva contraseña (opcional en edición) --}}
+                    <flux:input 
+                        label="Nueva Contraseña (Opcional)" 
+                        type="password" 
+                        name="password"
+                        placeholder="Dejar vacío para mantener la actual" 
+                        wire:model="password" 
+                        minlength="8" />
+                    
+                    {{-- Campo de confirmación de contraseña --}}
+                    <flux:input 
+                        label="Confirmar Nueva Contraseña" 
+                        type="password" 
+                        name="confirm_password"
+                        placeholder="Confirme la nueva contraseña" 
+                        wire:model="confirm_password" />
+                    
+                    {{-- Switch para estado activo/inactivo --}}
                     <div class="flex items-center space-x-3">
                         <flux:switch wire:model="status" label="Estado Activo"/>
                     </div>
+                    
+                    {{-- Sección de roles de usuario (ocupa 2 columnas en pantallas grandes) --}}
                     <div class="lg:col-span-2">
                         <flux:checkbox.group wire:model="roles" label="Roles de Usuario">
+                            {{-- Itera sobre todos los roles disponibles --}}
                             @foreach ($allRoles as $allRole)
                                 <flux:checkbox value="{{ $allRole->name }}" label="{{ __($allRole->name) }}" />
                             @endforeach
                         </flux:checkbox.group>
                     </div>
                 </div>
-                <div class="flex justify-end">
+                
+                {{-- Sección de botones de acción --}}
+                <div class="flex justify-end gap-3">
+                    <a wire:navigate href="{{ route('users.index') }}"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
+                        Cancelar
+                    </a>
                     <flux:button type="submit" variant="primary">Actualizar Usuario</flux:button>
                 </div>
             </form>

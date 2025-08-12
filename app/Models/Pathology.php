@@ -10,9 +10,9 @@ class Pathology extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
-        'code',
+        'clave',
+        'descripcion',
+        'idCategoria',
     ];
 
     public function patientPathologies()

@@ -2,29 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * Modelo de Usuario
+ * 
+ * Gestiona la información de usuarios del sistema incluyendo
+ * datos personales, ubicación geográfica y relaciones.
+ */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Atributos que se pueden asignar masivamente
      */
     protected $fillable = [
         'name',
-        'email',
-        'dui',
+        'email', 
+        'dni',
         'phone',
         'address',
         'department_id',
@@ -36,9 +37,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Atributos ocultos en la serialización
      */
     protected $hidden = [
         'password',
@@ -46,9 +45,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Configuración de casting de atributos
      */
     protected function casts(): array
     {
@@ -60,57 +57,94 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's initials
+     * Campo usado para autenticación
      */
-    public function gravatarUrl(int $size = 64): string
-        {
-            $hash = md5(strtolower(trim($this->email)));
-            return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d=mp"; // 'd=mp' para imagen de "persona misteriosa" por defecto
-        }
+    public function username(): string
+    {
+        return 'dni';
+    }
 
     /**
-     * Get the initials of the user's name.
-     *
-     * @return string
+     * Genera URL de avatar de Gravatar
+     */
+    public function gravatarUrl(int $size = 64): string
+    {
+        $hash = md5(strtolower(trim($this->email)));
+        return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d=mp";
+    }
+
+    /**
+     * Obtiene las iniciales del nombre del usuario (máximo 2)
      */
     public function initials(): string
     {
-        $nameParts = explode(' ', $this->name);
-        $initials = '';
-        foreach ($nameParts as $part) {
-            $initials .= strtoupper(substr($part, 0, 1));
-        }
-        return Str::limit($initials, 2, ''); // Limita a las dos primeras iniciales, por ejemplo "JD" para John Doe
+        return collect(explode(' ', $this->name))
+            ->take(2)
+            ->map(fn($part) => strtoupper($part[0] ?? ''))
+            ->join('');
     }
 
+    // Relaciones médicas
+
+    /**
+     * Patologías del paciente
+     */
+    public function patientPathologies()
+    {
+        return $this->hasMany(PatientPathology::class);
+    }
+
+    // Relaciones geográficas
+    
+    /**
+     * Relación con departamento
+     */
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function departmentName(): Attribute
-    {
-        return Attribute::get(fn () => $this->department?->name);
-    }
+    /**
+     * Relación con municipio
+     */
     public function municipality()
     {
         return $this->belongsTo(Municipality::class);
     }
-    public function municipalityName(): Attribute
-    {
-        return Attribute::get(fn () => $this->municipality?->name);
-    }
-    public function localityName(): Attribute
-    {
-        return Attribute::get(fn () => $this->locality?->name);
-    }
+
+    /**
+     * Relación con localidad
+     */
     public function locality()
     {
         return $this->belongsTo(Locality::class);
     }
 
-    public function patientPathologies()
+    // Atributos calculados
+
+    /**
+     * Nombre del departamento
+     */
+    public function departmentName(): Attribute
     {
-        return $this->hasMany(PatientPathology::class);
+        return Attribute::get(fn() => $this->department?->name);
     }
+
+    /**
+     * Nombre del municipio
+     */
+    public function municipalityName(): Attribute
+    {
+        return Attribute::get(fn() => $this->municipality?->name);
+    }
+
+    /**
+     * Nombre de la localidad
+     */
+    public function localityName(): Attribute
+    {
+        return Attribute::get(fn() => $this->locality?->name);
+    }
+
+
 }

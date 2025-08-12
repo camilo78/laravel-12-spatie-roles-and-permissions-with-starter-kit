@@ -65,6 +65,18 @@ class DashboardController extends Controller
             $backgroundColors = ['#8B5CF6'];
         }
 
+        // Top 5 medicamentos más utilizados en entregas
+        $topMedicines = \App\Models\DeliveryMedicine::join('patient_medicines', 'delivery_medicines.patient_medicine_id', '=', 'patient_medicines.id')
+            ->join('medicines', 'patient_medicines.medicine_id', '=', 'medicines.id')
+            ->selectRaw('medicines.name, COUNT(*) as usage_count')
+            ->where('delivery_medicines.included', true)
+            ->groupBy('medicines.id', 'medicines.name')
+            ->orderBy('usage_count', 'desc')
+            ->limit(5)
+            ->get();
+
+
+
 
 
         $chart = app()->chartjs
@@ -170,6 +182,6 @@ class DashboardController extends Controller
                 ]
             ]);
 
-        return view('dashboard', compact('chart', 'genderChart', 'deliveryChart', 'municipalityChart', 'totalUsers','maleUsers', 'femaleUsers', 'activeUsers', 'inactiveUsers'));
+        return view('dashboard', compact('chart', 'genderChart', 'deliveryChart', 'municipalityChart', 'totalUsers','maleUsers', 'femaleUsers', 'activeUsers', 'inactiveUsers', 'topMedicines', 'topPathologies'));
     }
 }
