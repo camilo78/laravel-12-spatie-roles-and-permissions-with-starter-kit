@@ -1,7 +1,7 @@
-<x-layouts.app>
+<div>
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">Medicamentos</flux:heading>
-        <flux:subheading size="lg" class="mb-6">Gestiona todos los medicamentos del sistema</flux:subheading>
+        <flux:heading size="xl" level="1">Patologías</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Gestiona todas las patologías del sistema</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
 
@@ -28,10 +28,14 @@
 
         <div class="flex flex-col sm:flex-col lg:flex-row sm:items-start lg:items-center justify-between gap-4 mb-4">
             <div class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
-                <a href="{{ route('medicines.create') }}"
+                <a wire:navigate href="{{ route('pathologies.create') }}"
                     class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
-                    Nuevo Medicamento
+                    Crear Patología
                 </a>
+            </div>
+            <div class="relative order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
+                <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar patología..."
+                    class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700" />
             </div>
         </div>
 
@@ -39,52 +43,41 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Nombre</th>
-                        <th scope="col" class="px-6 py-3">Genérico</th>
-                        <th scope="col" class="px-6 py-3">Presentación</th>
-                        <th scope="col" class="px-6 py-3">Concentración</th>
+                        <th scope="col" class="px-6 py-3">Código</th>
+                        <th scope="col" class="px-6 py-3">Descripción</th>
                         <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($medicines as $key => $medicine)
+                    @forelse($pathologies as $key => $pathology)
                         <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $medicine->name }}
+                                {{ $pathology->clave }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $medicine->generic_name }}
-                            </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $medicine->presentation }}
-                            </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $medicine->concentration }}
+                                {{ Str::limit($pathology->descripcion, 80) ?: 'Sin descripción' }}
                             </td>
                             <td class="px-6 py-2 text-center">
                                 <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
-                                    <a href="{{ route('medicines.show', $medicine) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-small text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 flex-grow sm:flex-none">
-                                        <flux:icon.eye variant="micro" />
+                                    <a wire:navigate href="{{ route('pathologies.show', $pathology) }}"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Ver Patología">
+                                        <flux:icon.eye variant="micro" class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"/>
                                     </a>
-                                    <a href="{{ route('medicines.edit', $medicine) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-none">
-                                        <flux:icon.square-pen variant="micro" />
+                                    <a wire:navigate href="{{ route('pathologies.edit', $pathology) }}"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Editar Patología">
+                                        <flux:icon.square-pen variant="micro" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"/>
                                     </a>
-                                    <form action="{{ route('medicines.destroy', $medicine) }}" method="POST" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" onclick="return confirm('¿Eliminar medicamento?')"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex-grow sm:flex-none">
-                                            <flux:icon.trash-2 variant="micro" />
-                                        </button>
-                                    </form>
+                                    <button wire:click="delete({{ $pathology->id }})" wire:confirm="¿Eliminar patología?"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Patología">
+                                        <flux:icon.trash-2 variant="micro" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"/>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr class="bg-white dark:bg-gray-800">
-                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                No se encontraron medicamentos.
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                No se encontraron patologías.
                             </td>
                         </tr>
                     @endforelse
@@ -92,7 +85,7 @@
             </table>
         </div>
         <div class="mt-4">
-            {{ $medicines->links('vendor.livewire.tailwind') }}
+            {{ $pathologies->links('vendor.livewire.tailwind') }}
         </div>
     </div>
-</x-layouts.app>
+</div>

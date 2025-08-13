@@ -12,8 +12,8 @@ use App\Livewire\Users\UserCreate;
 use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
-use App\Http\Controllers\PathologyController;
-use App\Http\Controllers\MedicineController;
+
+
 use App\Http\Controllers\PatientPathologyController;
 use App\Http\Controllers\PatientMedicineController;
 use App\Http\Controllers\UserExcelController;
@@ -68,8 +68,14 @@ Route::middleware(['auth'])->group(function () {
     /*
      * Medical Management
      * */
-    Route::resource('pathologies', PathologyController::class);
-    Route::resource('medicines', MedicineController::class);
+    Route::get('pathologies', \App\Livewire\Pathologies\PathologyIndex::class)->name('pathologies.index');
+    Route::get('pathologies/create', \App\Livewire\Pathologies\PathologyCreate::class)->name('pathologies.create');
+    Route::get('pathologies/{pathology}', \App\Livewire\Pathologies\PathologyShow::class)->name('pathologies.show');
+    Route::get('pathologies/{pathology}/edit', \App\Livewire\Pathologies\PathologyEdit::class)->name('pathologies.edit');
+    Route::get('medicines', \App\Livewire\Medicines\MedicineIndex::class)->name('medicines.index');
+    Route::get('medicines/create', \App\Livewire\Medicines\MedicineCreate::class)->name('medicines.create');
+    Route::get('medicines/{medicine}', \App\Livewire\Medicines\MedicineShow::class)->name('medicines.show');
+    Route::get('medicines/{medicine}/edit', \App\Livewire\Medicines\MedicineEdit::class)->name('medicines.edit');
     
     /*
      * Delivery Management

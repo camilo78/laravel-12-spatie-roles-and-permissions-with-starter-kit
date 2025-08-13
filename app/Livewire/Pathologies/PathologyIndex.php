@@ -17,6 +17,12 @@ class PathologyIndex extends Component
         $this->resetPage();
     }
 
+    public function delete($id)
+    {
+        Pathology::find($id)->delete();
+        session()->flash('success', 'Patología eliminada exitosamente.');
+    }
+
     public function render()
     {
         $pathologies = Pathology::when($this->search, function ($query) {

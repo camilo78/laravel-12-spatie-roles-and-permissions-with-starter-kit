@@ -27,28 +27,25 @@
         @endsession
 
         <!-- Selección de Departamento y Municipio -->
-        <div class="flex flex-col lg:flex-row justify-center items-end gap-4 mb-6">
-            <div class="w-full lg:w-1/2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Departamento</label>
-                <select wire:model.live="selectedDepartment"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white">
-                    <option value="">Seleccionar Departamento</option>
-                    @foreach ($departments as $department)
-                        <option value="{{ $department->id }}">{{ $department->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="w-full lg:w-1/2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Municipio</label>
-                <select wire:model.live="selectedMunicipality"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                    {{ !$selectedDepartment ? 'disabled' : '' }}>
-                    <option value="">Seleccionar Municipio</option>
-                    @foreach ($municipalities as $municipality)
-                        <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+            <flux:select 
+                label="Departamento" 
+                wire:model.live="selectedDepartment">
+                <option value="">Seleccionar Departamento</option>
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                @endforeach
+            </flux:select>
+            
+            <flux:select 
+                label="Municipio" 
+                wire:model.live="selectedMunicipality"
+                :disabled="!$selectedDepartment">
+                <option value="">{{ !$selectedDepartment ? 'Seleccione un departamento primero' : 'Seleccionar Municipio' }}</option>
+                @foreach ($municipalities as $municipality)
+                    <option value="{{ $municipality->id }}">{{ $municipality->name }}</option>
+                @endforeach
+            </flux:select>
         </div>
 
         @if ($selectedMunicipality)
@@ -58,7 +55,7 @@
                     class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
                     <a wire:navigate href="{{ route('localities.create', ['department_id' => $selectedDepartment, 'municipality_id' => $selectedMunicipality]) }}"
                         class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
-                        Nueva Localidad
+                        Crear Localidad
                     </a>
                 </div>
                 <div class="relative order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
@@ -73,6 +70,7 @@
                         <tr>
                             <th scope="col" class="px-6 py-3">ID</th>
                             <th scope="col" class="px-6 py-3">Nombre</th>
+                            <th scope="col" class="px-6 py-3">Departamento</th>
                             <th scope="col" class="px-6 py-3">Municipio</th>
                             <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                         </tr>
@@ -86,6 +84,9 @@
                                 </td>
                                 <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ $locality->name }}
+                                </td>
+                                <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                                    {{ $locality->municipality->department->name }}
                                 </td>
                                 <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                     {{ $locality->municipality->name }}
@@ -111,7 +112,7 @@
                             </tr>
                         @empty
                             <tr class="bg-white dark:bg-gray-800">
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                     No se encontraron localidades.
                                 </td>
                             </tr>
