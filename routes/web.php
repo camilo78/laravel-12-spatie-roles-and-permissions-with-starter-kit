@@ -14,8 +14,7 @@ use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
 
 
-use App\Http\Controllers\PatientPathologyController;
-use App\Http\Controllers\PatientMedicineController;
+
 use App\Http\Controllers\UserExcelController;
 use App\Livewire\Deliveries\DeliveryCreate;
 use App\Livewire\Deliveries\DeliveryEdit;
@@ -87,17 +86,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('deliveries/{delivery}/patients/{deliveryPatient}', DeliveryPatientMedicines::class)->name('deliveries.patient.medicines');
     
     // User Medical Management
-    Route::get('users/{user}/pathologies', [PatientPathologyController::class, 'userPathologies'])->name('users.pathologies');
-    Route::post('users/{user}/pathologies', [PatientPathologyController::class, 'assignPathology'])->name('users.pathologies.assign');
-    Route::get('users/{user}/pathologies/{patientPathology}/edit', [PatientPathologyController::class, 'editPathology'])->name('users.pathologies.edit');
-    Route::put('users/{user}/pathologies/{patientPathology}', [PatientPathologyController::class, 'updatePathology'])->name('users.pathologies.update');
-    Route::delete('users/{user}/pathologies/{patientPathology}', [PatientPathologyController::class, 'removePathology'])->name('users.pathologies.remove');
-    
-    Route::get('users/{user}/medicines', [PatientMedicineController::class, 'userMedicines'])->name('users.medicines');
-    Route::post('users/{user}/medicines', [PatientMedicineController::class, 'assignMedicine'])->name('users.medicines.assign');
-    Route::get('users/{user}/medicines/{patientMedicine}/edit', [PatientMedicineController::class, 'editMedicine'])->name('users.medicines.edit');
-    Route::put('users/{user}/medicines/{patientMedicine}', [PatientMedicineController::class, 'updateMedicine'])->name('users.medicines.update');
-    Route::delete('users/{user}/medicines/{patientMedicine}', [PatientMedicineController::class, 'removeMedicine'])->name('users.medicines.remove');
+    Route::get('users/{user}/pathologies', \App\Livewire\Users\Pathologies\UserPathologies::class)->name('users.pathologies');
+    Route::get('users/{user}/medicines', \App\Livewire\Users\Medicines\UserMedicines::class)->name('users.medicines');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
