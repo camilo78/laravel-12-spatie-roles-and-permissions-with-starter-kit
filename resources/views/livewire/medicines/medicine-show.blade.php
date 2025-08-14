@@ -15,11 +15,6 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                        <flux:label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</flux:label>
-                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $medicine->name }}</p>
-                    </div>
-
-                    <div>
                         <flux:label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nombre Genérico</flux:label>
                         <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $medicine->generic_name }}</p>
                     </div>
@@ -27,11 +22,6 @@
                     <div>
                         <flux:label class="text-sm font-medium text-gray-700 dark:text-gray-300">Presentación</flux:label>
                         <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $medicine->presentation }}</p>
-                    </div>
-
-                    <div>
-                        <flux:label class="text-sm font-medium text-gray-700 dark:text-gray-300">Concentración</flux:label>
-                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $medicine->concentration }}</p>
                     </div>
                 </div>
             </div>

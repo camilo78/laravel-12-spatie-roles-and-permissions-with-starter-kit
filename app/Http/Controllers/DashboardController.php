@@ -76,9 +76,9 @@ class DashboardController extends Controller
         // Top 5 medicamentos más utilizados en entregas
         $topMedicines = \App\Models\DeliveryMedicine::join('patient_medicines', 'delivery_medicines.patient_medicine_id', '=', 'patient_medicines.id')
             ->join('medicines', 'patient_medicines.medicine_id', '=', 'medicines.id')
-            ->selectRaw('medicines.name, COUNT(*) as usage_count')
+            ->selectRaw('medicines.generic_name, COUNT(*) as usage_count')
             ->where('delivery_medicines.included', true)
-            ->groupBy('medicines.id', 'medicines.name')
+            ->groupBy('medicines.id', 'medicines.generic_name')
             ->orderBy('usage_count', 'desc')
             ->limit(5)
             ->get();

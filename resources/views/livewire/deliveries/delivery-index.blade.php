@@ -27,7 +27,6 @@
                     <th scope="col" class="px-6 py-3">Nombre</th>
                     <th scope="col" class="px-6 py-3">Fecha Inicio</th>
                     <th scope="col" class="px-6 py-3">Fecha Fin</th>
-                    <th scope="col" class="px-6 py-3">Estado</th>
                     <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
@@ -38,17 +37,9 @@
                         {{-- Nombre de la entrega --}}
                         <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $delivery->name }}</td>
                         {{-- Fecha de inicio formateada --}}
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $delivery->start_date->format('d/m/Y') }}</td>
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $delivery->start_date->translatedFormat('j \d\e F \d\e Y') }}</td>
                         {{-- Fecha de fin formateada --}}
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $delivery->end_date->format('d/m/Y') }}</td>
-                        {{-- Estado con badge coloreado --}}
-                        <td class="px-6 py-2">
-                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full 
-                                {{ $delivery->status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : 
-                                   ($delivery->status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300') }}">
-                                {{ ucfirst($delivery->status) }}
-                            </span>
-                        </td>
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $delivery->end_date->translatedFormat('j \d\e F \d\e Y') }}</td>                        
                         {{-- Botones de acción --}}
                         <td class="px-6 py-2 text-center">
                             <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">

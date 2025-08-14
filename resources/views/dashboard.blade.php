@@ -90,7 +90,7 @@
                                 @forelse($topMedicines as $index => $medicine)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-2 sm:px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400">{{ $index + 1 }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ $medicine->name }}</td>
+                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ $medicine->generic_name }}</td>
                                     <td class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-right">
                                             {{ $medicine->usage_count }}
                                     </td>

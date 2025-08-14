@@ -10,10 +10,8 @@ class Medicine extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
         'generic_name',
         'presentation',
-        'concentration',
     ];
 
     public function patientMedicines()

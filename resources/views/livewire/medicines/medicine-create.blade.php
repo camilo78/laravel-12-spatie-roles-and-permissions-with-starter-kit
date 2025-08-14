@@ -14,15 +14,7 @@
         <div>
             <form class="mt-6 space-y-6" wire:submit="save">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <flux:input 
-                        label="Nombre" 
-                        type="text" 
-                        name="name" 
-                        placeholder="Ingrese el nombre del medicamento"
-                        wire:model="name" 
-                        required 
-                        maxlength="255" />
-                    
+
                     <flux:input 
                         label="Nombre Genérico" 
                         type="text" 
@@ -38,15 +30,6 @@
                         name="presentation" 
                         placeholder="Ingrese la presentación"
                         wire:model="presentation" 
-                        required 
-                        maxlength="255" />
-                    
-                    <flux:input 
-                        label="Concentración" 
-                        type="text" 
-                        name="concentration" 
-                        placeholder="Ingrese la concentración"
-                        wire:model="concentration" 
                         required 
                         maxlength="255" />
                 </div>

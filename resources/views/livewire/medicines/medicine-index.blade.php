@@ -69,27 +69,19 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Nombre</th>
                         <th scope="col" class="px-6 py-3">Nombre Genérico</th>
                         <th scope="col" class="px-6 py-3">Presentación</th>
-                        <th scope="col" class="px-6 py-3">Concentración</th>
                         <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($medicines as $key => $medicine)
                         <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $medicine->name }}
-                            </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $medicine->generic_name }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ $medicine->presentation }}
-                            </td>
-                            <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ $medicine->concentration }}
                             </td>
                             <td class="px-6 py-2 text-center">
                                 <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">

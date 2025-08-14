@@ -9,17 +9,15 @@
     {{-- Formulario para editar entrega existente --}}
     <div class="max-w-2xl">
         <form wire:submit="save">
-            <div class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Campo nombre de la entrega --}}
-                <flux:input label="Nombre de la Entrega" wire:model="name" placeholder="Ej: Entrega Enero 2025" required />
-                
-                {{-- Campos de fechas en grid de 2 columnas --}}
-                <div class="grid grid-cols-2 gap-4">
-                    <flux:input label="Fecha de Inicio" type="date" wire:model="start_date" required />
-                    <flux:input label="Fecha de Fin" type="date" wire:model="end_date" required />
-                </div>
+                <flux:input label="Nombre de la Entrega" wire:model="name" placeholder="Ej: Entrega Enero 2025"
+                    required />
+                    
+                {{-- Fecha de inicio y fin --}}
+                <flux:input label="Fecha de Inicio" type="date" wire:model="start_date" required />
+                <flux:input label="Fecha de Fin" type="date" wire:model="end_date" required />
             </div>
-
             {{-- Botones de acción --}}
             <div class="flex justify-end gap-3 mt-6">
                 {{-- Botón cancelar --}}

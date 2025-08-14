@@ -26,11 +26,10 @@ class MedicineIndex extends Component
     public function render()
     {
         $medicines = Medicine::when($this->search, function ($query) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('generic_name', 'like', '%' . $this->search . '%')
+            $query->Where('generic_name', 'like', '%' . $this->search . '%')
                   ->orWhere('presentation', 'like', '%' . $this->search . '%');
         })
-        ->orderBy('name')
+        ->orderBy('generic_name')
         ->paginate(10);
 
         return view('livewire.medicines.medicine-index', compact('medicines'));

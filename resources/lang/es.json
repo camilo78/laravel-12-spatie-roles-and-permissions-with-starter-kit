@@ -113,5 +113,6 @@
     "Active": "Activo",
     "Inactive": "Inactivo",
     "Suspended": "Suspendido",
-    "Completed": "Completado"
+    "Completed": "Completado",
+    "Pending": "Pendiente"
 }
