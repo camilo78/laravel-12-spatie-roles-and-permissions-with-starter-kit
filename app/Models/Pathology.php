@@ -12,7 +12,6 @@ class Pathology extends Model
     protected $fillable = [
         'clave',
         'descripcion',
-        'idCategoria',
     ];
 
     public function patientPathologies()

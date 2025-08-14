@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('clave', 10);
             $table->string('descripcion', 256);
-            $table->integer('idCategoria');
             $table->timestamps();
         });
     }
