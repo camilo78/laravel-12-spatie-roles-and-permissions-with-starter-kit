@@ -203,7 +203,15 @@
             </div>
             
             <!-- Contenido del modal -->
-            <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data" class="p-6">
+            <form 
+                x-data="{ loading: false }" 
+                x-on:submit="loading = true" 
+                action="{{ route('users.import') }}" 
+                method="POST" 
+                enctype="multipart/form-data" 
+                class="p-6"
+            >
+
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -237,10 +245,20 @@
                         class="mt-6 mr-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-800 dark:focus:ring-gray-700 transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" 
-                    class="mt-6 mr-2 px-4 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
-                        Importar Archivo
-                    </button>
+                    <button 
+    type="submit"
+    class="mt-6 mr-2 px-4 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0 flex items-center justify-center space-x-2"
+    :disabled="loading"
+>
+    <template x-if="loading">
+        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+    </template>
+    <span x-text="loading ? 'Importando...' : 'Importar Archivo'"></span>
+</button>
+
                 </div>
             </form>
         </div>
