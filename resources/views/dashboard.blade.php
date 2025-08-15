@@ -90,8 +90,12 @@
                                 @forelse($topMedicines as $index => $medicine)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-2 sm:px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400">{{ $index + 1 }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ $medicine->generic_name }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-right">
+                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0" title="{{ $medicine->generic_name }}">{{ str($medicine->generic_name)->limit(45) }}</td>
+                                    <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+    Tooltip content
+    <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+                                    <td class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-center">
                                             {{ $medicine->usage_count }}
                                     </td>
                                 </tr>
@@ -135,7 +139,7 @@
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-2 sm:px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400">{{ $index + 1 }}</td>
                                     <td class="px-2 sm:px-4 py-3 text-sm font-mono text-gray-900 dark:text-white">{{ $pathology->pathology->clave ?? 'N/A' }}</td>
-                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0">{{ Str::limit($pathology->pathology->descripcion ?? 'Sin descripción', 50) }}</td>
+                                    <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0" title="{{ $pathology->pathology->descripcion }}">{{ Str::limit($pathology->pathology->descripcion ?? 'Sin descripción', 45) }}</td>
                                     <td class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-center">
                                             {{ $pathology->usage_count }}
                                     </td>

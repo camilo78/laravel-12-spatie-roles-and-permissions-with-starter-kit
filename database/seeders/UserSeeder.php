@@ -14,11 +14,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $this->admin();
-        $this->user();
+   //     $this->user();
 
-        User::factory(198)->create()->each(function ($user) {
-        $user->assignRole('User');
-    });
+      /*   User::factory(198)->create()->each(function ($user) {
+            $user->assignRole('User');
+        }); */
     }
 
     protected function admin(): void
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         $admin->assignRole('Admin');
     }
 
-    protected function user(): void
+ /*    protected function user(): void
     {
         $user = User::factory()->create([
             'name' => 'John Doe Smith',
@@ -57,6 +57,6 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole('User');
-    }
+    } */
 
 }

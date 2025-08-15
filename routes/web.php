@@ -24,6 +24,7 @@ use App\Livewire\Deliveries\DeliveryPatientMedicines;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -44,9 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
     
     // Excel Routes
-    Route::get('users/export/excel', [UserExcelController::class, 'export'])->name('users.export.excel');
-    Route::get('users/template/excel', [UserExcelController::class, 'template'])->name('users.template.excel');
-    Route::post('users/import/excel', [UserExcelController::class, 'import'])->name('users.import.excel');
+    Route::get('users/export', [UserExcelController::class, 'export'])->name('users.export');
+    Route::post('users/import', [UserExcelController::class, 'import'])->name('users.import');
+    Route::get('users/template', [UserExcelController::class, 'template'])->name('users.template');
 
     /*
      * Role Management

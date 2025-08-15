@@ -30,11 +30,11 @@ class DatabaseSeeder extends Seeder
 
             MedicineSeeder::class,
 
-            PatientPathologySeeder::class,
+            //PatientPathologySeeder::class,
 
-            PatientMedicineSeeder::class,
+            //PatientMedicineSeeder::class,
 
-            MedicineDeliverySeeder::class,
+            //MedicineDeliverySeeder::class,
 
         ]);
     }

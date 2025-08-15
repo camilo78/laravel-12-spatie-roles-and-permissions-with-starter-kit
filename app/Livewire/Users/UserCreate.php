@@ -111,7 +111,6 @@ class UserCreate extends Component
             'phone' => 'nullable|string|max:255',
             'address' => 'required|string|max:500',
             'gender' => 'required|in:Masculino,Femenino',
-
             'roles' => 'required|array|min:1',
             'roles.*' => 'exists:roles,name',
             'department_id' => 'required|exists:departments,id',

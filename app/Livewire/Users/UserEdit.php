@@ -27,7 +27,7 @@ class UserEdit extends Component
     
     // Datos del usuario
     public string $name = '';
-    public string $email = '';
+    public ?string $email = null;
     public string $dni = '';
     public string $phone = '';
     public string $address = '';

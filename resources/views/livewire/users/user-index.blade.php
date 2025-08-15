@@ -68,12 +68,12 @@
                 <flux:icon.arrow-down-tray variant="micro" class="w-4 h-4"/>
                 Importar Excel
             </button>
-            <a href="{{ route('users.template.excel') }}"
+            <a href="{{ route('users.template') }}"
                 class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center inline-flex items-center justify-center gap-2">
                 <flux:icon.document-text variant="micro" class="w-4 h-4"/>
                 Descargar Muestra Excel
             </a>
-            <a href="{{ route('users.export.excel') }}"
+            <a href="{{ route('users.export') }}"
                 class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center inline-flex items-center justify-center gap-2">
                 <flux:icon.arrow-up-tray variant="micro" class="w-4 h-4"/>
                 Exportar Excel
@@ -120,25 +120,25 @@
                             <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
                                 @can('users.index')
                                     <a wire:navigate href="{{ route('users.show', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Usuario">
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Mostrar Usuario">
                                         <flux:icon.eye variant="micro" class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"/>
                                     </a>
                                 @endcan
 
                                 @can('users.edit')
                                     <a wire:navigate href="{{ route('users.edit', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Usuario">
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Editar Usuario">
                                         <flux:icon.square-pen variant="micro" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"/>
                                     </a>
                                 @endcan
 
                                 <a href="{{ route('users.pathologies', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Usuario">
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none" title="Patologías Usuario">
                                     <flux:icon.clipboard-plus variant="micro" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"/>
                                 </a>
 
                                 <a href="{{ route('users.medicines', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none" title="Eliminar Usuario">
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none" title="Medicamentos Usuario">
                                     <flux:icon.pill variant="micro" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"/>
                                 </a>
 
@@ -203,7 +203,7 @@
             </div>
             
             <!-- Contenido del modal -->
-            <form action="{{ route('users.import.excel') }}" method="POST" enctype="multipart/form-data" class="p-6">
+            <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data" class="p-6">
                 @csrf
                 <div class="space-y-4">
                     <div>
