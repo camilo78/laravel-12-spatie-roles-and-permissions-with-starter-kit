@@ -98,20 +98,32 @@
                         Cargando localidades...
                     </div>
                     
-                    {{-- Selector de localidad (depende del municipio seleccionado) --}}
-                    <flux:select 
-                        label="Localidad" 
-                        name="locality_id" 
-                        wire:model="locality_id"
-                        :disabled="!$municipality_id" 
-                        required>
-                        <option value="">
-                            {{ !$municipality_id ? 'Seleccione un municipio primero' : 'Seleccione la localidad' }}
-                        </option>
-                        @foreach ($localities as $locality)
-                            <option value="{{ $locality->id }}">{{ $locality->name }}</option>
-                        @endforeach
-                    </flux:select>
+                    {{-- Input searcheable de localidad --}}
+                    <div class="relative">
+                        <flux:input 
+                            label="Localidad" 
+                            name="locality_search" 
+                            placeholder="{{ !$municipality_id ? 'Seleccione un municipio primero' : 'Buscar localidad...' }}"
+                            wire:model.live.debounce.300ms="locality_search"
+                            :disabled="!$municipality_id" 
+                            autocomplete="off"
+                            required />
+                        
+                        {{-- Lista de resultados --}}
+                        @if($municipality_id && $locality_search && count($filtered_localities) > 0)
+                            <div class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                                @foreach($filtered_localities as $locality)
+                                    <div class="px-4 py-2 text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
+                                         wire:click="selectLocality({{ $locality->id }}, '{{ $locality->name }}')">
+                                        {{ $locality->name }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        
+                        {{-- Campo oculto para el ID --}}
+                        <input type="hidden" name="locality_id" wire:model="locality_id" />
+                    </div>
                     
                     {{-- Campo de dirección (ocupa 2 columnas en pantallas grandes) --}}
                     <flux:textarea 

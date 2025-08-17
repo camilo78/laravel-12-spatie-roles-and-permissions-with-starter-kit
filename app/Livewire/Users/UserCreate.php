@@ -35,6 +35,7 @@ class UserCreate extends Component
     public ?int $department_id = null;
     public ?int $municipality_id = null;
     public ?int $locality_id = null;
+    public string $locality_search = '';
     
     // Estado y roles
     public bool $status = true;
@@ -44,7 +45,8 @@ class UserCreate extends Component
     public $allRoles;
     public $departments = [];
     public $municipalities = [];
-    public $localities = [];
+    public $localities;
+    public $filtered_localities = [];
     
     // Control de envío
     public bool $isSubmitting = false;
@@ -79,7 +81,9 @@ class UserCreate extends Component
     public function updatedMunicipalityId(?int $value): void
     {
         $this->locality_id = null;
-        $this->localities = [];
+        $this->locality_search = '';
+        $this->localities;
+        $this->filtered_localities = [];
         
         if ($value) {
             $this->localities = Locality::where('municipality_id', $value)
@@ -89,14 +93,43 @@ class UserCreate extends Component
     }
 
     /**
+     * Se ejecuta cuando cambia el texto de búsqueda de localidad
+     */
+    public function updatedLocalitySearch(string $value): void
+    {
+        $value = rtrim($value);
+        
+        if (empty($value) || !$this->municipality_id) {
+            $this->filtered_localities = [];
+            return;
+        }
+
+        $this->filtered_localities = $this->localities->filter(function ($locality) use ($value) {
+            return stripos($locality->name, $value) !== false;
+        })->take(10);
+    }
+
+    /**
+     * Selecciona una localidad de la lista filtrada
+     */
+    public function selectLocality(int $id, string $name): void
+    {
+        $this->locality_id = $id;
+        $this->locality_search = $name;
+        $this->filtered_localities = [];
+    }
+
+    /**
      * Resetea las selecciones de ubicación dependientes
      */
     private function resetLocationSelections(): void
     {
         $this->municipality_id = null;
         $this->locality_id = null;
+        $this->locality_search = '';
         $this->municipalities = [];
         $this->localities = [];
+        $this->filtered_localities = [];
     }
 
     /**

@@ -61,13 +61,65 @@
 
         <form wire:submit.prevent="saveMedicine" class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <flux:select label="Medicamento" wire:model="medicine_id" required>
-                    <option value="">Seleccionar medicamento</option>
-                    @foreach ($medicines as $medicine)
-                        <option value="{{ $medicine->id }}">{{ $medicine->name }} - {{ $medicine->presentation }}
-                        </option>
-                    @endforeach
-                </flux:select>
+                {{-- Select searcheable de medicamento --}}
+                <div class="relative" x-data="{ open: false, search: @entangle('medicine_search') }">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Medicamento</label>
+                    
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            x-model="search"
+                            @click="open = true"
+                            @input="open = true"
+                            @keydown.escape="open = false"
+                            wire:model.live.debounce.300ms="medicine_search"
+                            placeholder="Seleccionar medicamento..."
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-100 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer
+                             autocomplete="off"
+                            required>
+                        
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         @click.away="open = false"
+                         class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                        
+                        @if($medicine_search && count($filtered_medicines) > 0)
+                            @foreach($filtered_medicines as $medicine)
+                                <div class="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
+                                     wire:click="selectMedicine({{ $medicine->id }}, '{{ $medicine->generic_name }} - {{ $medicine->presentation }}')"
+                                     @click="open = false">
+                                    <div class="font-medium text-gray-500 dark:text-gray-400">{{ $medicine->generic_name }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $medicine->presentation }}</div>
+                                </div>
+                            @endforeach
+                        @elseif(!$medicine_search && isset($medicines))
+                            @foreach($medicines as $medicine)
+                                <div class="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
+                                     wire:click="selectMedicine({{ $medicine->id }}, '{{ $medicine->generic_name }} - {{ $medicine->presentation }}')"
+                                     @click="open = false">
+                                    <div class="font-medium text-gray-500 dark:text-gray-400">{{ $medicine->generic_name }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $medicine->presentation }}</div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="px-4 py-2 text-gray-500 dark:text-gray-400">No se encontraron medicamentos</div>
+                        @endif
+                    </div>
+                    
+                    <input type="hidden" name="medicine_id" wire:model="medicine_id" />
+                </div>
 
                 <flux:input label="Dosis" type="text" wire:model="dosage" placeholder="Ej: 500mg cada 8 horas"
                     required />

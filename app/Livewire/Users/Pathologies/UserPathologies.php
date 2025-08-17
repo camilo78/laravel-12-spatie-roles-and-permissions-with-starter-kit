@@ -11,9 +11,13 @@ class UserPathologies extends Component
 {
     public User $user;
     public $pathology_id = '';
+    public string $pathology_search = '';
     public $diagnosed_at = '';
     public $status = '';
     public $editingId = null;
+    
+    // Para búsqueda de patologías
+    public $filtered_pathologies = [];
 
     protected $rules = [
         'pathology_id' => 'required|exists:pathologies,id',
@@ -24,6 +28,34 @@ class UserPathologies extends Component
     public function mount(User $user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * Se ejecuta cuando cambia el texto de búsqueda de patología
+     */
+    public function updatedPathologySearch(string $value): void
+    {
+        $value = rtrim($value);
+        
+        if (empty($value)) {
+            $this->filtered_pathologies = [];
+            return;
+        }
+
+        $this->filtered_pathologies = Pathology::where(function($query) use ($value) {
+            $query->where('clave', 'like', '%' . $value . '%')
+                  ->orWhere('descripcion', 'like', '%' . $value . '%');
+        })->orderBy('clave')->get();
+    }
+
+    /**
+     * Selecciona una patología de la lista filtrada
+     */
+    public function selectPathology(int $id, string $name): void
+    {
+        $this->pathology_id = $id;
+        $this->pathology_search = $name;
+        $this->filtered_pathologies = [];
     }
 
     public function savePathology()
@@ -66,6 +98,7 @@ class UserPathologies extends Component
 
         $this->editingId = $pathology->id;
         $this->pathology_id = $pathology->pathology_id;
+        $this->pathology_search = $pathology->pathology->clave . ' - ' . $pathology->pathology->descripcion;
         $this->diagnosed_at = $pathology->diagnosed_at->format('Y-m-d');
         $this->status = $pathology->status;
     }
@@ -114,7 +147,8 @@ class UserPathologies extends Component
 
     private function resetForm()
     {
-        $this->reset(['pathology_id', 'diagnosed_at', 'status']);
+        $this->reset(['pathology_id', 'pathology_search', 'diagnosed_at', 'status']);
+        $this->filtered_pathologies = [];
     }
 
     public function render()

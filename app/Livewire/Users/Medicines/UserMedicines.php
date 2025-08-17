@@ -14,11 +14,15 @@ class UserMedicines extends Component
 
     // Campos del formulario
     public $medicine_id;
+    public string $medicine_search = '';
     public $dosage;
     public $quantity;
     public $start_date;
     public $end_date;
     public $status;
+    
+    // Para búsqueda de medicamentos
+    public $filtered_medicines = [];
 
     // ID del medicamento en edición (null = modo asignar)
     public $editingId = null;
@@ -36,6 +40,34 @@ class UserMedicines extends Component
     public function mount(User $user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * Se ejecuta cuando cambia el texto de búsqueda de medicamento
+     */
+    public function updatedMedicineSearch(string $value): void
+    {
+        $value = rtrim($value);
+        
+        if (empty($value)) {
+            $this->filtered_medicines = [];
+            return;
+        }
+
+        $this->filtered_medicines = Medicine::where(function($query) use ($value) {
+            $query->where('generic_name', 'like', '%' . $value . '%')
+                  ->orWhere('presentation', 'like', '%' . $value . '%');
+        })->get();
+    }
+
+    /**
+     * Selecciona un medicamento de la lista filtrada
+     */
+    public function selectMedicine(int $id, string $name): void
+    {
+        $this->medicine_id = $id;
+        $this->medicine_search = $name;
+        $this->filtered_medicines = [];
     }
 
     /**
@@ -83,6 +115,7 @@ class UserMedicines extends Component
 
         $this->editingId   = $medicine->id;
         $this->medicine_id = $medicine->medicine_id;
+        $this->medicine_search = $medicine->medicine->generic_name . ' - ' . $medicine->medicine->presentation;
         $this->dosage      = $medicine->dosage;
         $this->quantity    = $medicine->quantity;
         $this->start_date  = $medicine->start_date ? $medicine->start_date->format('Y-m-d') : null;
@@ -160,7 +193,8 @@ class UserMedicines extends Component
      */
     private function resetForm()
     {
-        $this->reset(['medicine_id', 'dosage', 'quantity', 'start_date', 'end_date', 'status']);
+        $this->reset(['medicine_id', 'medicine_search', 'dosage', 'quantity', 'start_date', 'end_date', 'status']);
+        $this->filtered_medicines = [];
     }
 
     public function render()
