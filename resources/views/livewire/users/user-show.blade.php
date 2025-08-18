@@ -156,7 +156,7 @@
                                         @foreach ($userMedicines as $key => $medicine)
                                             <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                                                 <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $medicine->medicine->name }}
+                                                    {{ $medicine->medicine->generic_name }}
                                                 </td>
                                                 <td class="px-6 py-2">
                                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full border {{ $medicine->status === 'active' ? 'text-green-600 border-green-600 dark:text-green-400 dark:border-green-400' : 'text-gray-600 border-gray-600 dark:text-gray-400 dark:border-gray-400' }}">

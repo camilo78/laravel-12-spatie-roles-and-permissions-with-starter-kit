@@ -25,9 +25,10 @@ class MedicineIndex extends Component
 
     public function render()
     {
-        $medicines = Medicine::when($this->search, function ($query) {
-            $query->Where('generic_name', 'like', '%' . $this->search . '%')
-                  ->orWhere('presentation', 'like', '%' . $this->search . '%');
+        $medicines = Medicine::when(trim($this->search), function ($query) {
+            $searchTerm = trim($this->search);
+            $query->where('generic_name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('presentation', 'like', '%' . $searchTerm . '%');
         })
         ->orderBy('generic_name')
         ->paginate(10);

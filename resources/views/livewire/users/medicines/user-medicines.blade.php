@@ -171,7 +171,7 @@
                     <tr
                         class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600">
                         <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $userMedicine->medicine->name }}
+                            {{ $userMedicine->medicine->generic_name }}
                         </td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                             {{ $userMedicine->dosage }}

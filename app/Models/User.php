@@ -94,6 +94,11 @@ class User extends Authenticatable
         return $this->hasMany(PatientPathology::class);
     }
 
+     public function deliveryPatients()
+    {
+        return $this->hasMany(PatientPathology::class);
+    }
+
     // Relaciones geográficas
     
     /**

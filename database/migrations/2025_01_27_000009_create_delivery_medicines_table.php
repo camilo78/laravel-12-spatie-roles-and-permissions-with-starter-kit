@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('delivery_patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('patient_medicine_id')->constrained()->cascadeOnDelete();
             $table->boolean('included')->default(true);
+            $table->text('observations')->nullable();
             $table->timestamps();
             
             $table->unique(['delivery_patient_id', 'patient_medicine_id'], 'delivery_medicine_unique');

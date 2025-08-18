@@ -59,7 +59,6 @@ class DeliveryEdit extends Component
     protected $rules = [
         'name' => 'required|string|max:255',
         'start_date' => 'required|date',
-        'status' => 'required|string|in:pending,completed,active',
         'end_date' => 'required|date|after:start_date',
     ];
 

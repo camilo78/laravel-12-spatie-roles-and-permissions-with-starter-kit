@@ -13,12 +13,17 @@
         <div>
             <form class="mt-6 space-y-6" wire:submit="editRole">
                 <flux:input label="Nombre" type="text" name="name" placeholder="Ingrese el nombre" wire:model="name" />
-                <flux:checkbox.group wire:model="permissions" label="Permisos">
-                    @foreach($allPermissions as $allPermission)
-                        <flux:checkbox value="{{ $allPermission->name }}" label="{{ $allPermission->name }}" />
-                    @endforeach
-                </flux:checkbox.group>
-                <flux:button type="submit" variant="primary">Actualizar Rol</flux:button>
+                <div>
+                    <flux:label>Permisos</flux:label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        @foreach($allPermissions as $allPermission)
+                            <flux:checkbox wire:model="permissions" value="{{ $allPermission->name }}" label="{{ $allPermission->name }}" />
+                        @endforeach
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <flux:button type="submit" variant="primary">Actualizar Rol</flux:button>
+                </div>
             </form>
         </div>
     </div>

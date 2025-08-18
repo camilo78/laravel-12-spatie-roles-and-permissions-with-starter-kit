@@ -45,9 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/show', UserShow::class)->name('users.show')->middleware('permission:users.show');
     
     // Excel Routes
-    Route::get('users/export', [UserExcelController::class, 'export'])->name('users.export');
-    Route::post('users/import', [UserExcelController::class, 'import'])->name('users.import');
-    Route::get('users/template', [UserExcelController::class, 'template'])->name('users.template');
+    Route::get('users/export', [UserExcelController::class, 'export'])->name('users.export')->middleware('permission:users.export');
+    Route::post('users/import', [UserExcelController::class, 'import'])->name('users.import')->middleware('permission:users.import');
+    Route::get('users/template', [UserExcelController::class, 'template'])->name('users.template')->middleware('permission:users.export');
 
     /*
      * Role Management
@@ -60,35 +60,38 @@ Route::middleware(['auth'])->group(function () {
     /*
      * Locality Management
      * */
-    Route::get('localities', LocalityIndex::class)->name('localities.index');
-    Route::get('localities/create', LocalityCreate::class)->name('localities.create');
-    Route::get('localities/{locality}/edit', LocalityEdit::class)->name('localities.edit');
-    Route::get('localities/{locality}/show', LocalityShow::class)->name('localities.show');
+    Route::get('localities', LocalityIndex::class)->name('localities.index')->middleware('permission:localities.index');
+    Route::get('localities/create', LocalityCreate::class)->name('localities.create')->middleware('permission:localities.create');
+    Route::get('localities/{locality}/edit', LocalityEdit::class)->name('localities.edit')->middleware('permission:localities.edit');
+    Route::get('localities/{locality}/show', LocalityShow::class)->name('localities.show')->middleware('permission:localities.show');
 
     /*
      * Medical Management
      * */
-    Route::get('pathologies', \App\Livewire\Pathologies\PathologyIndex::class)->name('pathologies.index');
-    Route::get('pathologies/create', \App\Livewire\Pathologies\PathologyCreate::class)->name('pathologies.create');
-    Route::get('pathologies/{pathology}', \App\Livewire\Pathologies\PathologyShow::class)->name('pathologies.show');
-    Route::get('pathologies/{pathology}/edit', \App\Livewire\Pathologies\PathologyEdit::class)->name('pathologies.edit');
-    Route::get('medicines', \App\Livewire\Medicines\MedicineIndex::class)->name('medicines.index');
-    Route::get('medicines/create', \App\Livewire\Medicines\MedicineCreate::class)->name('medicines.create');
-    Route::get('medicines/{medicine}', \App\Livewire\Medicines\MedicineShow::class)->name('medicines.show');
-    Route::get('medicines/{medicine}/edit', \App\Livewire\Medicines\MedicineEdit::class)->name('medicines.edit');
+    Route::get('pathologies', \App\Livewire\Pathologies\PathologyIndex::class)->name('pathologies.index')->middleware('permission:pathologies.index');
+    Route::get('pathologies/create', \App\Livewire\Pathologies\PathologyCreate::class)->name('pathologies.create')->middleware('permission:pathologies.create');
+    Route::get('pathologies/{pathology}', \App\Livewire\Pathologies\PathologyShow::class)->name('pathologies.show')->middleware('permission:pathologies.show');
+    Route::get('pathologies/{pathology}/edit', \App\Livewire\Pathologies\PathologyEdit::class)->name('pathologies.edit')->middleware('permission:pathologies.edit');
+    Route::get('medicines', \App\Livewire\Medicines\MedicineIndex::class)->name('medicines.index')->middleware('permission:medicines.index');
+    Route::get('medicines/create', \App\Livewire\Medicines\MedicineCreate::class)->name('medicines.create')->middleware('permission:medicines.create');
+    Route::get('medicines/{medicine}', \App\Livewire\Medicines\MedicineShow::class)->name('medicines.show')->middleware('permission:medicines.show');
+    Route::get('medicines/{medicine}/edit', \App\Livewire\Medicines\MedicineEdit::class)->name('medicines.edit')->middleware('permission:medicines.edit');
     
     /*
      * Delivery Management
      * */
-    Route::get('deliveries', DeliveryIndex::class)->name('deliveries.index');
-    Route::get('deliveries/create', DeliveryCreate::class)->name('deliveries.create');
-    Route::get('deliveries/{delivery}/edit', DeliveryEdit::class)->name('deliveries.edit');
-    Route::get('deliveries/{delivery}', DeliveryShow::class)->name('deliveries.show');
-    Route::get('deliveries/{delivery}/patients/{deliveryPatient}', DeliveryPatientMedicines::class)->name('deliveries.patient.medicines');
+    Route::get('deliveries', DeliveryIndex::class)->name('deliveries.index')->middleware('permission:deliveries.index');
+    Route::get('deliveries/create', DeliveryCreate::class)->name('deliveries.create')->middleware('permission:deliveries.create');
+    Route::get('deliveries/{delivery}/edit', DeliveryEdit::class)->name('deliveries.edit')->middleware('permission:deliveries.edit');
+    Route::get('deliveries/{delivery}', DeliveryShow::class)->name('deliveries.show')->middleware('permission:deliveries.show');
+    Route::get('deliveries/{delivery}/patients/{deliveryPatient}', DeliveryPatientMedicines::class)->name('deliveries.patient.medicines')->middleware('permission:deliveries.show');
+    
+    // Delivery Reports
+    Route::get('delivery/{delivery}/report', [\App\Http\Controllers\DeliveryReportController::class, 'generateReport'])->name('delivery.report')->middleware('permission:deliveries.show');
     
     // User Medical Management
-    Route::get('users/{user}/pathologies', \App\Livewire\Users\Pathologies\UserPathologies::class)->name('users.pathologies');
-    Route::get('users/{user}/medicines', \App\Livewire\Users\Medicines\UserMedicines::class)->name('users.medicines');
+    Route::get('users/{user}/pathologies', \App\Livewire\Users\Pathologies\UserPathologies::class)->name('users.pathologies')->middleware('permission:user-pathologies.index');
+    Route::get('users/{user}/medicines', \App\Livewire\Users\Medicines\UserMedicines::class)->name('users.medicines')->middleware('permission:user-medicines.index');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');

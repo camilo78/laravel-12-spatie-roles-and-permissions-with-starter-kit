@@ -55,6 +55,7 @@ class DeliveryShow extends Component
     {
         $deliveryPatients = $this->delivery->deliveryPatients()
             ->with(['user', 'deliveryMedicines.patientMedicine.medicine'])
+            ->whereHas('deliveryMedicines')
             ->when($this->search, fn($query) => 
                 $query->whereHas('user', fn($q) => 
                     $q->where('name', 'like', "%{$this->search}%")

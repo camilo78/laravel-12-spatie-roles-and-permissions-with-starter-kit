@@ -86,11 +86,10 @@
         {{-- Botón para guardar cambios (solo si es editable) --}}
         @if($deliveryPatient->medicineDelivery->isEditable())
             <div class="flex justify-end mt-6">
-                <button type="submit" wire:loading.attr="disabled" wire:target="saveChanges" :disabled="$isSubmitting"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">
+                <flux:button type="submit" variant="primary" wire:loading.attr="disabled" wire:target="saveChanges">
                     <span wire:loading.remove wire:target="saveChanges">Guardar Cambios</span>
                     <span wire:loading wire:target="saveChanges">Guardando...</span>
-                </button>
+                </flux:button>
             </div>
         @endif
     </form>

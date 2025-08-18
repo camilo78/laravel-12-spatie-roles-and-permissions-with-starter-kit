@@ -102,7 +102,7 @@
                         </tr>
                     @empty
                         <tr class="bg-white dark:bg-gray-800">
-                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                 No se encontraron medicamentos.
                             </td>
                         </tr>

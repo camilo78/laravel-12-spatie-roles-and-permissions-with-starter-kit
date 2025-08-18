@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
 
-          /*   PermissionSeeder::class,
+           /*  PermissionSeeder::class,
 
             RoleSeeder::class,
 
@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
             PatientMedicineSeeder::class,
 
             MedicineDeliverySeeder::class,
-
         ]);
     }
 }
