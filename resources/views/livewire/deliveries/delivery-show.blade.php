@@ -43,7 +43,7 @@
                             {{ $deliveryPatient->user->name }}
                         </td>
                         {{-- DNI del paciente --}}
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $deliveryPatient->user->dui }}</td>
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $deliveryPatient->user->dni }}</td>
                         {{-- Teléfono del paciente --}}
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                             {{ $deliveryPatient->user->phone }}

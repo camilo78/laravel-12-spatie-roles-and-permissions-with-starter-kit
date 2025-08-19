@@ -23,8 +23,7 @@
     </div>
 
     {{-- Formulario para gestionar medicamentos del paciente --}}
-    <form wire:submit.prevent="saveChanges">
-        <div class="space-y-4">
+    <form class="mt-6 space-y-6" wire:submit.prevent="saveChanges">
             {{-- Iteración sobre los medicamentos del paciente --}}
             @foreach($deliveryPatient->deliveryMedicines as $deliveryMedicine)
                 <div class="p-4 border rounded-lg border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
@@ -81,15 +80,12 @@
                     @endif
                 </div>
             @endforeach
-        </div>
+
         
         {{-- Botón para guardar cambios (solo si es editable) --}}
         @if($deliveryPatient->medicineDelivery->isEditable())
-            <div class="flex justify-end mt-6">
-                <flux:button type="submit" variant="primary" wire:loading.attr="disabled" wire:target="saveChanges">
-                    <span wire:loading.remove wire:target="saveChanges">Guardar Cambios</span>
-                    <span wire:loading wire:target="saveChanges">Guardando...</span>
-                </flux:button>
+            <div class="flex justify-end gap-3 mt-6">
+                <flux:button class="px-4 py-2" type="submit" variant="primary"> Guardar Cambios</flux:button>
             </div>
         @endif
     </form>

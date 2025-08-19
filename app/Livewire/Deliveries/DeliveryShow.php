@@ -59,7 +59,7 @@ class DeliveryShow extends Component
             ->when($this->search, fn($query) => 
                 $query->whereHas('user', fn($q) => 
                     $q->where('name', 'like', "%{$this->search}%")
-                      ->orWhere('dui', 'like', "%{$this->search}%")
+                      ->orWhere('dni', 'like', "%{$this->search}%")
                 )
             )
             ->paginate(10);

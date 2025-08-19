@@ -5,6 +5,9 @@ namespace App\Livewire\Users\Medicines;
 use App\Models\User;
 use App\Models\Medicine;
 use App\Models\PatientMedicine;
+use App\Models\MedicineDelivery;
+use App\Models\DeliveryPatient;
+use App\Models\DeliveryMedicine;
 use Livewire\Component;
 
 class UserMedicines extends Component
@@ -95,10 +98,20 @@ class UserMedicines extends Component
             return;
         }
 
-        PatientMedicine::create($this->getMedicineData());
+        $patientMedicine = PatientMedicine::create($this->getMedicineData());
+        
+        // Solo agregar a entregas editables si el estado es activo
+        $addedCount = 0;
+        if ($this->status === 'active') {
+            $addedCount = $this->addToEditableDeliveries($patientMedicine);
+        }
 
         $this->resetForm();
-        session()->flash('success', 'Medicamento asignado exitosamente.');
+        $message = 'Medicamento asignado exitosamente.';
+        if ($addedCount > 0) {
+            $message .= " Agregado a {$addedCount} entrega(s) editable(s).";
+        }
+        session()->flash('success', $message);
     }
 
     /**
@@ -137,8 +150,14 @@ class UserMedicines extends Component
             return;
         }
 
-        // No validamos duplicados al editar
+        $oldStatus = $medicine->status;
+        $newStatus = $this->status;
+        
+        // Actualizar medicamento
         $medicine->update($this->getMedicineData());
+        
+        // Manejar cambios de estado en entregas
+        $this->handleStatusChange($medicine, $oldStatus, $newStatus);
 
         $this->resetForm();
         $this->editingId = null;
@@ -157,8 +176,11 @@ class UserMedicines extends Component
             return;
         }
 
+        // Eliminar de entregas editables antes de eliminar el medicamento
+        $this->removeFromEditableDeliveries($medicine);
+        
         $medicine->delete();
-        session()->flash('success', 'Medicamento removido exitosamente.');
+        session()->flash('success', 'Medicamento removido exitosamente y eliminado de entregas editables.');
     }
 
     /**
@@ -186,6 +208,87 @@ class UserMedicines extends Component
             'end_date'    => $this->end_date,
             'status'      => $this->status
         ];
+    }
+
+    /**
+     * Agregar medicamento a entregas editables
+     */
+    private function addToEditableDeliveries(PatientMedicine $patientMedicine)
+    {
+        // Obtener entregas editables (fecha de inicio posterior a hoy)
+        $editableDeliveries = MedicineDelivery::where('start_date', '>', now()->toDateString())->get();
+        $addedCount = 0;
+        
+        foreach ($editableDeliveries as $delivery) {
+            // Verificar si el usuario ya está en esta entrega
+            $deliveryPatient = DeliveryPatient::where('medicine_delivery_id', $delivery->id)
+                ->where('user_id', $this->user->id)
+                ->first();
+            
+            // Si el usuario está en la entrega, agregar el medicamento
+            if ($deliveryPatient) {
+                // Verificar que el medicamento no esté ya agregado
+                $existingMedicine = DeliveryMedicine::where('delivery_patient_id', $deliveryPatient->id)
+                    ->where('patient_medicine_id', $patientMedicine->id)
+                    ->exists();
+                
+                if (!$existingMedicine) {
+                    DeliveryMedicine::create([
+                        'delivery_patient_id' => $deliveryPatient->id,
+                        'patient_medicine_id' => $patientMedicine->id,
+                        'included' => true
+                    ]);
+                    $addedCount++;
+                }
+            }
+        }
+        
+        return $addedCount;
+    }
+
+    /**
+     * Manejar cambios de estado del medicamento
+     */
+    private function handleStatusChange(PatientMedicine $patientMedicine, $oldStatus, $newStatus)
+    {
+        // Si cambia de no activo a activo, agregar a entregas
+        if ($oldStatus !== 'active' && $newStatus === 'active') {
+            $this->addToEditableDeliveries($patientMedicine);
+        }
+        // Si cambia de activo a no activo, eliminar de entregas
+        elseif ($oldStatus === 'active' && $newStatus !== 'active') {
+            $this->removeFromEditableDeliveries($patientMedicine);
+        }
+    }
+
+    /**
+     * Eliminar medicamento de entregas editables
+     */
+    private function removeFromEditableDeliveries(PatientMedicine $patientMedicine)
+    {
+        // Obtener entregas editables
+        $editableDeliveries = MedicineDelivery::where('start_date', '>', now()->toDateString())->get();
+        $removedCount = 0;
+        
+        foreach ($editableDeliveries as $delivery) {
+            // Verificar si el usuario está en esta entrega
+            $deliveryPatient = DeliveryPatient::where('medicine_delivery_id', $delivery->id)
+                ->where('user_id', $this->user->id)
+                ->first();
+            
+            if ($deliveryPatient) {
+                // Eliminar el medicamento de la entrega
+                $deleted = DeliveryMedicine::where('delivery_patient_id', $deliveryPatient->id)
+                    ->where('patient_medicine_id', $patientMedicine->id)
+                    ->delete();
+                
+                if ($deleted) {
+                    $removedCount++;
+                }
+            }
+        }
+        
+        return $removedCount;
     }
 
     /**
