@@ -24,11 +24,20 @@ class MedicineDelivery extends Model
 
     public function scopeEditable($query)
     {
-        return $query->where('start_date', '>', now()->toDateString());
+        $currentMonth = now()->format('Y-m');
+        return $query->whereRaw('DATE_FORMAT(start_date, "%Y-%m") = ?', [$currentMonth]);
     }
 
     public function isEditable(): bool
     {
-        return $this->start_date > now()->toDateString();
+        $currentMonth = now()->format('Y-m');
+        return $this->start_date->format('Y-m') === $currentMonth;
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($delivery) {
+            $delivery->deliveryPatients()->delete();
+        });
     }
 }

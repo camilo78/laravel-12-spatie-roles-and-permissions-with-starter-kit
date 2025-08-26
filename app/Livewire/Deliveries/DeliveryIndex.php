@@ -47,6 +47,22 @@ class DeliveryIndex extends BaseIndexComponent
     }
 
     /**
+     * Elimina una entrega y todas sus relaciones
+     */
+    public function deleteDelivery($deliveryId)
+    {
+        $delivery = MedicineDelivery::findOrFail($deliveryId);
+        
+        if ($delivery->start_date->format('Y-m') <= now()->format('Y-m')) {
+            session()->flash('error', 'No se puede eliminar una entrega del mes actual o anterior.');
+            return;
+        }
+        
+        $delivery->delete();
+        session()->flash('success', 'Entrega eliminada exitosamente.');
+    }
+
+    /**
      * Renderiza el componente con la lista de entregas
      */
     public function render(): View
