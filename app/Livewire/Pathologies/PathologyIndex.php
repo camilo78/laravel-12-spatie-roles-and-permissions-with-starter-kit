@@ -2,36 +2,56 @@
 
 namespace App\Livewire\Pathologies;
 
+use App\Livewire\BaseIndexComponent;
 use App\Models\Pathology;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class PathologyIndex extends Component
+/**
+ * Componente para el índice de patologías
+ * Extiende BaseIndexComponent para funcionalidad estandarizada
+ */
+class PathologyIndex extends BaseIndexComponent
 {
-    use WithPagination;
-
-    public $search = '';
-
-    public function updatingSearch()
+    /**
+     * Define los campos donde se puede buscar
+     */
+    protected function getSearchableFields(): array
     {
-        $this->resetPage();
+        return [
+            'clave' => 'like',
+            'descripcion' => 'like'
+        ];
     }
 
-    public function delete($id)
+    /**
+     * Define los campos permitidos para ordenamiento
+     */
+    protected function getSortableFields(): array
     {
-        Pathology::find($id)->delete();
-        session()->flash('success', 'Patología eliminada exitosamente.');
+        return ['id', 'clave', 'descripcion', 'created_at'];
     }
 
+    /**
+     * Obtiene la clase del modelo Pathology
+     */
+    protected function getModelClass(): string
+    {
+        return Pathology::class;
+    }
+
+    /**
+     * Renderiza el componente con la lista de patologías
+     */
     public function render()
     {
-        $pathologies = Pathology::when($this->search, function ($query) {
-            $query->where('clave', 'like', '%' . $this->search . '%')
-                  ->orWhere('descripcion', 'like', '%' . $this->search . '%');
-        })
-        ->orderBy('clave')
-        ->paginate(10);
-
+        $pathologies = $this->buildQuery();
         return view('livewire.pathologies.pathology-index', compact('pathologies'));
+    }
+
+    /**
+     * Elimina una patología
+     */
+    public function delete($id, $successMessage = 'Patología eliminada exitosamente.')
+    {
+        parent::delete($id, $successMessage);
     }
 }

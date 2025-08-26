@@ -47,20 +47,29 @@ class UserMedicines extends Component
 
     /**
      * Se ejecuta cuando cambia el texto de búsqueda de medicamento
+     * Aplica sanitización y búsqueda segura
      */
     public function updatedMedicineSearch(string $value): void
     {
-        $value = rtrim($value);
+        $sanitizedValue = trim(preg_replace('/[^\p{L}\p{N}\s\-_.]/u', '', $value));
         
-        if (empty($value)) {
+        if (empty($sanitizedValue) || strlen($sanitizedValue) < 2) {
             $this->filtered_medicines = [];
             return;
         }
 
-        $this->filtered_medicines = Medicine::where(function($query) use ($value) {
-            $query->where('generic_name', 'like', '%' . $value . '%')
-                  ->orWhere('presentation', 'like', '%' . $value . '%');
-        })->get();
+        try {
+            $this->filtered_medicines = Medicine::where(function($query) use ($sanitizedValue) {
+                $query->where('generic_name', 'like', '%' . $sanitizedValue . '%')
+                      ->orWhere('presentation', 'like', '%' . $sanitizedValue . '%')
+                      ->orWhere('name', 'like', '%' . $sanitizedValue . '%');
+            })
+            ->limit(10)
+            ->get();
+        } catch (\Exception $e) {
+            \Log::error('Error en búsqueda de medicamentos: ' . $e->getMessage());
+            $this->filtered_medicines = [];
+        }
     }
 
     /**

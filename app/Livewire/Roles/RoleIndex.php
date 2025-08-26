@@ -2,63 +2,86 @@
 
 namespace App\Livewire\Roles;
 
-use Illuminate\View\View;
-use Livewire\Component;
+use App\Livewire\BaseIndexComponent;
 use Spatie\Permission\Models\Role;
+use Illuminate\View\View;
 
 /**
- * Componente Livewire para mostrar el listado de roles
- * 
- * Este componente maneja la visualización y eliminación de roles
- * del sistema con sus permisos asociados
- * 
- * @package App\Livewire\Roles
+ * Componente para el índice de roles
+ * Extiende BaseIndexComponent para funcionalidad estandarizada
  */
-class RoleIndex extends Component
+class RoleIndex extends BaseIndexComponent
 {
     /**
-     * Renderiza la vista del componente con el listado de roles
-     * 
-     * Carga todos los roles con sus permisos asociados ordenados
-     * por fecha de creación descendente
-     * 
-     * @return View
+     * Define los campos donde se puede buscar
      */
-    public function render(): View
+    protected function getSearchableFields(): array
     {
-        return view('livewire.roles.role-index', [
-            // Cargar roles con sus permisos para evitar consultas N+1
-            'roles' => Role::with('permissions')->latest()->get(),
-        ]);
+        return [
+            'name' => 'like',
+            'guard_name' => 'like'
+        ];
     }
 
     /**
-     * Elimina un rol del sistema
-     * 
-     * Verifica que el rol no sea administrador y no esté siendo usado
-     * por ningún usuario antes de eliminarlo
-     * 
-     * @param Role $role Rol a eliminar
-     * @return void
+     * Define los campos permitidos para ordenamiento
      */
-    public function deleteRole(Role $role): void
+    protected function getSortableFields(): array
     {
-        // Verificar si es el rol administrador
-        if (strtolower($role->name) === 'administrador' || strtolower($role->name) === 'administrator') {
+        return ['id', 'name', 'guard_name', 'created_at'];
+    }
+
+    /**
+     * Obtiene la clase del modelo Role
+     */
+    protected function getModelClass(): string
+    {
+        return Role::class;
+    }
+
+    /**
+     * Define las relaciones a cargar con eager loading
+     */
+    protected function getEagerLoadRelations(): array
+    {
+        return ['permissions'];
+    }
+
+    /**
+     * Renderiza el componente con la lista de roles
+     */
+    public function render(): View
+    {
+        $roles = $this->buildQuery();
+        return view('livewire.roles.role-index', compact('roles'));
+    }
+
+    /**
+     * Verifica si un rol puede ser eliminado
+     */
+    protected function canDelete($role): bool
+    {
+        $isAdmin = strtolower($role->name) === 'administrador' || strtolower($role->name) === 'administrator';
+        $hasUsers = $role->users()->count() > 0;
+        
+        if ($isAdmin) {
             session()->flash('error', 'No se puede eliminar el rol administrador.');
-            return;
+            return false;
         }
-
-        // Verificar si el rol está siendo usado por algún usuario
-        if ($role->users()->count() > 0) {
+        
+        if ($hasUsers) {
             session()->flash('error', 'No se puede eliminar un rol que está siendo usado por usuarios.');
-            return;
+            return false;
         }
+        
+        return true;
+    }
 
-        // Eliminar el rol (los permisos se desvinculan automáticamente)
-        $role->delete();
-
-        // Mostrar mensaje de éxito
-        session()->flash('success', 'Rol eliminado exitosamente.');
+    /**
+     * Elimina un rol
+     */
+    public function deleteRole($roleId)
+    {
+        $this->delete($roleId, 'Rol eliminado exitosamente.');
     }
 }

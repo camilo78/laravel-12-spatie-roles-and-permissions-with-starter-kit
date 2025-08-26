@@ -2,37 +2,56 @@
 
 namespace App\Livewire\Medicines;
 
+use App\Livewire\BaseIndexComponent;
 use App\Models\Medicine;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class MedicineIndex extends Component
+/**
+ * Componente para el índice de medicamentos
+ * Extiende BaseIndexComponent para funcionalidad estandarizada
+ */
+class MedicineIndex extends BaseIndexComponent
 {
-    use WithPagination;
-
-    public $search = '';
-
-    public function updatingSearch()
+    /**
+     * Define los campos donde se puede buscar
+     */
+    protected function getSearchableFields(): array
     {
-        $this->resetPage();
+        return [
+            'generic_name' => 'like',
+            'presentation' => 'like'
+        ];
     }
 
-    public function delete($id)
+    /**
+     * Define los campos permitidos para ordenamiento
+     */
+    protected function getSortableFields(): array
     {
-        Medicine::find($id)->delete();
-        session()->flash('success', 'Medicamento eliminado exitosamente.');
+        return ['id', 'generic_name', 'presentation', 'created_at'];
     }
 
+    /**
+     * Obtiene la clase del modelo Medicine
+     */
+    protected function getModelClass(): string
+    {
+        return Medicine::class;
+    }
+
+    /**
+     * Renderiza el componente con la lista de medicamentos
+     */
     public function render()
     {
-        $medicines = Medicine::when(trim($this->search), function ($query) {
-            $searchTerm = trim($this->search);
-            $query->where('generic_name', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('presentation', 'like', '%' . $searchTerm . '%');
-        })
-        ->orderBy('generic_name')
-        ->paginate(10);
-
+        $medicines = $this->buildQuery();
         return view('livewire.medicines.medicine-index', compact('medicines'));
+    }
+
+    /**
+     * Elimina un medicamento
+     */
+    public function delete($id, $successMessage = 'Medicamento eliminado exitosamente.')
+    {
+        parent::delete($id, $successMessage);
     }
 }

@@ -2,62 +2,77 @@
 
 namespace App\Livewire\Users;
 
-use Livewire\Component;
-use Livewire\WithPagination;
+use App\Livewire\BaseIndexComponent;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Componente Livewire para el índice de usuarios
- * 
- * Gestiona la lista de usuarios con funcionalidades de búsqueda,
- * paginación, cambio de estado y eliminación.
+ * Extiende BaseIndexComponent para funcionalidad estandarizada
  */
-class UserIndex extends Component
+class UserIndex extends BaseIndexComponent
 {
-    use WithPagination;
-
-    // Propiedades públicas
-    public string $search = '';
-    public int $perPage = 10;
-    
-    // Configuración de paginación
-    protected $paginationTheme = 'tailwind';
-    
-    // Listeners para eventos
+    // Listeners para eventos específicos de usuarios
     protected $listeners = ['refreshUsers' => '$refresh'];
 
     /**
-     * Se ejecuta cuando cambia el valor de búsqueda
-     * Reinicia la paginación para mostrar resultados desde la primera página
+     * Define los campos donde se puede buscar
+     * 
+     * @return array Campos de búsqueda con sus tipos
      */
-    public function updatedSearch(): void
+    protected function getSearchableFields(): array
     {
-        $this->resetPage();
+        return [
+            'name' => 'like',
+            'dni' => 'like',
+            'email' => 'like',
+            'phone' => 'like'
+        ];
     }
 
     /**
-     * Renderiza el componente con la lista de usuarios filtrada
+     * Define los campos permitidos para ordenamiento
+     * 
+     * @return array Campos ordenables
+     */
+    protected function getSortableFields(): array
+    {
+        return ['id', 'name', 'dni', 'email', 'created_at', 'status'];
+    }
+
+    /**
+     * Obtiene la clase del modelo User
+     * 
+     * @return string Clase del modelo
+     */
+    protected function getModelClass(): string
+    {
+        return User::class;
+    }
+
+    /**
+     * Define las relaciones a cargar con eager loading
+     * 
+     * @return array Relaciones a cargar
+     */
+    protected function getEagerLoadRelations(): array
+    {
+        return ['roles', 'department', 'municipality', 'locality'];
+    }
+
+    /**
+     * Renderiza el componente con la lista de usuarios
      */
     public function render()
     {
-        $searchTerm = trim($this->search);
-        
-        $users = User::query()
-            ->when($searchTerm, function ($query) use ($searchTerm) {
-                $query->where(function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('name', 'like', "%{$searchTerm}%")
-                             ->orWhere('dni', 'like', "%{$searchTerm}%");
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate($this->perPage)
-            ->onEachSide(1);
-
+        $users = $this->buildQuery();
         return view('livewire.users.user-index', compact('users'));
     }
 
     /**
      * Cambia el estado activo/inactivo de un usuario
+     * 
+     * @param User $user Usuario a modificar
      */
     public function toggleStatus(User $user): void
     {
@@ -67,32 +82,30 @@ class UserIndex extends Component
             
             session()->flash('success', "Usuario {$status} exitosamente.");
         } catch (\Exception $e) {
+            Log::error('Error al cambiar estado de usuario: ' . $e->getMessage(), ['user_id' => $user->id]);
             session()->flash('error', 'Error al cambiar el estado del usuario.');
         }
     }
 
     /**
-     * Elimina un usuario del sistema
+     * Verifica si un usuario puede ser eliminado
      * 
-     * Verifica que el usuario no tenga rol de administrador
-     * antes de proceder con la eliminación
+     * @param User $user Usuario a verificar
+     * @return bool True si puede ser eliminado
      */
-    public function deleteUser(User $user): void
+    protected function canDelete($user): bool
     {
-        try {
-            // Verificar si el usuario tiene rol de administrador
-            if ($user->hasRole('administrador') || $user->hasRole('administrator')) {
-                session()->flash('error', 'No se puede eliminar un usuario con rol de administrador.');
-                return;
-            }
+        return !($user->hasRole('administrador') || $user->hasRole('administrator'));
+    }
 
-            $userName = $user->name;
-            $user->delete();
-            
-            session()->flash('success', "Usuario '{$userName}' eliminado exitosamente.");
-        } catch (\Exception $e) {
-            session()->flash('error', 'Error al eliminar el usuario. Verifique que no tenga datos relacionados.');
-        }
+    /**
+     * Elimina un usuario usando el método base con validaciones específicas
+     * 
+     * @param int $userId ID del usuario a eliminar
+     */
+    public function deleteUser($userId): void
+    {
+        $this->delete($userId, 'Usuario eliminado exitosamente.');
     }
 }
 

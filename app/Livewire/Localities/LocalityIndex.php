@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Localities;
 
+use App\Livewire\BaseIndexComponent;
 use App\Models\Department;
 use App\Models\Municipality;
 use App\Models\Locality;
 use Illuminate\View\View;
-use Livewire\Component;
-use Livewire\WithPagination;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Componente Livewire para mostrar el listado de localidades
@@ -17,9 +17,8 @@ use Livewire\WithPagination;
  * 
  * @package App\Livewire\Localities
  */
-class LocalityIndex extends Component
+class LocalityIndex extends BaseIndexComponent
 {
-    use WithPagination;
 
     /**
      * ID del departamento seleccionado para filtrar
@@ -35,12 +34,7 @@ class LocalityIndex extends Component
      */
     public $selectedMunicipality = '';
 
-    /**
-     * Término de búsqueda para filtrar localidades
-     * 
-     * @var string
-     */
-    public $search = '';
+
 
     /**
      * Inicializa el componente con valores de la URL
@@ -79,32 +73,73 @@ class LocalityIndex extends Component
         $this->resetPage();
     }
 
+
+
     /**
-     * Se ejecuta cuando cambia el término de búsqueda
-     * Resetea la paginación
+     * Define los campos donde se puede buscar
      * 
-     * @return void
+     * @return array Campos de búsqueda con sus tipos
      */
-    public function updatedSearch(): void
+    protected function getSearchableFields(): array
     {
-        // Resetear paginación al cambiar búsqueda
-        $this->resetPage();
+        return [
+            'name' => 'like'
+        ];
     }
 
     /**
-     * Elimina una localidad del sistema
+     * Define los campos permitidos para ordenamiento
+     * 
+     * @return array Campos ordenables
+     */
+    protected function getSortableFields(): array
+    {
+        return ['id', 'name', 'created_at'];
+    }
+
+    /**
+     * Obtiene la clase del modelo Locality
+     * 
+     * @return string Clase del modelo
+     */
+    protected function getModelClass(): string
+    {
+        return Locality::class;
+    }
+
+    /**
+     * Define las relaciones a cargar con eager loading
+     * 
+     * @return array Relaciones a cargar
+     */
+    protected function getEagerLoadRelations(): array
+    {
+        return ['municipality.department'];
+    }
+
+    /**
+     * Aplica filtros adicionales específicos de localidades
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyAdditionalFilters($query)
+    {
+        if (empty($this->selectedMunicipality)) {
+            return $query->whereRaw('1 = 0');
+        }
+        
+        return $query->where('municipality_id', $this->selectedMunicipality);
+    }
+
+    /**
+     * Elimina una localidad usando el método base
      * 
      * @param int $localityId ID de la localidad a eliminar
-     * @return void
      */
-    public function deleteLocality($localityId): void
+    public function deleteLocality($localityId)
     {
-        // Buscar y eliminar la localidad si existe
-        $locality = Locality::find($localityId);
-        if ($locality) {
-            $locality->delete();
-            session()->flash('success', 'Localidad eliminada exitosamente.');
-        }
+        $this->delete($localityId, 'Localidad eliminada exitosamente.');
     }
 
     /**
@@ -122,17 +157,8 @@ class LocalityIndex extends Component
             ? Municipality::where('department_id', $this->selectedDepartment)->orderBy('name')->get()
             : collect();
 
-        // Cargar localidades solo si hay municipio seleccionado
-        $localities = collect();
-        if ($this->selectedMunicipality) {
-            $localities = Locality::with('municipality')
-                ->where('municipality_id', $this->selectedMunicipality)
-                ->when($this->search, function ($query) {
-                    // Filtrar por nombre si hay término de búsqueda
-                    $query->where('name', 'like', '%' . $this->search . '%');
-                })
-                ->paginate(10);
-        }
+        // Cargar localidades usando el método estandarizado
+        $localities = $this->selectedMunicipality ? $this->buildQuery() : collect();
 
         return view('livewire.localities.locality-index', [
             'departments' => $departments,

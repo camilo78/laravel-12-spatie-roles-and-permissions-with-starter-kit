@@ -2,58 +2,56 @@
 
 namespace App\Livewire\Deliveries;
 
+use App\Livewire\BaseIndexComponent;
 use App\Models\MedicineDelivery;
 use Illuminate\View\View;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 /**
- * Componente Livewire para mostrar el listado de entregas de medicamentos
- * 
- * Este componente maneja la visualización y filtrado de entregas
- * de medicamentos con paginación
- * 
- * @package App\Livewire\Deliveries
+ * Componente para el índice de entregas de medicamentos
+ * Extiende BaseIndexComponent para funcionalidad estandarizada
  */
-class DeliveryIndex extends Component
+class DeliveryIndex extends BaseIndexComponent
 {
-    use WithPagination;
-
     /**
-     * Término de búsqueda para filtrar entregas
-     * 
-     * @var string
+     * Define los campos donde se puede buscar
      */
-    public $search = '';
-
-    /**
-     * Se ejecuta cuando cambia el término de búsqueda
-     * Resetea la paginación
-     * 
-     * @return void
-     */
-    public function updatedSearch(): void
+    protected function getSearchableFields(): array
     {
-        // Resetear paginación al cambiar búsqueda
-        $this->resetPage();
+        return [
+            'name' => 'like'
+        ];
     }
 
     /**
-     * Renderiza la vista del componente con entregas filtradas
-     * 
-     * @return View
+     * Define los campos permitidos para ordenamiento
+     */
+    protected function getSortableFields(): array
+    {
+        return ['id', 'name', 'start_date', 'end_date', 'created_at'];
+    }
+
+    /**
+     * Obtiene la clase del modelo MedicineDelivery
+     */
+    protected function getModelClass(): string
+    {
+        return MedicineDelivery::class;
+    }
+
+    /**
+     * Define las relaciones a cargar con eager loading
+     */
+    protected function getEagerLoadRelations(): array
+    {
+        return ['deliveryPatients'];
+    }
+
+    /**
+     * Renderiza el componente con la lista de entregas
      */
     public function render(): View
     {
-        // Obtener entregas con filtro de búsqueda y paginación
-        $deliveries = MedicineDelivery::query()
-            ->when($this->search, fn($query) => 
-                // Filtrar por nombre si hay término de búsqueda
-                $query->where('name', 'like', "%{$this->search}%")
-            )
-            ->latest() // Ordenar por fecha de creación descendente
-            ->paginate(10);
-
+        $deliveries = $this->buildQuery();
         return view('livewire.deliveries.delivery-index', compact('deliveries'));
     }
 }

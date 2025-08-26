@@ -253,9 +253,9 @@
                                             })->count();
                                         @endphp
                                         <div class="text-sm">
-                                            <div class="text-green-600 dark:text-green-400">✓ {{ $patientsWithDeliveries }} entregados</div>
+                                            <div class="text-green-600 dark:text-green-400">✓ {{ $patientsWithDeliveries }} entregas totales</div>
                                             @if($patientsWithoutDeliveries > 0)
-                                                <div class="text-red-600 dark:text-red-400">✗ {{ $patientsWithoutDeliveries }} no entregados</div>
+                                                <div class="text-red-600 dark:text-red-400">✗ {{ $patientsWithoutDeliveries }} entregas paraciales</div>
                                             @endif
                                             <div class="text-gray-500 dark:text-gray-400 text-xs mt-1">Total: {{ $totalPatients }}</div>
                                         </div>
