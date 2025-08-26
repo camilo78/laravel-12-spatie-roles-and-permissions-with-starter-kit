@@ -53,8 +53,8 @@ class DeliveryIndex extends BaseIndexComponent
     {
         $delivery = MedicineDelivery::findOrFail($deliveryId);
         
-        if ($delivery->start_date->format('Y-m') <= now()->format('Y-m')) {
-            session()->flash('error', 'No se puede eliminar una entrega del mes actual o anterior.');
+        if (!$delivery->isDeletable()) {
+            session()->flash('error', 'Solo se pueden eliminar entregas editables.');
             return;
         }
         

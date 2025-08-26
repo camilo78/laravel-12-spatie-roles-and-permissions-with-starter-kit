@@ -28,7 +28,8 @@ class PatientMedicineSeeder extends Seeder
                         'quantity' => fake()->numberBetween(1, 30),
                         'start_date' => fake()->dateTimeBetween('-1 year', 'now'),
                         'end_date' => fake()->optional()->dateTimeBetween('now', '+6 months'),
-                        'status' => fake()->randomElement(['active', 'suspended', 'completed']),
+                       // 'status' => fake()->randomElement(['active', 'suspended', 'completed']),
+                        'status' => fake()->randomElement(['active']),
                     ]
                 );
             }

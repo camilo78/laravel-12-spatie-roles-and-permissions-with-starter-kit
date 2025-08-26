@@ -25,7 +25,8 @@ class PatientPathologySeeder extends Seeder
                     ],
                     [
                         'diagnosed_at' => fake()->dateTimeBetween('-2 years', 'now'),
-                        'status' => fake()->randomElement(['active', 'inactive', 'controlled']),
+                        //'status' => fake()->randomElement(['active', 'inactive', 'controlled']),
+                        'status' => fake()->randomElement(['active']),
                     ]
                 );
             }

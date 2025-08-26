@@ -34,6 +34,11 @@ class MedicineDelivery extends Model
         return $this->start_date->format('Y-m') === $currentMonth;
     }
 
+    public function isDeletable(): bool
+    {
+        return $this->isEditable();
+    }
+
     protected static function booted()
     {
         static::deleting(function ($delivery) {

@@ -55,8 +55,8 @@
                                     class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none">
                                     <flux:icon.eye variant="micro" class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200" />
                                 </a>
-                                {{-- Botón eliminar (solo si es futura) --}}
-                                @if($delivery->start_date->format('Y-m') > now()->format('Y-m'))
+                                {{-- Botón eliminar (solo si es eliminable) --}}
+                                @if($delivery->isDeletable())
                                     <button wire:click="deleteDelivery({{ $delivery->id }})" 
                                         wire:confirm="¿Estás seguro de eliminar esta entrega?"
                                         class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none">

@@ -48,6 +48,31 @@ class DeliveryCreate extends Component
      * @var bool
      */
     public $isSubmitting = false;
+    
+    /**
+     * Valida que la fecha de inicio esté dentro del rango permitido:
+     * - Mes actual completo
+     * - 10 días antes del mes actual
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function validateStartDate()
+    {
+        $startDate = \Carbon\Carbon::parse($this->start_date);
+        $now = \Carbon\Carbon::now();
+        
+        // Calcular el rango permitido
+        $minDate = $now->copy()->startOfMonth()->subDays(10);
+        $maxDate = $now->copy()->endOfMonth();
+        
+        if ($startDate->lt($minDate) || $startDate->gt($maxDate)) {
+            $this->addError('start_date', 'La fecha de inicio debe estar entre ' . 
+                $minDate->format('d/m/Y') . ' y ' . $maxDate->format('d/m/Y') . '.');
+            throw new \Illuminate\Validation\ValidationException(
+                \Illuminate\Support\Facades\Validator::make([], [])
+            );
+        }
+    }
 
     /**
      * Reglas de validación del formulario
@@ -56,7 +81,7 @@ class DeliveryCreate extends Component
      */
     protected $rules = [
         'name' => 'required|string|max:255',
-        'start_date' => 'required|date|after:today',
+        'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date',
     ];
     
@@ -75,6 +100,9 @@ class DeliveryCreate extends Component
         try {
             // Validar los datos del formulario
             $this->validate();
+            
+            // Validación personalizada para start_date
+            $this->validateStartDate();
 
             // Usar transacción para asegurar consistencia de datos
             DB::transaction(function () {
