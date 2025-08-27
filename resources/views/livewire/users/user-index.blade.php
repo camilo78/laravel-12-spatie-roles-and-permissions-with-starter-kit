@@ -94,6 +94,7 @@
                     <th scope="col" class="px-6 py-3">DNI</th>
                     <th scope="col" class="px-6 py-3">Teléfono</th>
                     <th scope="col" class="px-6 py-3">Género</th>
+                    <th scope="col" class="px-6 py-3">Fecha Ingreso</th>
                     <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
@@ -115,6 +116,9 @@
                         </td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300 capitalize">
                             {{ $user->gender ?? 'No especificado' }}
+                        </td>
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                            {{ $user->admission_date ? $user->admission_date->format('d/m/Y') : 'No especificado' }}
                         </td>
                         <td class="px-6 py-2 text-center">
                             <div
@@ -167,7 +171,7 @@
                     </tr>
                 @empty
                     <tr class="bg-white dark:bg-gray-800">
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                             No se encontraron usuarios.
                         </td>
                     </tr>

@@ -24,8 +24,12 @@
                 @endif
                 @if (auth()->user()->can('deliveries.index'))
                     <flux:navlist.item wire:navigate icon="truck" :href="route('deliveries.index')"
-                        :current="request()->routeIs('deliveries.*')">
+                        :current="request()->routeIs('deliveries.index', 'deliveries.create', 'deliveries.edit', 'deliveries.show')">
                         Entregas
+                    </flux:navlist.item>
+                    <flux:navlist.item wire:navigate icon="calendar-days" :href="route('deliveries.weekly-schedule')"
+                        :current="request()->routeIs('deliveries.weekly-schedule')">
+                        Entregas Semanales
                     </flux:navlist.item>
                 @endif
             </flux:navlist.group>

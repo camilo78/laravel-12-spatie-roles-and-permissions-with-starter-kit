@@ -51,29 +51,61 @@
                         {{-- Contador de medicamentos incluidos vs total --}}
                         <td class="px-6 py-2">
                             @if ($deliveryPatient->deliveryMedicines->where('included', true)->count() == $deliveryPatient->deliveryMedicines->count())
-                                {{-- Todos los medicamentos incluidos --}}
                                 <flux:badge color="green" size="sm">
                                     El total de {{ $deliveryPatient->deliveryMedicines->count() }} medicamentos recetados
                                 </flux:badge>
                             @else
-                                {{-- Medicamentos parcialmente incluidos --}}
                                 <flux:badge color="yellow" size="sm">
                                     {{ $deliveryPatient->deliveryMedicines->where('included', true)->count() }} de
                                     {{ $deliveryPatient->deliveryMedicines->count() }} medicamentos
                                 </flux:badge>
                             @endif
                         </td>
-                        {{-- Estado de inclusión del paciente --}}
+                        {{-- Estado del paciente --}}
                         <td class="px-6 py-2">
                             @if ($delivery->isEditable())
-                                {{-- Switch para incluir/excluir paciente (solo si es editable) --}}
-                                <flux:switch wire:click="togglePatientInclusion({{ $deliveryPatient->id }})"
-                                    :checked="$deliveryPatient->included" size="sm" />
+                                <div x-data="{ selectedState: '{{ $deliveryPatient->state }}', notes: '{{ $deliveryPatient->delivery_notes }}' }">
+                                    {{-- Select para cambiar estado del paciente --}}
+                                    <select x-model="selectedState" wire:change="updatePatientState({{ $deliveryPatient->id }}, $event.target.value)" 
+                                        class="px-2 py-1 text-xs border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                        <option value="programada">Programada</option>
+                                        <option value="en_proceso">En Proceso</option>
+                                        <option value="entregada">Entregada</option>
+                                        <option value="no_entregada">No Entregada</option>
+                                    </select>
+                                    
+                                    {{-- Input y botón para notas (solo si es no_entregada) --}}
+                                    <div x-show="selectedState === 'no_entregada'" x-transition class="mt-2 flex gap-1">
+                                        <input type="text" x-model="notes" placeholder="Motivo de no entrega" 
+                                            class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                                        <button @click="$wire.updatePatientNotes({{ $deliveryPatient->id }}, notes)" 
+                                            class="px-2 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500">
+                                            💾
+                                        </button>
+                                    </div>
+                                </div>
                             @else
                                 {{-- Badge de estado (solo lectura) --}}
-                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full {{ $deliveryPatient->included ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }}">
-                                    {{ $deliveryPatient->included ? 'Incluido' : 'Excluido' }}
+                                @php
+                                    $stateColors = [
+                                        'programada' => 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
+                                        'en_proceso' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+                                        'entregada' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                                        'no_entregada' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                                    ];
+                                    $stateLabels = [
+                                        'programada' => 'Programada',
+                                        'en_proceso' => 'En Proceso',
+                                        'entregada' => 'Entregada',
+                                        'no_entregada' => 'No Entregada'
+                                    ];
+                                @endphp
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full {{ $stateColors[$deliveryPatient->state] }}">
+                                    {{ $stateLabels[$deliveryPatient->state] }}
                                 </span>
+                            @endif
+                            @if($deliveryPatient->delivery_notes)
+                                <div class="text-xs text-gray-500 mt-1">{{ $deliveryPatient->delivery_notes }}</div>
                             @endif
                         </td>
                         {{-- Botón para ver medicamentos del paciente --}}

@@ -175,8 +175,8 @@ class DashboardController extends Controller
             ]);
 
         // Patients with and without deliveries
-        $patientsWithDeliveries = \App\Models\DeliveryPatient::distinct('user_id')->count('user_id');
-        $patientsWithoutDeliveries = $totalUsers - $patientsWithDeliveries;
+        $patientsWithDeliveries = \App\Models\DeliveryPatient::where('state', 'entregada')->distinct('user_id')->count('user_id');
+        $patientsWithoutDeliveries = \App\Models\DeliveryPatient::where('state', 'no_entregada')->distinct('user_id')->count('user_id');
 
         return view('dashboard', compact(
             'chart', 'genderChart', 'deliveryChart', 'municipalityChart', 

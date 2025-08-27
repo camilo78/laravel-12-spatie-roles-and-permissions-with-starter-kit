@@ -33,6 +33,7 @@ class User extends Authenticatable
         'locality_id',
         'gender',
         'status',
+        'admission_date',
         'password',
     ];
 
@@ -53,6 +54,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => 'boolean',
+            'admission_date' => 'date',
         ];
     }
 
@@ -151,5 +153,34 @@ class User extends Authenticatable
         return Attribute::get(fn() => $this->locality?->name);
     }
 
+    /**
+     * Calcula la próxima fecha de entrega mensual basada en la fecha de ingreso
+     */
+    public function getNextDeliveryDate(): ?\Carbon\Carbon
+    {
+        if (!$this->admission_date) return null;
+        
+        $admissionDate = \Carbon\Carbon::parse($this->admission_date);
+        $today = \Carbon\Carbon::today();
+        
+        // Calcular próxima fecha mensual
+        $nextDelivery = $admissionDate->copy();
+        while ($nextDelivery->lt($today)) {
+            $nextDelivery->addMonth();
+        }
+        
+        return $nextDelivery;
+    }
+
+    /**
+     * Scope para usuarios elegibles para entrega mensual en una fecha específica
+     */
+    public function scopeForMonthlyDelivery($query, $deliveryDate)
+    {
+        return $query->whereNotNull('admission_date')
+                    ->where('status', true)
+                    ->whereRaw('DATE_ADD(admission_date, INTERVAL TIMESTAMPDIFF(MONTH, admission_date, ?) MONTH) = ?', 
+                             [$deliveryDate, $deliveryDate]);
+    }
 
 }

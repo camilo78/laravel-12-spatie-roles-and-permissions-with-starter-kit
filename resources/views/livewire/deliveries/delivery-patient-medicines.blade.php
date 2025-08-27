@@ -42,8 +42,8 @@
                         </div>
                         
                         {{-- Control de inclusión del medicamento --}}
-                        @if($deliveryPatient->medicineDelivery->isEditable())
-                            {{-- Switch para incluir/excluir medicamento (solo si es editable) --}}
+                        @if($deliveryPatient->medicineDelivery->isEditable() && $deliveryPatient->canEditMedicines())
+                            {{-- Switch para incluir/excluir medicamento --}}
                             <flux:switch wire:click="toggleMedicineInclusion({{ $deliveryMedicine->id }})" 
                                 :checked="$deliveryMedicine->included" />
                         @else
@@ -82,8 +82,8 @@
             @endforeach
 
         
-        {{-- Botón para guardar cambios (solo si es editable) --}}
-        @if($deliveryPatient->medicineDelivery->isEditable())
+        {{-- Botón para guardar cambios (solo si es editable y paciente permite edición) --}}
+        @if($deliveryPatient->medicineDelivery->isEditable() && $deliveryPatient->canEditMedicines())
             <div class="flex justify-end gap-3 mt-6">
                 <flux:button class="px-4 py-2" type="submit" variant="primary"> Guardar Cambios</flux:button>
             </div>

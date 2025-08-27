@@ -35,12 +35,48 @@ class DeliveryShow extends Component
         $this->sortDirection = 'asc';
     }
 
-    /**
-     * Cambia el estado de inclusión de un paciente en la entrega
-     * 
-     * @param int $deliveryPatientId ID del paciente en la entrega
-     */
-    public function togglePatientInclusion($deliveryPatientId)
+    public function updatePatientState($deliveryPatientId, $newState)
+    {
+        if (!$this->delivery->isEditable()) {
+            session()->flash('error', 'Esta entrega no es editable.');
+            return;
+        }
+        
+        $validStates = [DeliveryPatient::STATE_PROGRAMADA, DeliveryPatient::STATE_EN_PROCESO, DeliveryPatient::STATE_ENTREGADA, DeliveryPatient::STATE_NO_ENTREGADA];
+        if (!in_array($newState, $validStates)) {
+            session()->flash('error', 'Estado no válido.');
+            return;
+        }
+        
+        try {
+            $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
+            $updateData = ['state' => $newState];
+            
+            // Limpiar notas si no es no_entregada
+            if ($newState !== DeliveryPatient::STATE_NO_ENTREGADA) {
+                $updateData['delivery_notes'] = null;
+            }
+            
+            $deliveryPatient->update($updateData);
+            
+            $stateLabels = [
+                'programada' => 'Programada',
+                'en_proceso' => 'En Proceso',
+                'entregada' => 'Entregada',
+                'no_entregada' => 'No Entregada'
+            ];
+            
+            session()->flash('success', "Estado actualizado a {$stateLabels[$newState]} exitosamente.");
+            
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar estado de paciente: ' . $e->getMessage(), [
+                'delivery_patient_id' => $deliveryPatientId
+            ]);
+            session()->flash('error', 'Error al actualizar el estado del paciente.');
+        }
+    }
+    
+    public function updatePatientNotes($deliveryPatientId, $notes)
     {
         if (!$this->delivery->isEditable()) {
             session()->flash('error', 'Esta entrega no es editable.');
@@ -49,16 +85,20 @@ class DeliveryShow extends Component
         
         try {
             $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
-            $deliveryPatient->update(['included' => !$deliveryPatient->included]);
             
-            $status = $deliveryPatient->included ? 'incluido' : 'excluido';
-            session()->flash('success', "Paciente {$status} exitosamente.");
+            if ($deliveryPatient->state !== DeliveryPatient::STATE_NO_ENTREGADA) {
+                session()->flash('error', 'Solo se pueden agregar notas a pacientes no entregados.');
+                return;
+            }
+            
+            $deliveryPatient->update(['delivery_notes' => $notes]);
+            session()->flash('success', 'Notas guardadas exitosamente.');
             
         } catch (\Exception $e) {
-            Log::error('Error al cambiar inclusión de paciente: ' . $e->getMessage(), [
+            Log::error('Error al actualizar notas de paciente: ' . $e->getMessage(), [
                 'delivery_patient_id' => $deliveryPatientId
             ]);
-            session()->flash('error', 'Error al actualizar el estado del paciente.');
+            session()->flash('error', 'Error al guardar las notas.');
         }
     }
 

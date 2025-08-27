@@ -43,7 +43,7 @@ class MedicineDeliverySeeder extends Seeder
                 $deliveryPatient = DeliveryPatient::create([
                     'medicine_delivery_id' => $delivery->id,
                     'user_id' => $user->id,
-                    'included' => true,
+                    'state' => 'programada',
                 ]);
 
                 // Obtener medicamentos del usuario

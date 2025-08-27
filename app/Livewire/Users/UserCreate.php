@@ -29,6 +29,7 @@ class UserCreate extends Component
     public string $phone = '';
     public string $address = '';
     public string $gender = '';
+    public ?string $admission_date = null;
 
     
     // Ubicación geográfica
@@ -144,6 +145,7 @@ class UserCreate extends Component
             'phone' => 'nullable|string|max:255',
             'address' => 'required|string|max:500',
             'gender' => 'required|in:Masculino,Femenino',
+            'admission_date' => 'required|date|before_or_equal:today',
             'roles' => 'required|array|min:1',
             'roles.*' => 'exists:roles,name',
             'department_id' => 'required|exists:departments,id',
@@ -168,6 +170,9 @@ class UserCreate extends Component
             'address.required' => 'La dirección es obligatoria.',
             'address.max' => 'La dirección no puede tener más de 500 caracteres.',
             'gender.required' => 'Debe seleccionar un género.',
+            'admission_date.required' => 'La fecha de ingreso es obligatoria.',
+            'admission_date.date' => 'La fecha de ingreso debe ser una fecha válida.',
+            'admission_date.before_or_equal' => 'La fecha de ingreso no puede ser futura.',
             'roles.required' => 'Debe seleccionar al menos un rol.',
             'department_id.required' => 'Debe seleccionar un departamento.',
             'municipality_id.required' => 'Debe seleccionar un municipio.',
@@ -202,6 +207,7 @@ class UserCreate extends Component
                     'address' => trim($this->address),
                     'gender' => $this->gender,
                     'status' => $this->status,
+                    'admission_date' => $this->admission_date,
                     'password' => Hash::make($this->dni),
                     'department_id' => $this->department_id,
                     'municipality_id' => $this->municipality_id,

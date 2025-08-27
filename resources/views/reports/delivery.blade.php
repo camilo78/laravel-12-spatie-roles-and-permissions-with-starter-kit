@@ -24,7 +24,7 @@
             color: #666;
         }
         .page-number:after {
-            content: "Página " counter(page) " de {{ $estimatedPages + 1 }}";
+            content: "Página " counter(page);
         }
     </style>
 </head>
@@ -39,12 +39,14 @@
         </div>
         <div style="clear: both;"></div>
     </div>
+    
+    <div class="page-number"></div>
 
     <div class="section">
         <h3>Resumen Estadístico</h3>
         <table>
             <tr>
-                <td><strong>Total de Pacientes:</strong></td>
+                <td><strong>Pacientes Entregados:</strong></td>
                 <td>{{ $totalPatients }}</td>
                 <td><strong>Hombres:</strong></td>
                 <td>{{ $malePatients }}</td>
@@ -90,13 +92,13 @@
                 @foreach($municipalities as $municipality => $count)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $municipality ?: 'No especificado' }}</td>
+                    <td>{{ $municipality }}</td>
                     <td>{{ $count }}</td>
                 </tr>
                 @endforeach
                 <tr>
                     <th colspan="2">Total</th>
-                    <th>{{ $totalMunicipalities }}</th>
+                    <th>{{ $municipalities->sum() }}</th>
                 </tr>
             </tbody>
         </table>
@@ -191,82 +193,116 @@
     </div>
 
     <div class="section">
-        <h3>Detalle de Medicamentos por Paciente</h3>
+        <h3>Detalle de Entregas por Paciente</h3>
         <table>
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Paciente</th>
                     <th>DNI</th>
-                    <th>Medicamento</th>
-                    <th>Presentación</th>
-                    <th style="text-align: right;">Cantidad</th>
+                    <th>Estado Entrega</th>
+                    <th>Medicamentos</th>
                 </tr>
             </thead>
             <tbody>
-                @php $counter = 1; @endphp
-                @foreach($delivery->deliveryPatients as $patient)
-                    @foreach($patient->deliveryMedicines as $deliveryMedicine)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td>{{ $patient->user->name }}</td>
-                            <td>{{ $patient->user->dni ?: 'N/A' }}</td>
-                            <td>{{ $deliveryMedicine->patientMedicine->medicine->generic_name }}</td>
-                            <td>{{ $deliveryMedicine->patientMedicine->medicine->presentation ?? 'N/A' }}</td>
-                            <td style="text-align: right;">{{ $deliveryMedicine->patientMedicine->quantity }}</td>
-                        </tr>
-                    @endforeach
+                @foreach($delivery->deliveryPatients->where('state', 'entregada') as $index => $patient)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $patient->user->name }}</td>
+                        <td>{{ $patient->user->dni ?: 'N/A' }}</td>
+                        <td>
+                            @php
+                                $stateColors = [
+                                    'programada' => '#666',
+                                    'en_proceso' => '#f59e0b',
+                                    'entregada' => '#10b981',
+                                    'no_entregada' => '#ef4444'
+                                ];
+                                $stateLabels = [
+                                    'programada' => 'Programada',
+                                    'en_proceso' => 'En Proceso',
+                                    'entregada' => 'Entregada',
+                                    'no_entregada' => 'No Entregada'
+                                ];
+                            @endphp
+                            <span style="color: {{ $stateColors[$patient->state] }}; font-weight: bold;">
+                                {{ $stateLabels[$patient->state] }}
+                            </span>
+                        </td>
+                        <td>
+                            @foreach($patient->deliveryMedicines as $deliveryMedicine)
+                                <div style="margin-bottom: 3px; padding: 2px; {{ $deliveryMedicine->included ? 'background-color: #f0f9ff;' : 'background-color: #fef2f2;' }}">
+                                    <strong>{{ $deliveryMedicine->patientMedicine->medicine->generic_name }}</strong>
+                                    ({{ $deliveryMedicine->patientMedicine->medicine->presentation ?? 'N/A' }})
+                                    - Cantidad: {{ $deliveryMedicine->patientMedicine->quantity }}
+                                    @if($deliveryMedicine->included)
+                                        <span style="color: #10b981; font-size: 10px;"> Entregado</span>
+                                    @else
+                                        <span style="color: #ef4444; font-size: 10px;"> No Entregado</span>
+                                        @if($deliveryMedicine->observations)
+                                            <br><em style="font-size: 10px; color: #666;">{{ $deliveryMedicine->observations }}</em>
+                                        @endif
+                                    @endif
+                                </div>
+                            @endforeach
+                        </td>
+                    </tr>
                 @endforeach
                 <tr style="font-weight: bold; background-color: #f0f0f0;">
                     <td></td>
-                    <td colspan="3">Total Tipos de Medicamentos</td>
-                    <td>{{ $delivery->deliveryPatients->flatMap->deliveryMedicines->groupBy('patientMedicine.medicine.generic_name')->count() }}</td>
-                    <td style="text-align: right;">{{ $delivery->deliveryPatients->sum(function($patient) { return $patient->deliveryMedicines->sum('patientMedicine.quantity'); }) }}</td>
+                    <td colspan="2">Total Pacientes</td>
+                    <td>{{ $delivery->deliveryPatients->count() }}</td>
+                    <td>
+                        Total Entregados: {{ $delivery->deliveryPatients->where('state', 'entregada')->count() }}
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
+    
     <div class="section">
-        <h3 style="background-color: #ffebee;">Medicamentos NO Entregados</h3>
-        @if(isset($notDeliveredMedicines) && $notDeliveredMedicines->count() > 0)
+        <h3 style="background-color: #ffebee;">Pacientes NO Entregados</h3>
+        @if(isset($notDeliveredPatients) && $notDeliveredPatients->count() > 0)
         <table>
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Paciente</th>
                     <th>DNI</th>
-                    <th>Medicamento</th>
-                    <th>Presentación</th>
-                    <th style="text-align: right;">Cantidad</th>
-                    <th>Motivo</th>
+                    <th>Medicamentos Programados</th>
+                    <th>Motivo de No Entrega</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($notDeliveredMedicines as $notDelivered)
+                @foreach($notDeliveredPatients as $index => $patient)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $notDelivered['patient_name'] ?? 'N/A' }}</td>
-                    <td>{{ $notDelivered['patient_dni'] ?? 'N/A' }}</td>
-                    <td>{{ $notDelivered['medicine_name'] ?? 'N/A' }}</td>
-                    <td>{{ $notDelivered['presentation'] ?? 'N/A' }}</td>
-                    <td style="text-align: right;">{{ $notDelivered['quantity'] ?? 0 }}</td>
-                    <td>{{ $notDelivered['reason'] ?? 'N/A' }}</td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $patient->user->name }}</td>
+                    <td>{{ $patient->user->dni ?: 'N/A' }}</td>
+                    <td>
+                        @foreach($patient->deliveryMedicines as $deliveryMedicine)
+                            <div style="margin-bottom: 3px;">
+                                {{ $deliveryMedicine->patientMedicine->medicine->generic_name }}
+                                ({{ $deliveryMedicine->patientMedicine->medicine->presentation ?? 'N/A' }})
+                                - Cantidad: {{ $deliveryMedicine->patientMedicine->quantity }}
+                            </div>
+                        @endforeach
+                    </td>
+                    <td>{{ $patient->delivery_notes ?? 'Sin motivo especificado' }}</td>
                 </tr>
                 @endforeach
                 <tr style="font-weight: bold; background-color: #ffebee;">
                     <td></td>
-                    <td colspan="2">Total Tipos de Medicamentos NO Entregados</td>
-                    <td style="text-align: right;">{{ isset($notDeliveredMedicines) ? $notDeliveredMedicines->groupBy('medicine_name')->count() : 0 }}</td>
-                    <td></td>
-                    <td style="text-align: right;">{{ isset($notDeliveredMedicines) ? $notDeliveredMedicines->sum('quantity') : 0 }}</td>
-                    <td></td>
+                    <td colspan="2">Total Pacientes NO Entregados</td>
+                    <td colspan="2">{{ $notDeliveredPatients->count() }}</td>
                 </tr>
             </tbody>
         </table>
         @else
-        <p style="text-align: center; color: #666; font-style: italic;">Todos los medicamentos fueron entregados exitosamente.</p>
+        <p style="text-align: center; color: #666; font-style: italic;">Todos los pacientes fueron entregados exitosamente.</p>
         @endif
     </div>
+    
     <div class="section" style="margin-top: 40px; text-align: center; page-break-inside: avoid;">
         <div style="margin-bottom: 60px;"></div>
         <div style="border-top: 1px solid #000; width: 300px; margin: 0 auto;"></div>

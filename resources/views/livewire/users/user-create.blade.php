@@ -148,6 +148,14 @@
                         <option value="Femenino">Femenino</option>
                     </flux:select>
                     
+                    {{-- Campo de fecha de ingreso --}}
+                    <flux:input 
+                        label="Fecha de Ingreso" 
+                        type="date" 
+                        name="admission_date" 
+                        wire:model="admission_date" 
+                        required />
+                    
 
                     
                     {{-- Sección de roles (ocupa 2 columnas en pantallas grandes) --}}

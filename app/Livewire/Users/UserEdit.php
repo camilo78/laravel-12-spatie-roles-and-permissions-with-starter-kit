@@ -32,6 +32,7 @@ class UserEdit extends Component
     public string $phone = '';
     public string $address = '';
     public string $gender = '';
+    public ?string $admission_date = null;
     
     // Campos de contraseña (opcionales en edición)
     public ?string $password = null;
@@ -67,7 +68,7 @@ class UserEdit extends Component
         // Llenar propiedades con datos del usuario
         $this->fill($user->only([
             'name', 'email', 'dni', 'phone', 'address', 'gender', 'status',
-            'department_id', 'municipality_id', 'locality_id'
+            'department_id', 'municipality_id', 'locality_id', 'admission_date'
         ]));
 
         // Inicializar locality_search con el nombre de la localidad actual
@@ -184,6 +185,7 @@ class UserEdit extends Component
             'phone' => 'nullable|string|max:255',
             'address' => 'required|string|max:500',
             'gender' => 'required|in:Masculino,Femenino',
+            'admission_date' => 'required|date|before_or_equal:today',
             'password' => 'nullable|string|min:8|same:confirm_password',
             'confirm_password' => $this->password ? 'required|string|min:8' : 'nullable',
             'roles' => 'required|array|min:1',
@@ -207,6 +209,9 @@ class UserEdit extends Component
             'dni.unique' => 'Este DNI ya está registrado por otro usuario.',
             'address.required' => 'La dirección es obligatoria.',
             'gender.required' => 'Debe seleccionar un género.',
+            'admission_date.required' => 'La fecha de ingreso es obligatoria.',
+            'admission_date.date' => 'La fecha de ingreso debe ser una fecha válida.',
+            'admission_date.before_or_equal' => 'La fecha de ingreso no puede ser futura.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.same' => 'Las contraseñas no coinciden.',
             'confirm_password.required' => 'Debe confirmar la nueva contraseña.',
@@ -280,6 +285,7 @@ class UserEdit extends Component
             'address' => trim($this->address),
             'gender' => $this->gender,
             'status' => $this->status,
+            'admission_date' => $this->admission_date,
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
             'locality_id' => $this->locality_id,

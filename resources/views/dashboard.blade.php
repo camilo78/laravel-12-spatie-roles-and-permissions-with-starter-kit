@@ -245,17 +245,21 @@
                                     <td class="px-6 py-4">
                                         @php
                                             $totalPatients = $delivery->deliveryPatients->count();
-                                            $patientsWithDeliveries = $delivery->deliveryPatients->filter(function($patient) {
-                                                return $patient->deliveryMedicines->where('included', true)->count() > 0;
-                                            })->count();
-                                            $patientsWithoutDeliveries = $delivery->deliveryPatients->filter(function($patient) {
-                                                return $patient->deliveryMedicines->where('included', false)->count() > 0;
-                                            })->count();
+                                            $patientsEntregados = $delivery->deliveryPatients->where('state', 'entregada')->count();
+                                            $patientsEnProceso = $delivery->deliveryPatients->where('state', 'en_proceso')->count();
+                                            $patientsNoEntregados = $delivery->deliveryPatients->where('state', 'no_entregada')->count();
+                                            $patientsProgramados = $delivery->deliveryPatients->where('state', 'programada')->count();
                                         @endphp
                                         <div class="text-sm">
-                                            <div class="text-green-600 dark:text-green-400">✓ {{ $patientsWithDeliveries }} entregas totales</div>
-                                            @if($patientsWithoutDeliveries > 0)
-                                                <div class="text-red-600 dark:text-red-400">✗ {{ $patientsWithoutDeliveries }} entregas paraciales</div>
+                                            <div class="text-green-600 dark:text-green-400">✓ {{ $patientsEntregados }} entregados</div>
+                                            @if($patientsEnProceso > 0)
+                                                <div class="text-blue-600 dark:text-blue-400">⏳ {{ $patientsEnProceso }} en proceso</div>
+                                            @endif
+                                            @if($patientsNoEntregados > 0)
+                                                <div class="text-red-600 dark:text-red-400">✗ {{ $patientsNoEntregados }} no entregados</div>
+                                            @endif
+                                            @if($patientsProgramados > 0)
+                                                <div class="text-gray-600 dark:text-gray-400">📋 {{ $patientsProgramados }} programados</div>
                                             @endif
                                             <div class="text-gray-500 dark:text-gray-400 text-xs mt-1">Total: {{ $totalPatients }}</div>
                                         </div>
@@ -386,6 +390,17 @@
                             <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Género:</th>
                             <td class="px-6 py-3 text-gray-600 dark:text-gray-300">
                                 {{ auth()->user()->gender ?? 'No especificado' }}
+                            </td>
+                        </tr>
+                        <!-- Cuarta fila: Fecha de ingreso y próxima entrega -->
+                        <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Fecha de Ingreso:</th>
+                            <td class="px-6 py-3 border-r dark:border-gray-700 text-gray-600 dark:text-gray-300">
+                                {{ auth()->user()->admission_date ? auth()->user()->admission_date->format('d/m/Y') : 'No especificado' }}
+                            </td>
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Próxima Entrega:</th>
+                            <td class="px-6 py-3 text-gray-600 dark:text-gray-300">
+                                {{ auth()->user()->getNextDeliveryDate()?->format('d/m/Y') ?? 'No programada' }}
                             </td>
                         </tr>
                     </tbody>

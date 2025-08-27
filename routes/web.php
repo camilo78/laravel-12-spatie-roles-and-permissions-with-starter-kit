@@ -12,7 +12,7 @@ use App\Livewire\Users\UserCreate;
 use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
-
+use App\Livewire\Deliveries\WeeklySchedule;
 
 
 use App\Http\Controllers\UserExcelController;
@@ -82,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
      * */
     Route::get('deliveries', DeliveryIndex::class)->name('deliveries.index')->middleware('permission:deliveries.index');
     Route::get('deliveries/create', DeliveryCreate::class)->name('deliveries.create')->middleware('permission:deliveries.create');
+    Route::get('deliveries/weekly-schedule', WeeklySchedule::class)->name('deliveries.weekly-schedule');
     Route::get('deliveries/{delivery}/edit', DeliveryEdit::class)->name('deliveries.edit')->middleware('permission:deliveries.edit');
     Route::get('deliveries/{delivery}', DeliveryShow::class)->name('deliveries.show')->middleware('permission:deliveries.show');
     Route::get('deliveries/{delivery}/patients/{deliveryPatient}', DeliveryPatientMedicines::class)->name('deliveries.patient.medicines')->middleware('permission:deliveries.show');
