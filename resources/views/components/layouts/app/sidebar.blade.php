@@ -29,7 +29,7 @@
                     </flux:navlist.item>
                     <flux:navlist.item wire:navigate icon="calendar-days" :href="route('deliveries.weekly-schedule')"
                         :current="request()->routeIs('deliveries.weekly-schedule')">
-                        Entregas Semanales
+                        Entregas Programadas
                     </flux:navlist.item>
                 @endif
             </flux:navlist.group>

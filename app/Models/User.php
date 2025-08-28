@@ -98,7 +98,7 @@ class User extends Authenticatable
 
      public function deliveryPatients()
     {
-        return $this->hasMany(PatientPathology::class);
+        return $this->hasMany(DeliveryPatient::class);
     }
 
     // Relaciones geográficas
@@ -163,13 +163,14 @@ class User extends Authenticatable
         $admissionDate = \Carbon\Carbon::parse($this->admission_date);
         $today = \Carbon\Carbon::today();
         
-        // Calcular próxima fecha mensual
-        $nextDelivery = $admissionDate->copy();
-        while ($nextDelivery->lt($today)) {
-            $nextDelivery->addMonth();
-        }
+        // Crear fecha de entrega para el mes actual
+        $currentMonthDelivery = \Carbon\Carbon::create(
+            $today->year, 
+            $today->month, 
+            min($admissionDate->day, $today->daysInMonth)
+        );
         
-        return $nextDelivery;
+        return $currentMonthDelivery;
     }
 
     /**

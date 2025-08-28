@@ -91,7 +91,6 @@
                 <tr>
                     <th scope="col" class="px-6 py-3">ID</th>
                     <th scope="col" class="px-6 py-3">Nombre</th>
-                    <th scope="col" class="px-6 py-3">DNI</th>
                     <th scope="col" class="px-6 py-3">Teléfono</th>
                     <th scope="col" class="px-6 py-3">Género</th>
                     <th scope="col" class="px-6 py-3">Fecha Ingreso</th>
@@ -100,27 +99,23 @@
             </thead>
             <tbody>
                 @forelse ($users as $key => $user)
-                    <tr
-                        class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 font-medium whitespace-nowrap {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                         </td>
-                        <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="px-6 py-2 font-medium {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->name }}
                         </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                            {{ $user->dni ?? 'No especificado' }}
-                        </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->phone ?? 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300 capitalize">
+                        <td class="px-6 py-2 capitalize {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->gender ?? 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
+                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->admission_date ? $user->admission_date->format('d/m/Y') : 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 text-center">
+                        <td class="px-6 py-2 text-center" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
                             <div
                                 class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
                                 @can('users.index')

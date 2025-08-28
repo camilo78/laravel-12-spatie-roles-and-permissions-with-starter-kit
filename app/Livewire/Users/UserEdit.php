@@ -68,8 +68,11 @@ class UserEdit extends Component
         // Llenar propiedades con datos del usuario
         $this->fill($user->only([
             'name', 'email', 'dni', 'phone', 'address', 'gender', 'status',
-            'department_id', 'municipality_id', 'locality_id', 'admission_date'
+            'department_id', 'municipality_id', 'locality_id'
         ]));
+        
+        // Formatear fecha de ingreso para el input date
+        $this->admission_date = $user->admission_date ? $user->admission_date->format('Y-m-d') : null;
 
         // Inicializar locality_search con el nombre de la localidad actual
         if ($this->locality_id) {

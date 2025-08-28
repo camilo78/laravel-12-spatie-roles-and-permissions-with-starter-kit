@@ -4,8 +4,10 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class UsersTemplateExport implements FromArray, WithHeadings
+class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatting
 {
     public function array(): array
     {
@@ -30,6 +32,13 @@ class UsersTemplateExport implements FromArray, WithHeadings
             'gender',
             'status',
             'password',
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'C' => NumberFormat::FORMAT_TEXT, // Columna DNI como texto
         ];
     }
 }

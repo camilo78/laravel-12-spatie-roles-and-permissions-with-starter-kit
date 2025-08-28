@@ -3,6 +3,7 @@
 namespace App\Livewire\Deliveries;
 
 use App\Models\User;
+use App\Models\DeliveryPatient;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Carbon\Carbon;
@@ -15,44 +16,106 @@ class WeeklySchedule extends Component
     public $search = '';
     public $startDate = '';
     public $endDate = '';
+    public $weekStart = '';
+    public $weekEnd = '';
+
+    public function updatedSearch($value)
+    {
+        $this->search = trim($value);
+        $this->resetPage();
+    }
+
+    public function updatePatientState($deliveryPatientId, $state)
+    {
+        $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
+        $deliveryPatient->update(['state' => $state]);
+    }
+
+    public function updatePatientNotes($deliveryPatientId, $notes)
+    {
+        $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
+        $deliveryPatient->update(['delivery_notes' => $notes]);
+    }
+
+    public function exportExcel()
+    {
+        $startOfWeek = Carbon::parse($this->startDate);
+        $endOfWeek = Carbon::parse($this->endDate);
+        
+        $patients = User::query()
+            ->whereNotNull('admission_date')
+            ->where('status', true)
+            ->with(['municipality', 'locality'])
+            ->get()
+            ->filter(function($patient) use ($startOfWeek, $endOfWeek) {
+                $patient->next_delivery_date = $patient->getNextDeliveryDate();
+                return $patient->next_delivery_date && 
+                       $patient->next_delivery_date->between($startOfWeek, $endOfWeek);
+            });
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\DeliveryPatientsExport($patients), 
+            'entregas_' . $this->startDate . '_' . $this->endDate . '.xlsx'
+        );
+    }
 
     public function render()
     {
-        $startOfWeek = $this->startDate ? Carbon::parse($this->startDate) : Carbon::now()->startOfWeek();
-        $endOfWeek = $this->endDate ? Carbon::parse($this->endDate) : Carbon::now()->endOfWeek();
+        $startOfWeek = $this->startDate ? Carbon::parse($this->startDate) : Carbon::now()->startOfMonth();
+        $endOfWeek = $this->endDate ? Carbon::parse($this->endDate) : Carbon::now()->endOfMonth();
+        
+        $this->weekStart = $startOfWeek->format('d/m/Y');
+        $this->weekEnd = $endOfWeek->format('d/m/Y');
 
-        $patients = User::query()
-            ->select([
-                'users.*',
-                DB::raw('(
-                    DATE_ADD(
-                        admission_date, 
-                        INTERVAL TIMESTAMPDIFF(MONTH, admission_date, CURDATE()) MONTH
-                    )
-                ) as next_delivery_date')
-            ])
+        $query = User::query()
             ->whereNotNull('admission_date')
             ->where('status', true)
-            ->with(['department', 'municipality', 'locality'])
-            ->whereRaw('
-                DATE_ADD(
-                    admission_date, 
-                    INTERVAL TIMESTAMPDIFF(MONTH, admission_date, CURDATE()) MONTH
-                ) BETWEEN ? AND ?
-            ', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
-            ->when($this->search, function($query) {
-                $query->where(function($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('dni', 'like', '%' . $this->search . '%')
-                      ->orWhere('phone', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->orderBy('next_delivery_date', 'asc')
-            ->paginate(10);
-            
-        $weekStart = $startOfWeek->format('d/m/Y');
-        $weekEnd = $endOfWeek->format('d/m/Y');
+            ->with(['department', 'municipality', 'locality', 'deliveryPatients']);
+
+        if ($this->search) {
+            $searchTerm = trim($this->search);
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('dni', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('phone', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $allPatients = $query->get();
         
-        return view('livewire.deliveries.weekly-schedule', compact('patients', 'weekStart', 'weekEnd'));
+        // Calcular next_delivery_date usando la función del modelo
+        $allPatients->each(function($patient) {
+            $patient->next_delivery_date = $patient->getNextDeliveryDate();
+        });
+        
+        // Filtrar por fechas del mes en curso
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+        
+        // Limitar las fechas de filtro al mes actual
+        if ($this->startDate) {
+            $startOfWeek = max($startOfWeek, $currentMonthStart);
+        }
+        if ($this->endDate) {
+            $endOfWeek = min($endOfWeek, $currentMonthEnd);
+        }
+        
+        // Filtrar pacientes por fechas del mes en curso
+        $allPatients = $allPatients->filter(function($patient) use ($startOfWeek, $endOfWeek) {
+            return $patient->next_delivery_date && 
+                   $patient->next_delivery_date->between($startOfWeek, $endOfWeek);
+        });
+        
+        // Ordenar y paginar
+        $allPatients = $allPatients->sortBy('next_delivery_date');
+        $patients = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allPatients->forPage(request()->get('page', 1), 10),
+            $allPatients->count(),
+            10,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'pageName' => 'page']
+        );
+        
+        return view('livewire.deliveries.weekly-schedule', compact('patients'));
     }
 }

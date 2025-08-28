@@ -27,7 +27,6 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">Paciente</th>
-                    <th scope="col" class="px-6 py-3">DNI</th>
                     <th scope="col" class="px-6 py-3">Teléfonos</th>
                     <th scope="col" class="px-6 py-3">Medicamentos (Incluidos/Total Receta)</th>
                     <th scope="col" class="px-6 py-3">Estado</th>
@@ -39,12 +38,10 @@
                 @forelse($deliveryPatients as $key => $deliveryPatient)
                     <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                         {{-- Nombre del paciente --}}
-                        <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                             {{ $deliveryPatient->user->name }}
                         </td>
-                        {{-- DNI del paciente --}}
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">{{ $deliveryPatient->user->dni }}</td>
-                        {{-- Teléfono del paciente --}}
+                       {{-- Teléfono del paciente --}}
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                             {{ $deliveryPatient->user->phone }}
                         </td>
