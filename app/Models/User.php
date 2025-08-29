@@ -96,6 +96,14 @@ class User extends Authenticatable
         return $this->hasMany(PatientPathology::class);
     }
 
+    /**
+     * Medicamentos del paciente
+     */
+    public function patientMedicines()
+    {
+        return $this->hasMany(PatientMedicine::class);
+    }
+
      public function deliveryPatients()
     {
         return $this->hasMany(DeliveryPatient::class);
@@ -156,22 +164,46 @@ class User extends Authenticatable
     /**
      * Calcula la próxima fecha de entrega mensual basada en la fecha de ingreso
      */
-    public function getNextDeliveryDate(): ?\Carbon\Carbon
-    {
-        if (!$this->admission_date) return null;
-        
-        $admissionDate = \Carbon\Carbon::parse($this->admission_date);
-        $today = \Carbon\Carbon::today();
-        
-        // Crear fecha de entrega para el mes actual
-        $currentMonthDelivery = \Carbon\Carbon::create(
-            $today->year, 
-            $today->month, 
-            min($admissionDate->day, $today->daysInMonth)
-        );
-        
-        return $currentMonthDelivery;
+public function getNextDeliveryDate(): ?\Carbon\Carbon
+{
+    if (!$this->admission_date) return null;
+
+    $admission = \Carbon\Carbon::parse($this->admission_date);
+    $today = \Carbon\Carbon::today();
+
+    // Primera entrega: 30 días después de admission_date
+    $firstDelivery = $admission->copy()->addDays(30);
+    $firstDelivery = $this->adjustToWeekday($firstDelivery);
+
+    // Si hoy es antes de la primera entrega
+    if ($today->lt($firstDelivery)) {
+        return $firstDelivery;
     }
+
+    // Calcular entregas subsiguientes (cada 120 días desde la primera)
+    $deliveryDate = $firstDelivery->copy();
+    while ($deliveryDate->lte($today)) {
+        $deliveryDate->addDays(120);
+        $deliveryDate = $this->adjustToWeekday($deliveryDate);
+    }
+
+    return $deliveryDate;
+}
+
+/**
+ * Ajusta la fecha al viernes anterior si cae en fin de semana
+ */
+private function adjustToWeekday(\Carbon\Carbon $date): \Carbon\Carbon
+{
+    if ($date->isSaturday()) {
+        $date->subDay(); // Sábado -> Viernes
+    } elseif ($date->isSunday()) {
+        $date->subDays(2); // Domingo -> Viernes
+    }
+    return $date;
+}
+
+
 
     /**
      * Scope para usuarios elegibles para entrega mensual en una fecha específica

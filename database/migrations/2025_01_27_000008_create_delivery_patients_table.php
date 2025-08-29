@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('medicine_delivery_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->boolean('included')->default(true);
+            $table->enum('state', ['programada', 'en_proceso', 'entregada', 'no_entregada'])->default('programada');
+            $table->text('delivery_notes')->nullable();
             $table->timestamps();
             
             $table->unique(['medicine_delivery_id', 'user_id'], 'delivery_patient_unique');

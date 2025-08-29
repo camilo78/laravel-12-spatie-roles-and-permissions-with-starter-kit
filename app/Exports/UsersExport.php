@@ -23,7 +23,8 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
             'municipality_id', 
             'locality_id', 
             'gender', 
-            'status'
+            'status',
+            'admission_date'
         )->get();
     }
 
@@ -39,7 +40,8 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
             'municipality_id', 
             'locality_id', 
             'gender', 
-            'status'
+            'status',
+            'admission_date'
         ];
     }
 

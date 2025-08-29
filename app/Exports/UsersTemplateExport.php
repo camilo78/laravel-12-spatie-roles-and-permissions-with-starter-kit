@@ -14,7 +14,7 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
         // Puedes dejar un array vacío para que solo se genere la fila de encabezados
         // o incluir un registro de ejemplo para que el usuario vea el formato
         return [
-            ['Juan Pérez', 'juan@example.com', '12345678-9', '7890-1234', 'Calle Principal #123', '1', '1', '1', 'Masculino', '1', 'password123'],
+            ['Juan Pérez', 'juan@example.com', '12345678-9', '7890-1234', 'Calle Principal #123', '1', '1', '1', 'Masculino', '1', '2024-01-15', 'password123'],
         ];
     }
 
@@ -31,6 +31,7 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
             'locality_id',
             'gender',
             'status',
+            'admission_date',
             'password',
         ];
     }

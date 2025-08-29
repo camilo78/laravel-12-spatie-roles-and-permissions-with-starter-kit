@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\MedicineDelivery;
 use App\Models\DeliveryPatient;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Exception;
 
 class DeliveryReportController extends Controller
 {
     public function generateReport($deliveryId)
     {
+        try {
         $delivery = MedicineDelivery::with([
             'deliveryPatients' => fn($query) => $query->where('state', 'entregada'),
             'deliveryPatients.user.department',
@@ -68,6 +70,18 @@ class DeliveryReportController extends Controller
             'departments', 'municipalities', 'medicines', 'pathologies', 'notDeliveredPatients'
         ));
 
-        return $pdf->download('Entrega_' . str_replace(' ', '_', $delivery->name) . '.pdf');
+            $filename = 'Entrega_' . str_replace(' ', '_', $delivery->name) . '.pdf';
+            
+            return response()->json([
+                'success' => true,
+                'pdf' => base64_encode($pdf->output()),
+                'filename' => $filename
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el reporte: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

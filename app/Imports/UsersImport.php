@@ -13,7 +13,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
 {
     public function model(array $row)
     {
-        return new User([
+        $user = User::create([
             'name' => $row['name'],
             'email' => $row['email'] ?? null,
             'dni' => $row['dni'],
@@ -24,8 +24,13 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'locality_id' => $row['locality_id'],
             'gender' => $row['gender'] ?? null,
             'status' => $row['status'] ?? true,
+            'admission_date' => $row['admission_date'] ?? null,
             'password' => Hash::make($row['password']),
         ]);
+        
+        $user->assignRole('User');
+        
+        return $user;
     }
 
     public function rules(): array
@@ -39,6 +44,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'municipality_id' => 'required|integer',
             'locality_id' => 'required|integer',
             'gender' => 'nullable|string|in:Masculino,Femenino',
+            'admission_date' => 'required|date',
             'password' => 'required|string|min:6',
         ];
     }
