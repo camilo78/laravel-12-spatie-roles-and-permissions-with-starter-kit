@@ -120,7 +120,7 @@
                                 class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
                                 @can('users.index')
                                     <a wire:navigate href="{{ route('users.show', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none"
                                         title="Mostrar Usuario">
                                         <flux:icon.eye variant="micro"
                                             class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200" />
@@ -129,7 +129,7 @@
 
                                 @can('users.edit')
                                     <a wire:navigate href="{{ route('users.edit', $user->id) }}"
-                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none"
                                         title="Editar Usuario">
                                         <flux:icon.square-pen variant="micro"
                                             class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300" />
@@ -154,7 +154,7 @@
                                     @if (!$user->hasRole('administrador') && !$user->hasRole('administrator'))
                                         <button wire:click="deleteUser({{ $user->id }})"
                                             wire:confirm="¿Está seguro de eliminar el usuario {{ $user->name }}?"
-                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800 flex-grow sm:flex-none"
+                                            class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none"
                                             title="Eliminar Usuario">
                                             <flux:icon.trash-2 variant="micro"
                                                 class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" />
@@ -190,10 +190,9 @@
         {{ $users->links('vendor.livewire.tailwind') }}
     </div>
 
-    <!-- Modal de importación -->
+        <!-- Modal de importación -->
     <dialog x-ref="importModal" class="modal rounded-lg">
-        <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-11/12 max-w-lg mx-auto mt-20">
+        <div class="bg-white dark:bg-gray-800 rounded  shadow border border-gray-200 dark:border-gray-700  max-w-lg ">
             <!-- Header del modal -->
             <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-3">
