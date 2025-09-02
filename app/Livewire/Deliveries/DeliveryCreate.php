@@ -113,10 +113,19 @@ class DeliveryCreate extends Component
                     'end_date' => $this->end_date,
                 ]);
 
-                // Obtener usuarios activos con patologías activas
+                // Obtener usuarios activos con patologías activas y que tengan entregas en el rango de fechas
+                $startDate = \Carbon\Carbon::parse($this->start_date);
+                $endDate = \Carbon\Carbon::parse($this->end_date);
+                
                 $activeUsers = User::where('status', true)
+                    ->whereNotNull('admission_date')
                     ->whereHas('patientPathologies', fn($q) => $q->where('status', 'active'))
-                    ->get();
+                    ->whereHas('patientMedicines', fn($q) => $q->where('status', 'active'))
+                    ->get()
+                    ->filter(function($user) use ($startDate, $endDate) {
+                        $nextDelivery = $user->getNextDeliveryDate();
+                        return $nextDelivery && $nextDelivery->between($startDate, $endDate);
+                    });
                 
                 // Procesar cada usuario activo
                 foreach ($activeUsers as $user) {

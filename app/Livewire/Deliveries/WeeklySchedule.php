@@ -45,9 +45,10 @@ class WeeklySchedule extends Component
 
     public function render()
     {
-        // Fechas por defecto
-        $startDate = $this->startDate ? Carbon::parse($this->startDate) : Carbon::now()->startOfYear();
-        $endDate = $this->endDate ? Carbon::parse($this->endDate) : Carbon::now()->endOfYear();
+        // Fechas del mes actual
+        $currentMonth = Carbon::now();
+        $startDate = $this->startDate ? Carbon::parse($this->startDate) : $currentMonth->copy()->startOfMonth();
+        $endDate = $this->endDate ? Carbon::parse($this->endDate) : $currentMonth->copy()->endOfMonth();
 
         // Obtener usuarios activos con admission_date
         $query = User::query()
@@ -72,6 +73,7 @@ class WeeklySchedule extends Component
         foreach ($allUsers as $user) {
             $nextDelivery = $user->getNextDeliveryDate();
             
+            // Solo mostrar usuarios cuya próxima entrega esté en el rango seleccionado
             if ($nextDelivery && $nextDelivery->between($startDate, $endDate)) {
                 $user->next_delivery_date = $nextDelivery;
                 $filteredUsers->push($user);
