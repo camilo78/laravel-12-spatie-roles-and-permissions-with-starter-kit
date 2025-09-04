@@ -56,7 +56,14 @@ class WeeklyScheduleExport implements FromCollection, WithHeadings, WithMapping,
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // DNI como texto
+            'A' => NumberFormat::FORMAT_TEXT,
+            'B' => NumberFormat::FORMAT_NUMBER, // DNI como número sin decimales
+            'C' => NumberFormat::FORMAT_NUMBER, // Teléfono como número sin decimales
+            'D' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY, // Fecha Ingreso como fecha
+            'F' => NumberFormat::FORMAT_TEXT,
+            'G' => NumberFormat::FORMAT_DATE_DDMMYYYY, // Próxima Entrega como fecha
+            'H' => NumberFormat::FORMAT_TEXT,
         ];
     }
 }

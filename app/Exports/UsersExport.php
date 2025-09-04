@@ -48,7 +48,17 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
     public function columnFormats(): array
     {
         return [
-            'C' => NumberFormat::FORMAT_TEXT, // Columna DNI como texto
+            'A' => NumberFormat::FORMAT_TEXT,
+            'B' => NumberFormat::FORMAT_TEXT,
+            'C' => NumberFormat::FORMAT_NUMBER, // DNI como número sin decimales
+            'D' => NumberFormat::FORMAT_NUMBER, // Teléfono como número sin decimales
+            'E' => NumberFormat::FORMAT_TEXT,
+            'F' => NumberFormat::FORMAT_TEXT,
+            'G' => NumberFormat::FORMAT_TEXT,
+            'H' => NumberFormat::FORMAT_TEXT,
+            'I' => NumberFormat::FORMAT_TEXT,
+            'J' => NumberFormat::FORMAT_TEXT,
+            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY, // admission_date como fecha
         ];
     }
 }

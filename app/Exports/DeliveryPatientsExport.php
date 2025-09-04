@@ -45,7 +45,10 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // Columna DNI como texto
+            'A' => NumberFormat::FORMAT_TEXT,
+            'B' => NumberFormat::FORMAT_NUMBER, // DNI como número sin decimales
+            'C' => NumberFormat::FORMAT_TEXT,
+            'D' => NumberFormat::FORMAT_TEXT,
         ];
     }
 }
