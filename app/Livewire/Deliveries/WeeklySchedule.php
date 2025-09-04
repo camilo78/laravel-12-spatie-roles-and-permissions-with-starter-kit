@@ -34,13 +34,58 @@ class WeeklySchedule extends Component
     public function updatePatientState($deliveryPatientId, $state)
     {
         $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
-        $deliveryPatient->update(['state' => $state]);
+        
+        // Si el estado no es 'no_entregada', limpiar las notas
+        $updateData = ['state' => $state];
+        if ($state !== 'no_entregada') {
+            $updateData['delivery_notes'] = null;
+        }
+        
+        $deliveryPatient->update($updateData);
     }
 
     public function updatePatientNotes($deliveryPatientId, $notes)
     {
         $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);
         $deliveryPatient->update(['delivery_notes' => $notes]);
+    }
+
+    public function exportWeeklySchedule()
+    {
+        // Obtener los misma datos que se muestran en la tabla
+        $currentMonth = Carbon::now();
+        $startDate = $this->startDate ? Carbon::parse($this->startDate) : $currentMonth->copy()->startOfMonth();
+        $endDate = $this->endDate ? Carbon::parse($this->endDate) : $currentMonth->copy()->endOfMonth();
+
+        $query = User::query()
+            ->where('status', true)
+            ->whereNotNull('admission_date')
+            ->with(['department', 'municipality', 'locality', 'patientMedicines']);
+
+        if ($this->search) {
+            $search = trim($this->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('dni', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $allUsers = $query->get();
+        $filteredUsers = collect();
+
+        foreach ($allUsers as $user) {
+            $nextDelivery = $user->getNextDeliveryDate();
+            if ($nextDelivery && $nextDelivery->between($startDate, $endDate)) {
+                $user->next_delivery_date = $nextDelivery;
+                $filteredUsers->push($user);
+            }
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\WeeklyScheduleExport($filteredUsers), 
+            'entregas_programadas_' . $startDate->format('Y-m-d') . '_' . $endDate->format('Y-m-d') . '.xlsx'
+        );
     }
 
     public function render()
@@ -50,11 +95,22 @@ class WeeklySchedule extends Component
         $startDate = $this->startDate ? Carbon::parse($this->startDate) : $currentMonth->copy()->startOfMonth();
         $endDate = $this->endDate ? Carbon::parse($this->endDate) : $currentMonth->copy()->endOfMonth();
 
+        // Buscar MedicineDelivery que coincida con el rango de fechas
+        $medicineDelivery = \App\Models\MedicineDelivery::where('start_date', '<=', $endDate)
+            ->where('end_date', '>=', $startDate)
+            ->first();
+            
         // Obtener usuarios activos con admission_date
         $query = User::query()
             ->where('status', true)
             ->whereNotNull('admission_date')
-            ->with(['department', 'municipality', 'locality', 'deliveryPatients']);
+            ->with(['department', 'municipality', 'locality', 'patientMedicines']);
+            
+        if ($medicineDelivery) {
+            $query->with(['deliveryPatients' => function($q) use ($medicineDelivery) {
+                $q->where('medicine_delivery_id', $medicineDelivery->id);
+            }]);
+        }
 
         // Filtro de búsqueda
         if ($this->search) {
@@ -104,7 +160,8 @@ class WeeklySchedule extends Component
         return view('livewire.deliveries.weekly-schedule', [
             'patients' => $patients,
             'weekStart' => $startDate->format('d/m/Y'),
-            'weekEnd' => $endDate->format('d/m/Y')
+            'weekEnd' => $endDate->format('d/m/Y'),
+            'medicineDelivery' => $medicineDelivery
         ]);
     }
 }

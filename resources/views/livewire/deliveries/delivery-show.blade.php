@@ -61,9 +61,10 @@
                         {{-- Estado del paciente --}}
                         <td class="px-6 py-2">
                             @if ($delivery->isEditable())
-                                <div x-data="{ selectedState: '{{ $deliveryPatient->state }}', notes: '{{ $deliveryPatient->delivery_notes }}' }">
+                                <div x-data="{ selectedState: '{{ $deliveryPatient->state }}', notes: '{{ $deliveryPatient->delivery_notes }}' }" wire:key="delivery-{{ $deliveryPatient->id }}">
                                     {{-- Select para cambiar estado del paciente --}}
-                                    <select x-model="selectedState" wire:change="updatePatientState({{ $deliveryPatient->id }}, $event.target.value)" 
+                                    <select x-model="selectedState" 
+                                        @change="if (selectedState !== 'no_entregada') notes = ''; $wire.updatePatientState({{ $deliveryPatient->id }}, selectedState)" 
                                         class="px-2 py-1 text-xs border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <option value="programada">Programada</option>
                                         <option value="en_proceso">En Proceso</option>

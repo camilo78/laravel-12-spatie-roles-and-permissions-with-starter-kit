@@ -16,9 +16,9 @@ class UserSeeder extends Seeder
         $this->admin();
    //     $this->user();
 
-      /*   User::factory(198)->create()->each(function ($user) {
+         User::factory(198)->create()->each(function ($user) {
             $user->assignRole('User');
-        }); */
+        }); 
     }
 
     protected function admin(): void

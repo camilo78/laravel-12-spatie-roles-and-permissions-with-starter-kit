@@ -50,28 +50,32 @@ class DeliveryCreate extends Component
     public $isSubmitting = false;
     
     /**
-     * Valida que la fecha de inicio esté dentro del rango permitido:
-     * - Mes actual completo
-     * - 10 días antes del mes actual
+     * Valida que las fechas estén dentro del mes actual
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function validateStartDate()
+    protected function validateDates()
     {
         $startDate = \Carbon\Carbon::parse($this->start_date);
+        $endDate = \Carbon\Carbon::parse($this->end_date);
         $now = \Carbon\Carbon::now();
         
-        // Calcular el rango permitido
-        $minDate = $now->copy()->startOfMonth()->subDays(10);
+        $minDate = $now->copy()->startOfMonth();
         $maxDate = $now->copy()->endOfMonth();
         
         if ($startDate->lt($minDate) || $startDate->gt($maxDate)) {
-            $this->addError('start_date', 'La fecha de inicio debe estar entre ' . 
-                $minDate->format('d/m/Y') . ' y ' . $maxDate->format('d/m/Y') . '.');
-            throw new \Illuminate\Validation\ValidationException(
-                \Illuminate\Support\Facades\Validator::make([], [])
-            );
+            session()->flash('error', 'La fecha de inicio debe estar dentro del mes actual (' . 
+                $minDate->format('d/m/Y') . ' - ' . $maxDate->format('d/m/Y') . ').');
+            return false;
         }
+        
+        if ($endDate->lt($minDate) || $endDate->gt($maxDate)) {
+            session()->flash('error', 'La fecha de fin debe estar dentro del mes actual (' . 
+                $minDate->format('d/m/Y') . ' - ' . $maxDate->format('d/m/Y') . ').');
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -101,8 +105,11 @@ class DeliveryCreate extends Component
             // Validar los datos del formulario
             $this->validate();
             
-            // Validación personalizada para start_date
-            $this->validateStartDate();
+            // Validación personalizada para fechas del mes actual
+            if (!$this->validateDates()) {
+                $this->isSubmitting = false;
+                return;
+            }
 
             // Usar transacción para asegurar consistencia de datos
             DB::transaction(function () {

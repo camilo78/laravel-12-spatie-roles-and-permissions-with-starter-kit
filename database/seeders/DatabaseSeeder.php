@@ -14,27 +14,27 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
 
-            // PermissionSeeder::class,
+            PermissionSeeder::class,
 
-            // RoleSeeder::class,
+            RoleSeeder::class,
 
-            // DepartmentSeeder::class,
+            DepartmentSeeder::class,
 
-            // MunicipalitySeeder::class,
+            MunicipalitySeeder::class,
 
-            // LocalitySeeder::class,
+            LocalitySeeder::class,
 
-            // UserSeeder::class,
+            UserSeeder::class,
 
-            // PathologySeeder::class,
+            PathologySeeder::class,
 
-            // MedicineSeeder::class,
+            MedicineSeeder::class,
 
             PatientPathologySeeder::class,
 
             PatientMedicineSeeder::class,
 
-            //  MedicineDeliverySeeder::class,
+           // MedicineDeliverySeeder::class,
         ]);
     }
 }

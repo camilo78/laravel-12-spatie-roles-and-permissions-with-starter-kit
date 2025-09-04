@@ -13,8 +13,8 @@
     </div>
 
     {{-- Filtros --}}
-    <div class="flex flex-col sm:flex-row gap-4 mb-4">
-        <div class="flex gap-2">
+    <div class="flex flex-col sm:flex-row lg:flex-row gap-4 mb-4">
+        <div class="flex flex-col sm:flex-row gap-2">
             <input type="date" wire:model.live="startDate" placeholder="Fecha inicio"
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
             <input type="date" wire:model.live="endDate" placeholder="Fecha fin"
@@ -22,7 +22,20 @@
         </div>
         <div class="flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
-                class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+        </div>
+        <div class="flex">
+            <button wire:click="exportWeeklySchedule" wire:loading.attr="disabled" wire:target="exportWeeklySchedule"
+                class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                <span wire:loading.remove wire:target="exportWeeklySchedule">Exportar Excel</span>
+                <span wire:loading wire:target="exportWeeklySchedule" class="flex items-center gap-2">
+                    <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generando
+                </span>
+            </button>
         </div>
     </div>
 
@@ -62,20 +75,23 @@
                         <td class="px-6 py-2">
                             @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp
                             @if($deliveryPatient)
-                                <div x-data="{ state: '{{ $deliveryPatient->state }}', notes: '{{ $deliveryPatient->delivery_notes }}' }">
-                                    <select x-model="state" wire:change="updatePatientState({{ $deliveryPatient->id }}, $event.target.value)" 
-                                        class="px-2 py-1 text-xs border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <div x-data="{ selectedState: '{{ $deliveryPatient->state }}', notes: '{{ $deliveryPatient->delivery_notes }}' }" wire:key="delivery-{{ $deliveryPatient->id }}">
+                                    {{-- Select para cambiar estado del paciente --}}
+                                    <select x-model="selectedState" 
+                                        @change="if (selectedState !== 'no_entregada') notes = ''; $wire.updatePatientState({{ $deliveryPatient->id }}, selectedState)" 
+                                        class="px-2 py-1 text-xs border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <option value="programada">Programada</option>
                                         <option value="en_proceso">En Proceso</option>
                                         <option value="entregada">Entregada</option>
                                         <option value="no_entregada">No Entregada</option>
                                     </select>
                                     
-                                    <div x-show="state === 'no_entregada'" class="mt-2 flex gap-1">
-                                        <input type="text" x-model="notes" placeholder="Motivo" 
-                                            class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                                    {{-- Input y botón para notas (solo si es no_entregada) --}}
+                                    <div x-show="selectedState === 'no_entregada'" x-transition class="mt-2 flex gap-1">
+                                        <input type="text" x-model="notes" placeholder="Motivo de no entrega" 
+                                            class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                                         <button @click="$wire.updatePatientNotes({{ $deliveryPatient->id }}, notes)" 
-                                            class="px-2 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                            class="px-2 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500">
                                             💾
                                         </button>
                                     </div>
@@ -174,14 +190,63 @@
                             @endif
                         </td>
                         <td class="px-6 py-2">
-                            <div class="text-xs">
-                                <div class="font-semibold text-blue-600">
-                                    📅 {{ $patient->next_delivery_date->locale('es')->isoFormat('D MMM YYYY') }}
+                            @php
+                                // Calcular la verdadera próxima entrega
+                                $admission = \Carbon\Carbon::parse($patient->admission_date);
+                                $today = \Carbon\Carbon::today();
+                                
+                                // Primera entrega: 30 días después de admission_date
+                                $firstDelivery = $admission->copy()->addDays(30);
+                                // Ajustar al viernes si cae en fin de semana
+                                if ($firstDelivery->isSaturday()) {
+                                    $firstDelivery->subDay();
+                                } elseif ($firstDelivery->isSunday()) {
+                                    $firstDelivery->subDays(2);
+                                }
+                                
+                                // Encontrar la próxima entrega después de hoy
+                                $nextRealDelivery = null;
+                                $deliveryDate = $firstDelivery->copy();
+                                $deliveryCount = 1;
+                                
+                                // Si la primera entrega es futura, esa es la próxima
+                                if ($firstDelivery->gt($today)) {
+                                    $nextRealDelivery = $firstDelivery;
+                                } else {
+                                    // Buscar la siguiente entrega (cada 120 días) que sea futura
+                                    while ($deliveryDate->year <= $today->year + 2) {
+                                        if ($deliveryDate->gt($today)) {
+                                            $nextRealDelivery = $deliveryDate;
+                                            break;
+                                        }
+                                        $deliveryDate->addDays(120);
+                                        // Ajustar al viernes si cae en fin de semana
+                                        if ($deliveryDate->isSaturday()) {
+                                            $deliveryDate->subDay();
+                                        } elseif ($deliveryDate->isSunday()) {
+                                            $deliveryDate->subDays(2);
+                                        }
+                                        $deliveryCount++;
+                                        
+                                        if ($deliveryCount > 30) break; // Evitar loop infinito
+                                    }
+                                }
+                            @endphp
+                            
+                            @if($nextRealDelivery)
+                                <div class="text-xs">
+                                    <div class="font-semibold text-blue-600">
+                                        📅 {{ $nextRealDelivery->locale('es')->isoFormat('D MMM YYYY') }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        Próxima entrega
+                                    </div>
                                 </div>
-                                <div class="text-gray-500">
-                                    Siguiente entrega
+                            @else
+                                <div class="text-xs text-gray-500">
+                                    No calculable
                                 </div>
-                            </div>
+                            @endif
                         </td>
                     </tr>
                 @empty

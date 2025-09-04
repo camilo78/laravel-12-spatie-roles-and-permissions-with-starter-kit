@@ -13,8 +13,12 @@
                 {{-- Campo nombre de la entrega --}}
                 <flux:input label="Nombre de la Entrega" wire:model="name" placeholder="Ej: Entrega Enero 2025"
                     required />
-                <flux:input label="Fecha de Inicio" type="date" wire:model="start_date" required />
-                <flux:input label="Fecha de Fin" type="date" wire:model="end_date" required />
+                <flux:input label="Fecha de Inicio" type="date" wire:model="start_date" 
+                    min="{{ now()->startOfMonth()->format('Y-m-d') }}" 
+                    max="{{ now()->endOfMonth()->format('Y-m-d') }}" required />
+                <flux:input label="Fecha de Fin" type="date" wire:model="end_date" 
+                    min="{{ now()->startOfMonth()->format('Y-m-d') }}" 
+                    max="{{ now()->endOfMonth()->format('Y-m-d') }}" required />
                 {{-- Botones de acción --}}
                 <div class="flex justify-end gap-3 mt-6">
                     {{-- Botón cancelar --}}
