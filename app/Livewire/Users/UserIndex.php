@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;
  */
 class UserIndex extends BaseIndexComponent
 {
+    public $startDate = '';
+    public $endDate = '';
+    
     // Listeners para eventos específicos de usuarios
     protected $listeners = ['refreshUsers' => '$refresh'];
 
@@ -61,12 +64,76 @@ class UserIndex extends BaseIndexComponent
     }
 
     /**
+     * Aplica filtros adicionales a la consulta
+     */
+    protected function applyAdditionalFilters($query)
+    {
+        if ($this->startDate) {
+            $query->whereDate('admission_date', '>=', $this->startDate);
+        }
+        
+        if ($this->endDate) {
+            $query->whereDate('admission_date', '<=', $this->endDate);
+        }
+        
+        return $query;
+    }
+
+    /**
      * Renderiza el componente con la lista de usuarios
      */
     public function render()
     {
         $users = $this->buildQuery();
         return view('livewire.users.user-index', compact('users'));
+    }
+
+    public function resetFilters()
+    {
+        $this->startDate = '';
+        $this->endDate = '';
+        $this->search = '';
+    }
+
+    public function exportAll()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\UsersExport(), 
+            'usuarios_todos.xlsx'
+        );
+    }
+
+    public function exportTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\UsersTemplateExport(), 
+            'plantilla_usuarios.xlsx'
+        );
+    }
+
+    public function exportFiltered()
+    {
+        $modelClass = $this->getModelClass();
+        $query = $modelClass::query()->with($this->getEagerLoadRelations());
+        
+        // Aplicar búsqueda
+        $query = $this->applySearch($query, $this->getSearchableFields());
+        
+        // Aplicar filtros de fecha
+        $query = $this->applyAdditionalFilters($query);
+        
+        $users = $query->get();
+        
+        $filename = 'usuarios_filtrados';
+        if ($this->startDate || $this->endDate) {
+            $filename .= '_' . ($this->startDate ?: 'inicio') . '_' . ($this->endDate ?: 'fin');
+        }
+        $filename .= '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\UsersExport($users), 
+            $filename
+        );
     }
 
     /**

@@ -52,35 +52,80 @@
         </div>
     @endsession
 
-    <!-- Sección de controles -->
-    <div class="flex flex-col sm:flex-col lg:flex-row sm:items-start lg:items-center justify-between gap-4 mb-4">
-        <div
-            class="flex flex-row items-center gap-3 justify-between order-1 sm:justify-between sm:w-full lg:w-auto lg:justify-start lg:order-1">
-            @can('users.create')
-                <a wire:navigate href="{{ route('users.create') }}"
-                    class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-grow sm:flex-grow lg:flex-grow-0">
-                    Crear Usuario
-                </a>
-            @endcan
-            <button @click="$refs.importModal.showModal()" type="button"
-                class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center inline-flex items-center justify-center gap-2">
-                <flux:icon.arrow-down-tray variant="micro" class="w-4 h-4" />
-                Importar Excel
-            </button>
-            <a href="{{ route('users.template') }}"
-                class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center inline-flex items-center justify-center gap-2">
-                <flux:icon.document-text variant="micro" class="w-4 h-4" />
-                Descargar Muestra Excel
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+        @can('users.create')
+            <a wire:navigate href="{{ route('users.create') }}"
+                class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Crear Usuario
             </a>
-            <a href="{{ route('users.export') }}"
-                class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 flex-grow sm:flex-grow lg:flex-grow-0 text-center inline-flex items-center justify-center gap-2">
-                <flux:icon.arrow-up-tray variant="micro" class="w-4 h-4" />
-                Exportar Excel
-            </a>
+        @endcan
+        <button @click="$refs.importModal.showModal()" type="button"
+            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 text-center inline-flex items-center justify-center gap-2">
+            <flux:icon.arrow-down-tray variant="micro" class="w-4 h-4" />
+            Importar Excel
+        </button>
+        <button wire:click="exportTemplate" wire:loading.attr="disabled" wire:target="exportTemplate"
+            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
+                <span wire:loading.remove wire:target="exportTemplate" class="flex items-center gap-2">
+                    <flux:icon.document-text variant="micro" class="w-4 h-4" />
+                    Descargar Muestra Excel
+                </span>
+                <span wire:loading wire:target="exportTemplate" class="flex items-center gap-2">
+                    <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Descargando
+                </span>
+        </button>
+        <button wire:click="exportAll" wire:loading.attr="disabled" wire:target="exportAll"
+            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
+                <span wire:loading.remove wire:target="exportAll" class="flex items-center gap-2">
+                    <flux:icon.arrow-up-tray variant="micro" class="w-4 h-4" />
+                    Exportar Todo
+                </span>
+                <span wire:loading wire:target="exportAll" class="flex items-center gap-2">
+                    <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generando
+                </span>
+        </button>
+        <button wire:click="exportFiltered" wire:loading.attr="disabled" wire:target="exportFiltered"
+            class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
+                <span wire:loading.remove wire:target="exportFiltered" class="flex items-center gap-2">
+                    <flux:icon.funnel variant="micro" class="w-4 h-4" />
+                    Exportar Filtrados
+                </span>
+                <span wire:loading wire:target="exportFiltered" class="flex items-center gap-2">
+                    <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generando
+                </span>
+        </button>
+    </div>
+    
+    <!-- Filtros y búsqueda -->
+    <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-6">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Fecha ingreso:</label>
+            <input type="date" wire:model.live="startDate" 
+                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <span class="text-gray-400">-</span>
+            <input type="date" wire:model.live="endDate" 
+                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
         </div>
-        <div class="relative order-2 sm:w-full lg:w-auto lg:order-2 ml-auto">
+        <div class="flex items-center gap-2 flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
-                class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700" />
+                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
+            <button wire:click="resetFilters" title="Limpiar filtros"
+                class="inline-flex items-center justify-center h-10 w-10 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-white transition-colors">
+                ✕
+            </button>
         </div>
     </div>
 

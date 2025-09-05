@@ -11,8 +11,33 @@ use Illuminate\Support\Collection;
 
 class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
 {
+    protected $users;
+
+    public function __construct($users = null)
+    {
+        $this->users = $users;
+    }
+
     public function collection(): Collection
     {
+        if ($this->users) {
+            return $this->users->map(function ($user) {
+                return [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'dni' => $user->dni,
+                    'phone' => $user->phone,
+                    'address' => $user->address,
+                    'department_id' => $user->department_id,
+                    'municipality_id' => $user->municipality_id,
+                    'locality_id' => $user->locality_id,
+                    'gender' => $user->gender,
+                    'status' => $user->status,
+                    'admission_date' => $user->admission_date,
+                ];
+            });
+        }
+
         return User::select(
             'name', 
             'email', 
