@@ -118,15 +118,16 @@
             <span class="text-gray-400">-</span>
             <input type="date" wire:model.live="endDate" 
                 class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-        </div>
-        <div class="flex items-center gap-2 flex-1">
-            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
-                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
-            <button wire:click="resetFilters" title="Limpiar filtros"
+                            <button wire:click="resetFilters" title="Limpiar filtros"
                 class="inline-flex items-center justify-center h-10 w-10 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-white transition-colors">
                 ✕
             </button>
         </div>
+        <div class="flex items-center justify-end gap-2 flex-1">
+    <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
+        class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
+</div>
+
     </div>
 
     <!-- Sección de tabla -->
