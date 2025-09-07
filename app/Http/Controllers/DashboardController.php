@@ -28,15 +28,21 @@ class DashboardController extends Controller
         $femaleUsers = User::where('gender', 'femenino')->count();
 
         // Delivery data for chart and table with active medicines filter
-        $deliveries = \App\Models\MedicineDelivery::with([
+        $deliveriesForChart = \App\Models\MedicineDelivery::with([
             'deliveryPatients.deliveryMedicines',
             'deliveryPatients.user'
         ])->orderBy('start_date')->get();
         
+        // Paginated deliveries for table
+        $deliveries = \App\Models\MedicineDelivery::with([
+            'deliveryPatients.deliveryMedicines',
+            'deliveryPatients.user'
+        ])->orderBy('start_date', 'desc')->paginate(10);
+        
         $deliveryLabels = [];
         $deliveryUserCounts = [];
         
-        foreach ($deliveries as $delivery) {
+        foreach ($deliveriesForChart as $delivery) {
             $deliveryLabels[] = $delivery->name;
             $deliveryUserCounts[] = $delivery->deliveryPatients->count();
         }
@@ -181,7 +187,7 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'chart', 'genderChart', 'deliveryChart', 'municipalityChart', 
             'totalUsers', 'maleUsers', 'femaleUsers', 'activeUsers', 'inactiveUsers', 
-            'topMedicines', 'topPathologies', 'deliveries', 'patientsWithDeliveries', 'patientsWithoutDeliveries'
+            'topMedicines', 'topPathologies', 'patientsWithDeliveries', 'patientsWithoutDeliveries'
         ));
     }
 }

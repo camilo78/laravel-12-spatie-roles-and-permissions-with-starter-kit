@@ -66,6 +66,11 @@
                             :current="request()->routeIs('roles.*')">Roles
                         </flux:navlist.item>
                     @endif
+                    @if (auth()->user()->can('system-configuration.manage'))
+                        <flux:navlist.item wire:navigate icon="cog-6-tooth" :href="route('system-configuration.index')"
+                            :current="request()->routeIs('system-configuration.*')">Config. del Sistema
+                        </flux:navlist.item>
+                    @endif
                 @endrole
             </flux:navlist.group>
         </flux:navlist>

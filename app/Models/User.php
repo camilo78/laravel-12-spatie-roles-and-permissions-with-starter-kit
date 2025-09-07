@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Traits\HasRoles;
+use App\Helpers\SystemConfigHelper;
 
 /**
  * Modelo de Usuario
@@ -171,8 +172,9 @@ public function getNextDeliveryDate(): ?\Carbon\Carbon
     $admission = \Carbon\Carbon::parse($this->admission_date);
     $today = \Carbon\Carbon::today();
 
-    // Primera entrega: 30 días después de admission_date
-    $firstDelivery = $admission->copy()->addDays(30);
+    // Primera entrega: días configurables después de admission_date
+    $firstDeliveryDays = SystemConfigHelper::firstDeliveryDays();
+    $firstDelivery = $admission->copy()->addDays($firstDeliveryDays);
     $firstDelivery = $this->adjustToWeekday($firstDelivery);
 
     // Si hoy es antes de la primera entrega
@@ -180,10 +182,11 @@ public function getNextDeliveryDate(): ?\Carbon\Carbon
         return $firstDelivery;
     }
 
-    // Calcular entregas subsiguientes (cada 120 días desde la primera)
+    // Calcular entregas subsiguientes (días configurables desde la primera)
+    $subsequentDays = SystemConfigHelper::subsequentDeliveryDays();
     $deliveryDate = $firstDelivery->copy();
     while ($deliveryDate->lte($today)) {
-        $deliveryDate->addDays(120);
+        $deliveryDate->addDays($subsequentDays);
         $deliveryDate = $this->adjustToWeekday($deliveryDate);
     }
 

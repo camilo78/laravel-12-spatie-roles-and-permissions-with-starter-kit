@@ -7,50 +7,105 @@ use App\Models\DeliveryPatient;
 use App\Models\DeliveryMedicine;
 use App\Models\User;
 use App\Models\PatientMedicine;
+use App\Models\SystemConfiguration;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class MedicineDeliverySeeder extends Seeder
 {
     public function run(): void
     {
-        $deliveries = [
-            ['name' => 'Entrega Enero 2025', 'start_date' => '2025-01-15', 'end_date' => '2025-01-30'],
-            ['name' => 'Entrega Febrero 2025', 'start_date' => '2025-02-15', 'end_date' => '2025-02-28'],
-            ['name' => 'Entrega Marzo 2025', 'start_date' => '2025-03-15', 'end_date' => '2025-03-30'],
-            ['name' => 'Entrega Abril 2025', 'start_date' => '2025-04-15', 'end_date' => '2025-04-30'],
-            ['name' => 'Entrega Mayo 2025', 'start_date' => '2025-05-15', 'end_date' => '2025-05-31'],
-            ['name' => 'Entrega Junio 2025', 'start_date' => '2025-06-15', 'end_date' => '2025-06-30'],
-            ['name' => 'Entrega Julio 2025', 'start_date' => '2025-07-15', 'end_date' => '2025-07-31'],
-            ['name' => 'Entrega Agosto 2025', 'start_date' => '2025-08-15', 'end_date' => '2025-08-31'],
-            ['name' => 'Entrega Septiembre 2025', 'start_date' => '2025-09-15', 'end_date' => '2025-09-30'],
-            ['name' => 'Entrega Octubre 2025', 'start_date' => '2025-10-15', 'end_date' => '2025-10-31'],
-            ['name' => 'Entrega Noviembre 2025', 'start_date' => '2025-11-15', 'end_date' => '2025-11-30'],
-            ['name' => 'Entrega Diciembre 2025', 'start_date' => '2025-12-15', 'end_date' => '2025-12-30'],
-        ];
-
-        foreach ($deliveries as $deliveryData) {
+        // Obtener configuraciones del sistema
+        $config = SystemConfiguration::first();
+        $firstDeliveryDays = $config->first_delivery_days ?? 30;
+        $subsequentDeliveryDays = $config->subsequent_delivery_days ?? 120;
+        
+        // Obtener usuarios con medicamentos activos ordenados por fecha de admisión
+        $users = User::whereHas('patientMedicines', function($query) {
+            $query->where('status', 'active');
+        })->orderBy('admission_date')->get();
+        
+        // Crear entregas cronológicamente por mes
+        $deliveriesByMonth = [];
+        
+        foreach ($users as $user) {
+            $admissionDate = Carbon::parse($user->admission_date);
+            
+            // Primera entrega: 30 días después del ingreso
+            $firstDeliveryDate = $admissionDate->copy()->addDays($firstDeliveryDays);
+            // Ajustar al viernes si cae en fin de semana
+            if ($firstDeliveryDate->isSaturday()) {
+                $firstDeliveryDate->subDay();
+            } elseif ($firstDeliveryDate->isSunday()) {
+                $firstDeliveryDate->subDays(2);
+            }
+            
+            // Generar entregas hasta diciembre 2025
+            $endDate = Carbon::parse('2025-12-31');
+            $deliveryCount = 1;
+            $currentDeliveryDate = $firstDeliveryDate->copy();
+            
+            while ($currentDeliveryDate->lte($endDate)) {
+                $monthYear = $currentDeliveryDate->format('Y-m');
+                $deliveryName = "Entrega " . $currentDeliveryDate->locale('es')->isoFormat('MMMM YYYY');
+                
+                // Agrupar por mes para crear entregas cronológicamente
+                if (!isset($deliveriesByMonth[$monthYear])) {
+                    $deliveriesByMonth[$monthYear] = [
+                        'name' => $deliveryName,
+                        'start_date' => $currentDeliveryDate->copy()->startOfMonth(),
+                        'end_date' => $currentDeliveryDate->copy()->endOfMonth(),
+                        'patients' => []
+                    ];
+                }
+                
+                // Agregar paciente a esta entrega
+                $deliveriesByMonth[$monthYear]['patients'][] = $user->id;
+                
+                // Calcular siguiente entrega
+                if ($deliveryCount === 1) {
+                    $currentDeliveryDate->addDays($subsequentDeliveryDays);
+                } else {
+                    $currentDeliveryDate->addDays($subsequentDeliveryDays);
+                }
+                
+                // Ajustar al viernes si cae en fin de semana
+                if ($currentDeliveryDate->isSaturday()) {
+                    $currentDeliveryDate->subDay();
+                } elseif ($currentDeliveryDate->isSunday()) {
+                    $currentDeliveryDate->subDays(2);
+                }
+                
+                $deliveryCount++;
+            }
+        }
+        
+        // Crear entregas cronológicamente
+        ksort($deliveriesByMonth);
+        
+        foreach ($deliveriesByMonth as $monthData) {
             $delivery = MedicineDelivery::create([
-                'name' => $deliveryData['name'],
-                'start_date' => Carbon::parse($deliveryData['start_date']),
-                'end_date' => Carbon::parse($deliveryData['end_date']),
+                'name' => $monthData['name'],
+                'start_date' => $monthData['start_date'],
+                'end_date' => $monthData['end_date'],
             ]);
-
-            // Obtener todos los usuarios
-            $users = User::all();
-
-            foreach ($users as $user) {
+            
+            // Agregar pacientes únicos a esta entrega
+            $uniquePatients = array_unique($monthData['patients']);
+            
+            foreach ($uniquePatients as $userId) {
                 $deliveryPatient = DeliveryPatient::create([
                     'medicine_delivery_id' => $delivery->id,
-                    'user_id' => $user->id,
+                    'user_id' => $userId,
                     'state' => 'programada',
                 ]);
-
-                // Obtener medicamentos del usuario
-                $patientMedicines = PatientMedicine::where('user_id', $user->id)
+                
+                // Obtener medicamentos activos del usuario
+                $patientMedicines = PatientMedicine::where('user_id', $userId)
                     ->where('status', 'active')
                     ->get();
-
+                
                 foreach ($patientMedicines as $medicine) {
                     DeliveryMedicine::create([
                         'delivery_patient_id' => $deliveryPatient->id,

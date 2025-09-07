@@ -33,19 +33,18 @@ class UserPathologies extends Component
     /**
      * Se ejecuta cuando cambia el texto de búsqueda de patología
      */
-    public function updatedPathologySearch(string $value): void
+    public function updatedPathologySearch($value)
     {
-        $value = rtrim($value);
-        
-        if (empty($value)) {
+        if (strlen($value) < 2) {
             $this->filtered_pathologies = [];
             return;
         }
 
-        $this->filtered_pathologies = Pathology::where(function($query) use ($value) {
-            $query->where('clave', 'like', '%' . $value . '%')
-                  ->orWhere('descripcion', 'like', '%' . $value . '%');
-        })->orderBy('clave')->get();
+        $this->filtered_pathologies = Pathology::where('clave', 'like', '%' . $value . '%')
+            ->orWhere('descripcion', 'like', '%' . $value . '%')
+            ->orderBy('clave')
+            ->limit(10)
+            ->get();
     }
 
     /**
@@ -153,12 +152,8 @@ class UserPathologies extends Component
 
     public function render()
     {
-        $patientPathologies = $this->user->patientPathologies()->with('pathology')->get();
-        $pathologies = Pathology::orderBy('clave')->get();
-        
         return view('livewire.users.pathologies.user-pathologies', [
-            'patientPathologies' => $patientPathologies,
-            'pathologies' => $pathologies
+            'patientPathologies' => $this->user->patientPathologies()->with('pathology')->get()
         ]);
     }
 }

@@ -15,15 +15,16 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
             [
                 'Juan Pérez',
                 'juan@email.com',
-                '12345678',
-                '987654321',
+                '0101198509263',
+                '98765432',
                 'Calle 123 #45-67',
-                '1',
-                '1',
-                '1',
+                'Atlántida',
+                'La Ceiba',
+                'Col. Las Tres Posas',
                 'masculino',
-                '1',
-                '2024-01-15'
+                'true',
+                '15/01/2024',
+                'password123'
             ]
         ];
     }
@@ -36,29 +37,31 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
             'dni',
             'phone',
             'address',
-            'department_id',
-            'municipality_id',
-            'locality_id',
+            'department',
+            'municipality',
+            'locality',
             'gender',
             'status',
-            'admission_date'
+            'admission_date',
+            'password'
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'A' => NumberFormat::FORMAT_TEXT,
-            'B' => NumberFormat::FORMAT_TEXT,
-            'C' => NumberFormat::FORMAT_NUMBER,
-            'D' => NumberFormat::FORMAT_NUMBER,
-            'E' => NumberFormat::FORMAT_TEXT,
-            'F' => NumberFormat::FORMAT_TEXT,
-            'G' => NumberFormat::FORMAT_TEXT,
-            'H' => NumberFormat::FORMAT_TEXT,
-            'I' => NumberFormat::FORMAT_TEXT,
-            'J' => NumberFormat::FORMAT_TEXT,
-            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'A' => NumberFormat::FORMAT_TEXT, // name
+            'B' => NumberFormat::FORMAT_TEXT, // email
+            'C' => NumberFormat::FORMAT_NUMBER, // dni
+            'D' => NumberFormat::FORMAT_NUMBER, // phone
+            'E' => NumberFormat::FORMAT_TEXT, // address
+            'F' => NumberFormat::FORMAT_TEXT, // department
+            'G' => NumberFormat::FORMAT_TEXT, // municipality
+            'H' => NumberFormat::FORMAT_TEXT, // locality
+            'I' => NumberFormat::FORMAT_TEXT, // gender
+            'J' => NumberFormat::FORMAT_TEXT, // status
+            'K' => NumberFormat::FORMAT_TEXT, // admission_date
+            'L' => NumberFormat::FORMAT_TEXT, // password
         ];
     }
 }

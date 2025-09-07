@@ -23,19 +23,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $municipality = \App\Models\Municipality::where('department_id', 1)->inRandomOrder()->first();
+        $locality = \App\Models\Locality::where('municipality_id', $municipality->id)->inRandomOrder()->first();
+        
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'dni' => fake()->numerify('#############'),
             'phone' => fake()->phoneNumber(),
             'department_id' => 1, // Atlántida
-            'municipality_id' => \App\Models\Municipality::where('department_id', 1)->inRandomOrder()->first()->id,
-            'locality_id' => fake()->numberBetween(1, 20),
+            'municipality_id' => $municipality->id,
+            'locality_id' => $locality ? $locality->id : 1,
             'address' => fake()->address(),
             'email_verified_at' => now(),
             'gender' => fake()->randomElement(['Masculino', 'Femenino']),
-            'status' => fake()->boolean(),
-            'admission_date' => fake()->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => true,
+            'admission_date' => fake()->dateTimeBetween('2024-01-01', '2025-08-31')->format('Y-m-d'),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

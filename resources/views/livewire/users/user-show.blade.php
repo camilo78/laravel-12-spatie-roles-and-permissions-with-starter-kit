@@ -48,7 +48,7 @@
                                 {{ $user->municipality->name ?? 'No especificado' }}
                             </td>
                         </tr>
-                        {{-- Tercera fila: Localidad, dirección y roles --}}
+                        {{-- Tercera fila: Localidad, dirección y género --}}
                         <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
                             <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Localidad:</th>
                             <td class="px-6 py-3 border-r dark:border-gray-700 text-gray-600 dark:text-gray-300">
@@ -58,8 +58,19 @@
                             <td class="px-6 py-3 border-r dark:border-gray-700 text-gray-600 dark:text-gray-300">
                                 {{ $user->address ?? 'No especificado' }}
                             </td>
-                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Roles:</th>
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Género:</th>
                             <td class="px-6 py-3 text-gray-600 dark:text-gray-300">
+                                {{ $user->gender ?? 'No especificado' }}
+                            </td>
+                        </tr>
+                        {{-- Cuarta fila: Fecha de ingreso y roles --}}
+                        <tr class="border-b dark:border-gray-700 bg-white dark:bg-gray-900">
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Fecha de Ingreso:</th>
+                            <td class="px-6 py-3 border-r dark:border-gray-700 text-gray-600 dark:text-gray-300">
+                                {{ $user->admission_date ? $user->admission_date->format('d/m/Y') : 'No especificado' }}
+                            </td>
+                            <th class="px-6 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">Roles:</th>
+                            <td class="px-6 py-3 text-gray-600 dark:text-gray-300" colspan="3">
                                 {{-- Mostrar roles del usuario o mensaje si no tiene --}}
                                 @if (!$user->roles || $user->roles->isEmpty())
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">

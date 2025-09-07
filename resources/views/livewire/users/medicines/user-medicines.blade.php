@@ -62,20 +62,19 @@
         <form wire:submit.prevent="saveMedicine" class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Select searcheable de medicamento --}}
-                <div class="relative" x-data="{ open: false, search: @entangle('medicine_search') }">
+                <div class="relative" x-data="{ open: false }">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Medicamento</label>
                     
                     <div class="relative">
                         <input 
                             type="text" 
-                            x-model="search"
                             @click="open = true"
                             @input="open = true"
                             @keydown.escape="open = false"
-                            wire:model.live.debounce.300ms="medicine_search"
+                            wire:model.live="medicine_search"
                             placeholder="Seleccionar medicamento..."
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-100 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer
-                             autocomplete="off"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            autocomplete="off"
                             required>
                         
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -95,26 +94,20 @@
                          @click.away="open = false"
                          class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
                         
-                        @if($medicine_search && count($filtered_medicines) > 0)
+                        @if($medicine_search && strlen($medicine_search) >= 2 && count($filtered_medicines) > 0)
                             @foreach($filtered_medicines as $medicine)
                                 <div class="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
                                      wire:click="selectMedicine({{ $medicine->id }}, '{{ $medicine->generic_name }} - {{ $medicine->presentation }}')"
                                      @click="open = false">
-                                    <div class="font-medium text-gray-500 dark:text-gray-400">{{ $medicine->generic_name }}</div>
+                                    <div class="font-medium text-gray-900 dark:text-gray-100">{{ $medicine->generic_name }}</div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ $medicine->presentation }}</div>
                                 </div>
                             @endforeach
-                        @elseif(!$medicine_search && isset($medicines))
-                            @foreach($medicines as $medicine)
-                                <div class="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
-                                     wire:click="selectMedicine({{ $medicine->id }}, '{{ $medicine->generic_name }} - {{ $medicine->presentation }}')"
-                                     @click="open = false">
-                                    <div class="font-medium text-gray-500 dark:text-gray-400">{{ $medicine->generic_name }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $medicine->presentation }}</div>
-                                </div>
-                            @endforeach
-                        @else
+                        @elseif($medicine_search && strlen($medicine_search) >= 2 && count($filtered_medicines) === 0)
                             <div class="px-4 py-2 text-gray-500 dark:text-gray-400">No se encontraron medicamentos</div>
+
+                        @else
+                            <div class="px-4 py-2 text-gray-500 dark:text-gray-400">Escriba al menos 2 caracteres para buscar</div>
                         @endif
                     </div>
                     
@@ -194,7 +187,7 @@
                         <td class="px-6 py-2 text-center flex justify-center gap-2">
                             {{-- Botón Editar --}}
                             <button wire:click="loadMedicine({{ $userMedicine->id }})"
-                                class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-blue-50 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-700 dark:border-white dark:hover:bg-blue-900 dark:focus:ring-blue-800"
+                                class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-blue-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800"
                                 title="Editar Medicamento">
                                 <flux:icon.square-pen variant="micro"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300" />
@@ -203,7 +196,7 @@
                             {{-- Botón Eliminar --}}
                             <button wire:click="removeMedicine({{ $userMedicine->id }})"
                                 wire:confirm="¿Eliminar medicamento?"
-                                class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-700 dark:border-white dark:hover:bg-red-900 dark:focus:ring-red-800"
+                                class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800"
                                 title="Eliminar Medicamento">
                                 <flux:icon.trash-2 variant="micro"
                                     class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" />

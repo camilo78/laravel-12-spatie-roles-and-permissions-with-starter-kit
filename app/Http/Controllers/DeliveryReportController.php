@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MedicineDelivery;
 use App\Models\DeliveryPatient;
+use App\Models\SystemConfiguration;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Exception;
 
@@ -65,9 +66,18 @@ class DeliveryReportController extends Controller
             ->with(['user', 'deliveryMedicines.patientMedicine.medicine'])
             ->get();
 
+        // Get configuration from system
+        $config = SystemConfiguration::first();
+        $appLogo = $config->app_logo ?? public_path('img/salud.png') ; 
+        $hospitalLogo = $config->hospital_logo ?? public_path('img/hga.png');
+        $programManager = $config->program_manager ?? 'Lic. Sandra Patricia Nuñez Hernández';
+        $hospitalName = $config->hospital_name ?? 'Hospital General Atlántida';
+        $programName = $config->program_name ?? 'Programa de Entrega de Medicamentos en Casa';
+
         $pdf = PDF::loadView('reports.delivery', compact(
             'delivery', 'totalPatients', 'malePatients', 'femalePatients',
-            'departments', 'municipalities', 'medicines', 'pathologies', 'notDeliveredPatients'
+            'departments', 'municipalities', 'medicines', 'pathologies', 'notDeliveredPatients',
+            'programManager', 'hospitalName', 'programName', 'appLogo', 'hospitalLogo'
         ));
 
             $filename = 'Entrega_' . str_replace(' ', '_', $delivery->name) . '.pdf';

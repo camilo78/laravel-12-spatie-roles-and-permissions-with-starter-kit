@@ -82,6 +82,9 @@ class PermissionSeeder extends Seeder
             'deliveries.edit',
             'deliveries.delete',
             'deliveries.show',
+            
+            // Configuraciones del Sistema
+            'system-configuration.manage',
         ];
 
         foreach ($permissions as $permission) {

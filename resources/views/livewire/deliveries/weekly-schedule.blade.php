@@ -45,13 +45,11 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">#</th>
-                    <th scope="col" class="px-6 py-3">Paciente</th>
-                    <th scope="col" class="px-6 py-3">Teléfono</th>
-                    <th scope="col" class="px-6 py-3">Ubicación</th>
-                    <th scope="col" class="px-6 py-3">Fecha Ingreso</th>
+                    <th scope="col" class="px-6 py-3">Información del Paciente</th>
                     <th scope="col" class="px-6 py-3">Estado</th>
                     <th scope="col" class="px-6 py-3">Entregas del Mes</th>
-                    <th scope="col" class="px-6 py-3">Próxima Entrega</th>
+                    <th scope="col" class="px-6 py-3 text-center">Acciones</th>
+                    <th scope="col" class="px-6 py-3">Medicamentos</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,16 +59,10 @@
                             {{ $loop->iteration + ($patients->currentPage() - 1) * $patients->perPage() }}
                         </td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                            {{ $patient->name }}
-                        </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                            {{ $patient->phone ?? 'No especificado' }}
-                        </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                            {{ $patient->municipality->name ?? 'N/A' }}, {{ $patient->locality->name ?? 'N/A' }}
-                        </td>
-                        <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                            {{ $patient->admission_date->format('d/m/Y') }}
+                            <div class="text-sm text-gray-900 dark:text-white">{{ $patient->name }}</div>
+                            <div class="text-xs text-gray-200">📞 {{ $patient->phone ?? 'No especificado' }}</div>
+                            <div class="text-xs text-gray-200">📍 {{ $patient->municipality->name ?? 'N/A' }}, {{ $patient->locality->name ?? 'N/A' }}</div>
+                            <div class="text-xs text-gray-200"> 📅 {{ $patient->admission_date->format('d/m/Y') }}</div>
                         </td>
                         <td class="px-6 py-2">
                             @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp
@@ -179,7 +171,7 @@
                                     <div class="text-gray-500">
                                         {{ $isFirstDelivery ? 'Primera entrega' : 'Entrega programada' }}
                                         @if($deliveryPatient && $deliveryPatient->state)
-                                            - {{ ucfirst(str_replace('_', ' ', $deliveryPatient->state)) }}
+                                            <br> {{ ucfirst(str_replace('_', ' ', $deliveryPatient->state)) }}
                                         @endif
                                     </div>
                                 </div>
@@ -189,63 +181,36 @@
                                 </div>
                             @endif
                         </td>
+                        {{-- Contador de medicamentos incluidos vs total --}}
                         <td class="px-6 py-2">
-                            @php
-                                // Calcular la verdadera próxima entrega
-                                $admission = \Carbon\Carbon::parse($patient->admission_date);
-                                $today = \Carbon\Carbon::today();
-                                
-                                // Primera entrega: 30 días después de admission_date
-                                $firstDelivery = $admission->copy()->addDays(30);
-                                // Ajustar al viernes si cae en fin de semana
-                                if ($firstDelivery->isSaturday()) {
-                                    $firstDelivery->subDay();
-                                } elseif ($firstDelivery->isSunday()) {
-                                    $firstDelivery->subDays(2);
-                                }
-                                
-                                // Encontrar la próxima entrega después de hoy
-                                $nextRealDelivery = null;
-                                $deliveryDate = $firstDelivery->copy();
-                                $deliveryCount = 1;
-                                
-                                // Si la primera entrega es futura, esa es la próxima
-                                if ($firstDelivery->gt($today)) {
-                                    $nextRealDelivery = $firstDelivery;
-                                } else {
-                                    // Buscar la siguiente entrega (cada 120 días) que sea futura
-                                    while ($deliveryDate->year <= $today->year + 2) {
-                                        if ($deliveryDate->gt($today)) {
-                                            $nextRealDelivery = $deliveryDate;
-                                            break;
-                                        }
-                                        $deliveryDate->addDays(120);
-                                        // Ajustar al viernes si cae en fin de semana
-                                        if ($deliveryDate->isSaturday()) {
-                                            $deliveryDate->subDay();
-                                        } elseif ($deliveryDate->isSunday()) {
-                                            $deliveryDate->subDays(2);
-                                        }
-                                        $deliveryCount++;
-                                        
-                                        if ($deliveryCount > 30) break; // Evitar loop infinito
-                                    }
-                                }
-                            @endphp
-                            
-                            @if($nextRealDelivery)
-                                <div class="text-xs">
-                                    <div class="font-semibold text-blue-600">
-                                        📅 {{ $nextRealDelivery->locale('es')->isoFormat('D MMM YYYY') }}
-                                    </div>
-                                    <div class="text-gray-500">
-                                        Próxima entrega
-                                    </div>
+                            @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp
+                            @if($deliveryPatient)
+                                @if ($deliveryPatient->deliveryMedicines->where('included', true)->count() == $deliveryPatient->deliveryMedicines->count())
+                                    <flux:badge color="green" size="sm">
+                                        {{ $deliveryPatient->deliveryMedicines->count() }} medicamento{{ $deliveryPatient->deliveryMedicines->count() > 1 ? 's' : '' }} 
+                                    </flux:badge>
+                                @else
+                                    <flux:badge color="yellow" size="sm">
+                                        {{ $deliveryPatient->deliveryMedicines->where('included', true)->count() }} de
+                                        {{ $deliveryPatient->deliveryMedicines->count() }} medicamentos
+                                    </flux:badge>
+                                @endif
+                            @else
+                                <span class="text-xs text-gray-500">Sin medicamentos</span>
+                            @endif
+                        </td>
+                        {{-- Botón para ver medicamentos del paciente --}}
+                        <td class="px-6 py-2 text-center">
+                            @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp
+                            @if($deliveryPatient)
+                                <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
+                                    <a wire:navigate href="{{ route('deliveries.patient.medicines', [$deliveryPatient->medicineDelivery, $deliveryPatient]) }}"
+                                        class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none">
+                                        <flux:icon.eye variant="micro" class="text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200" />
+                                    </a>
                                 </div>
                             @else
-                                <div class="text-xs text-gray-500">
-                                    No calculable
-                                </div>
+                                <span class="text-xs text-gray-500">-</span>
                             @endif
                         </td>
                     </tr>

@@ -13,6 +13,7 @@ use App\Livewire\Users\UserEdit;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Users\UserShow;
 use App\Livewire\Deliveries\WeeklySchedule;
+use App\Livewire\SystemConfiguration\SystemConfigurationIndex;
 
 
 use App\Http\Controllers\UserExcelController;
@@ -93,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
     // User Medical Management
     Route::get('users/{user}/pathologies', \App\Livewire\Users\Pathologies\UserPathologies::class)->name('users.pathologies')->middleware('permission:user-pathologies.index');
     Route::get('users/{user}/medicines', \App\Livewire\Users\Medicines\UserMedicines::class)->name('users.medicines')->middleware('permission:user-medicines.index');
+
+    // System Configuration
+    Route::get('system-configuration', SystemConfigurationIndex::class)->name('system-configuration.index')->middleware('permission:system-configuration.manage');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');

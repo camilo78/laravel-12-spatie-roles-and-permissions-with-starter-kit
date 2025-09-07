@@ -30,8 +30,8 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('img/salud.png') }}" alt="Logo Salud" style="float: left; height: 125px; margin-top:20px">
-        <img src="{{ public_path('img/hga.png') }}" alt="Logo HGA" style="float: right; height: 138px; margin-top:13px">
+        <img src="{{ $appLogo ? storage_path('app/public/' . $appLogo) : public_path('img/salud.png') }}" alt="Logo Salud" style="float: left; height: 125px; margin-top:20px">
+        <img src="{{ $hospitalLogo ? storage_path('app/public/' . $hospitalLogo) : public_path('img/hga.png') }}" alt="Logo Hospital" style="float: right; height: 138px; margin-top:13px">
         <div>
             <h1>Reporte de Entrega de Medicamentos</h1>
             <h2>{{ $delivery->name }}</h2>
@@ -306,13 +306,12 @@
     <div class="section" style="margin-top: 40px; text-align: center; page-break-inside: avoid;">
         <div style="margin-bottom: 60px;"></div>
         <div style="border-top: 1px solid #000; width: 300px; margin: 0 auto;"></div>
-        <p style="margin: 10px 0 0 0; padding: 0; font-weight: bold; font-size: 14px;">Lic. Sandra Patricia Nuñez Hernández</p>
-        <p style="margin: 0; padding: 0; font-size: 11;">Encargada del Programa de Entrega de Medicamentos en Casa</p>
-        <p style="margin: 0; padding: 0; font-weight: bold; font-size: 14px;">Hospital General Atlántida</p>
+        <p style="margin: 0; padding: 0; font-size: 11;">{{ $programName }}</p>
+        <p style="margin: 0; padding: 0; font-weight: bold; font-size: 14px;">{{ $hospitalName }}</p>
         
         <div style="margin-top: 10px; font-size: 12px; color: #666;">
-            <p style="margin: 0; padding: 0;">© Sistema de Entrega de Medicamentos en Casa</p>
-            <p style="margin: 0; padding: 0;">Hospital General Atlántida, Secretaría de Salud</p>
+            <p style="margin: 0; padding: 0;">© {{ $programName }}
+            <p style="margin: 0; padding: 0;">{{ $hospitalName }}, Secretaría de Salud</p>
         </div>
     </div>
     
