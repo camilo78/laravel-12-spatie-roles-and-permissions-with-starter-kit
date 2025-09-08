@@ -7,20 +7,18 @@ use Illuminate\View\View;
 use Livewire\Component;
 
 /**
- * Componente Livewire para mostrar detalles de usuario
- * 
- * Gestiona la visualización de información completa de un usuario específico,
- * incluyendo datos personales, ubicación geográfica y roles asignados.
+ * Componente para mostrar el perfil completo de un usuario.
+ * Muestra información personal, patologías y medicamentos asignados.
  */
 class UserShow extends Component
 {
-    // Usuario a mostrar
+    /** @var User Usuario a mostrar */
     public User $user;
 
     /**
-     * Inicializa el componente con el usuario específico
+     * Inicializa el componente con el usuario específico.
      * 
-     * @param User $user Usuario a mostrar (inyectado por route model binding)
+     * @param User $user Usuario inyectado por route model binding
      */
     public function mount(User $user): void
     {
@@ -28,9 +26,7 @@ class UserShow extends Component
     }
 
     /**
-     * Renderiza la vista del componente
-     * 
-     * @return View Vista con los detalles del usuario
+     * Renderiza la vista del perfil del usuario.
      */
     public function render(): View
     {
