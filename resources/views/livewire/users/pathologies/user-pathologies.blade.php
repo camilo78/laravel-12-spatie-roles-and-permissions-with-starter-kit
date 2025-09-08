@@ -101,10 +101,10 @@
                             @if($pathology_search && strlen($pathology_search) >= 2 && count($filtered_pathologies) > 0)
                                 @foreach($filtered_pathologies as $pathology)
                                     <div class="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" 
-                                         wire:click="selectPathology({{ $pathology->id }}, '{{ $pathology->clave }} - {{ $pathology->descripcion }}')"
+                                         wire:click="selectPathology({{ $pathology->id }}, '{{ $pathology->code }} - {{ $pathology->description }}')"
                                          @click="open = false">
-                                        <div class="font-medium text-gray-900 dark:text-gray-100">{{ $pathology->clave }}</div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $pathology->descripcion }}</div>
+                                        <div class="font-medium text-gray-900 dark:text-gray-100">{{ $pathology->code }}</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $pathology->description }}</div>
                                     </div>
                                 @endforeach
                             @elseif($pathology_search && strlen($pathology_search) >= 2 && count($filtered_pathologies) === 0)
@@ -157,8 +157,8 @@
                     @forelse($patientPathologies as $key => $pathology)
                         <tr
                             class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600">
-                            <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $pathology->pathology->clave }} - {{ $pathology->pathology->descripcion }}
+                            <td class="px-6 py-2 font-medium text-gray-900 dark:text-white">
+                                {{ $pathology->pathology->code }} - {{ $pathology->pathology->description }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                                 {{ \Carbon\Carbon::parse($pathology->diagnosed_at)->format('d/m/Y') }}

@@ -69,6 +69,7 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-6 py-3">Nivel</th>
                         <th scope="col" class="px-6 py-3">Código</th>
                         <th scope="col" class="px-6 py-3">Descripción</th>
                         <th scope="col" class="px-6 py-3 text-center">Acciones</th>
@@ -77,11 +78,14 @@
                 <tbody>
                     @forelse($pathologies as $key => $pathology)
                         <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <td class="px-6 py-2 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $pathology->level }}
+                            </td>
                             <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $pathology->clave }}
+                                {{ $pathology->code }}
                             </td>
                             <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
-                                {{ Str::limit($pathology->descripcion, 80) ?: 'Sin descripción' }}
+                                {{ Str::limit($pathology->description, 80) ?: 'Sin descripción' }}
                             </td>
                             <td class="px-6 py-2 text-center">
                                 <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
@@ -102,7 +106,7 @@
                         </tr>
                     @empty
                         <tr class="bg-white dark:bg-gray-800">
-                            <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                 No se encontraron patologías.
                             </td>
                         </tr>

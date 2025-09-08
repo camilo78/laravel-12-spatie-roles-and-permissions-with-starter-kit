@@ -50,6 +50,8 @@ class UserMedicines extends Component
      */
     public function updatedMedicineSearch($value)
     {
+        $value = str_replace(' ', '', $value);
+        
         if (strlen($value) < 2) {
             $this->filtered_medicines = [];
             return;

@@ -17,8 +17,8 @@ class PathologyIndex extends BaseIndexComponent
     protected function getSearchableFields(): array
     {
         return [
-            'clave' => 'like',
-            'descripcion' => 'like'
+            'code' => 'like',
+            'description' => 'like'
         ];
     }
 
@@ -27,7 +27,7 @@ class PathologyIndex extends BaseIndexComponent
      */
     protected function getSortableFields(): array
     {
-        return ['id', 'clave', 'descripcion', 'created_at'];
+        return ['id', 'code', 'description', 'level', 'created_at'];
     }
 
     /**

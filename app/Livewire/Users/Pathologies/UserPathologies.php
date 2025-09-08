@@ -35,14 +35,16 @@ class UserPathologies extends Component
      */
     public function updatedPathologySearch($value)
     {
+        $value = str_replace(' ', '', $value);
+        
         if (strlen($value) < 2) {
             $this->filtered_pathologies = [];
             return;
         }
 
-        $this->filtered_pathologies = Pathology::where('clave', 'like', '%' . $value . '%')
-            ->orWhere('descripcion', 'like', '%' . $value . '%')
-            ->orderBy('clave')
+        $this->filtered_pathologies = Pathology::where('code', 'like', '%' . $value . '%')
+            ->orWhere('description', 'like', '%' . $value . '%')
+            ->orderBy('code')
             ->limit(10)
             ->get();
     }
@@ -97,7 +99,7 @@ class UserPathologies extends Component
 
         $this->editingId = $pathology->id;
         $this->pathology_id = $pathology->pathology_id;
-        $this->pathology_search = $pathology->pathology->clave . ' - ' . $pathology->pathology->descripcion;
+        $this->pathology_search = $pathology->pathology->code . ' - ' . $pathology->pathology->description;
         $this->diagnosed_at = $pathology->diagnosed_at->format('Y-m-d');
         $this->status = $pathology->status;
     }

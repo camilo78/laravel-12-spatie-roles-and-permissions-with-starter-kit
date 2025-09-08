@@ -10,8 +10,14 @@ return new class extends Migration
     {
         Schema::create('pathologies', function (Blueprint $table) {
             $table->id();
-            $table->string('clave', 10);
-            $table->string('descripcion', 256);
+            $table->bigInteger('level');
+            $table->string('code', 1024);
+            $table->string('description', 1024);
+            $table->string('code_0', 1024)->nullable();
+            $table->string('code_1', 1024)->nullable();
+            $table->string('code_2', 1024)->nullable();
+            $table->string('code_3', 1024)->nullable();
+            $table->string('code_4', 1024)->nullable();
             $table->timestamps();
         });
     }

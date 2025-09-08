@@ -306,6 +306,7 @@
     <div class="section" style="margin-top: 40px; text-align: center; page-break-inside: avoid;">
         <div style="margin-bottom: 60px;"></div>
         <div style="border-top: 1px solid #000; width: 300px; margin: 0 auto;"></div>
+        <p style="margin: 0; padding: 0; font-weight: bold; font-size: 14px;">{{ $programManager }}</p>
         <p style="margin: 0; padding: 0; font-size: 11;">{{ $programName }}</p>
         <p style="margin: 0; padding: 0; font-weight: bold; font-size: 14px;">{{ $hospitalName }}</p>
         
