@@ -34,6 +34,7 @@ class UserSeeder extends Seeder
             'address' => '123 Main St, San Salvador',
             'gender' => 'Masculino',
             'status' => true,
+            'departmental_delivery' => false,
             'admission_date' => '2024-01-15',
             'password' => bcrypt('milogaqw12'),
         ]);

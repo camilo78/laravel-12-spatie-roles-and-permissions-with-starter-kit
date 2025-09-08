@@ -16,6 +16,7 @@ class WeeklySchedule extends Component
     public $search = '';
     public $startDate = '';
     public $endDate = '';
+    public $departmentalDeliveryFilter = null;
 
     public function updatedSearch()
     {
@@ -62,6 +63,10 @@ class WeeklySchedule extends Component
             ->where('status', true)
             ->whereNotNull('admission_date')
             ->with(['department', 'municipality', 'locality', 'patientMedicines']);
+            
+        if ($this->departmentalDeliveryFilter !== null) {
+            $query->where('departmental_delivery', $this->departmentalDeliveryFilter);
+        }
 
         if ($this->search) {
             $search = trim($this->search);
@@ -106,6 +111,11 @@ class WeeklySchedule extends Component
             ->where('status', true)
             ->whereNotNull('admission_date')
             ->with(['department', 'municipality', 'locality', 'patientMedicines']);
+            
+        // Filtro de entrega departamental
+        if ($this->departmentalDeliveryFilter !== null) {
+            $query->where('departmental_delivery', $this->departmentalDeliveryFilter);
+        }
             
         if ($medicineDelivery) {
             $query->with(['deliveryPatients' => function($q) use ($medicineDelivery) {

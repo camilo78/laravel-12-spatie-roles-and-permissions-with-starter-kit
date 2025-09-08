@@ -33,6 +33,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('gender', ['Masculino', 'Femenino'])->nullable();
             $table->boolean('status')->default(true);
+            $table->boolean('departmental_delivery')->default(false);
             $table->date('admission_date')->require();
             $table->string('password');
             $table->rememberToken();

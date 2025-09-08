@@ -22,6 +22,7 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
                 'La Ceiba',
                 'Col. Las Tres Posas',
                 'masculino',
+                'No',
                 '15/01/2024',
                 'password123'
             ]
@@ -40,6 +41,7 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
             'Municipio',
             'Localidad',
             'Género',
+            'Entrega Departamental',
             'Fecha de Ingreso',
             'Contraseña'
         ];
@@ -57,8 +59,9 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
             'G' => NumberFormat::FORMAT_TEXT, // Municipio
             'H' => NumberFormat::FORMAT_TEXT, // Localidad
             'I' => NumberFormat::FORMAT_TEXT, // Género
-            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
-            'K' => NumberFormat::FORMAT_TEXT, // Contraseña
+            'J' => NumberFormat::FORMAT_TEXT, // Entrega Departamental
+            'K' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
+            'L' => NumberFormat::FORMAT_TEXT, // Contraseña
         ];
     }
 }

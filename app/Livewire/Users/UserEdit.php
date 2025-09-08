@@ -33,6 +33,7 @@ class UserEdit extends Component
     public string $address = '';
     public string $gender = '';
     public ?string $admission_date = null;
+    public bool $departmental_delivery = false;
     
     // Campos de contraseña (opcionales en edición)
     public ?string $password = null;
@@ -68,7 +69,7 @@ class UserEdit extends Component
         // Llenar propiedades con datos del usuario
         $this->fill($user->only([
             'name', 'email', 'dni', 'phone', 'address', 'gender', 'status',
-            'department_id', 'municipality_id', 'locality_id'
+            'department_id', 'municipality_id', 'locality_id', 'departmental_delivery'
         ]));
         
         // Formatear fecha de ingreso para el input date
@@ -197,6 +198,7 @@ class UserEdit extends Component
             'municipality_id' => 'required|exists:municipalities,id',
             'locality_id' => 'required|exists:localities,id',
             'status' => 'boolean',
+            'departmental_delivery' => 'boolean',
         ];
     }
 
@@ -292,6 +294,7 @@ class UserEdit extends Component
             'department_id' => $this->department_id,
             'municipality_id' => $this->municipality_id,
             'locality_id' => $this->locality_id,
+            'departmental_delivery' => $this->departmental_delivery,
         ];
         
         // Solo actualizar contraseña si se proporcionó una nueva

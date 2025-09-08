@@ -34,6 +34,7 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
             'Municipio',
             'Localidad',
             'Género',
+            'Entrega Departamental',
             'Fecha de Ingreso'
         ];
     }
@@ -50,6 +51,7 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
             $patient->municipality->name ?? '',
             $patient->locality->name ?? '',
             $patient->gender,
+            $patient->departmental_delivery ? 'Sí' : 'No',
             $patient->admission_date ? $patient->admission_date->format('d/m/Y') : '',
         ];
     }
@@ -66,7 +68,8 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
             'G' => NumberFormat::FORMAT_TEXT, // Municipio
             'H' => NumberFormat::FORMAT_TEXT, // Localidad
             'I' => NumberFormat::FORMAT_TEXT, // Género
-            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
+            'J' => NumberFormat::FORMAT_TEXT, // Entrega Departamental
+            'K' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
         ];
     }
 }

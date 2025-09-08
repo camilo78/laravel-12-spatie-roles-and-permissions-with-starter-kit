@@ -28,6 +28,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'municipality' => $row['municipio'] ?? $row['municipality'] ?? null,
             'locality' => $row['localidad'] ?? $row['locality'] ?? null,
             'gender' => $row['genero'] ?? $row['gender'] ?? null,
+            'departmental_delivery' => $row['entrega_departamental'] ?? $row['departmental_delivery'] ?? null,
             'admission_date' => $row['fecha_de_ingreso'] ?? $row['admission_date'] ?? null,
             'password' => $row['contrasena'] ?? $row['password'] ?? null,
         ];
@@ -53,6 +54,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'municipality_id' => $municipality?->id,
             'locality_id' => $locality?->id,
             'gender' => $mappedRow['gender'],
+            'departmental_delivery' => in_array(strtolower($mappedRow['departmental_delivery'] ?? ''), ['sí', 'si', 'yes', '1', 'true']),
             'status' => 1, // Todos los usuarios activos
             'admission_date' => $admissionDate,
             'password' => Hash::make($mappedRow['password']),
@@ -74,6 +76,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'municipio' => 'required|string|exists:municipalities,name',
             'localidad' => 'required|string|exists:localities,name',
             'genero' => 'nullable|string|in:Masculino,Femenino,masculino,femenino',
+            'entrega_departamental' => 'nullable|string',
             'fecha_de_ingreso' => 'required|string',
             'contrasena' => 'required|string|min:6',
         ];

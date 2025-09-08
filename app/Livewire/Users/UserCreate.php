@@ -30,6 +30,7 @@ class UserCreate extends Component
     public string $address = '';
     public string $gender = '';
     public ?string $admission_date = null;
+    public bool $departmental_delivery = false;
 
     
     // Ubicación geográfica
@@ -152,6 +153,7 @@ class UserCreate extends Component
             'municipality_id' => 'required|exists:municipalities,id',
             'locality_id' => 'required|exists:localities,id',
             'status' => 'boolean',
+            'departmental_delivery' => 'boolean',
         ];
     }
 
@@ -212,6 +214,7 @@ class UserCreate extends Component
                     'department_id' => $this->department_id,
                     'municipality_id' => $this->municipality_id,
                     'locality_id' => $this->locality_id,
+                    'departmental_delivery' => $this->departmental_delivery,
                 ]);
 
                 // Asignar roles

@@ -38,6 +38,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'gender' => fake()->randomElement(['Masculino', 'Femenino']),
             'status' => true,
+            'departmental_delivery' => fake()->boolean(20), // 20% probabilidad de ser true
             'admission_date' => fake()->dateTimeBetween('2024-01-01', '2025-08-31')->format('Y-m-d'),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

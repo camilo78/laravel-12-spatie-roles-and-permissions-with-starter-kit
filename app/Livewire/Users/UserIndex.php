@@ -14,6 +14,7 @@ class UserIndex extends BaseIndexComponent
 {
     public $startDate = '';
     public $endDate = '';
+    public $departmentalDeliveryFilter = null;
     
     // Listeners para eventos específicos de usuarios
     protected $listeners = ['refreshUsers' => '$refresh'];
@@ -76,6 +77,10 @@ class UserIndex extends BaseIndexComponent
             $query->whereDate('admission_date', '<=', $this->endDate);
         }
         
+        if ($this->departmentalDeliveryFilter !== null) {
+            $query->where('departmental_delivery', $this->departmentalDeliveryFilter);
+        }
+        
         return $query;
     }
 
@@ -92,6 +97,7 @@ class UserIndex extends BaseIndexComponent
     {
         $this->startDate = '';
         $this->endDate = '';
+        $this->departmentalDeliveryFilter = null;
         $this->search = '';
     }
 

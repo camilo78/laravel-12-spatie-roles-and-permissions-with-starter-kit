@@ -156,7 +156,13 @@
                         wire:model="admission_date" 
                         required />
                     
-
+                    {{-- Checkbox para entrega departamental --}}
+                    <div class="flex items-center">
+                        <flux:checkbox 
+                            wire:model="departmental_delivery" 
+                            label="Entrega Departamental" 
+                            description="Marcar si las entregas serán realizadas por la región departamental" />
+                    </div>
                     
                     {{-- Sección de roles (ocupa 2 columnas en pantallas grandes) --}}
                     <div class="lg:col-span-2">

@@ -64,6 +64,25 @@
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
             <input type="date" wire:model.live="endDate" placeholder="Fecha fin"
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+            
+            <!-- Toggle para entrega departamental -->
+            <div class="flex items-center gap-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega Depto.:</label>
+                <div class="flex items-center gap-1">
+                    <button wire:click="$set('departmentalDeliveryFilter', false)" 
+                        class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === false ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                        No
+                    </button>
+                    <button wire:click="$set('departmentalDeliveryFilter', null)" 
+                        class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === null ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                        Todos
+                    </button>
+                    <button wire:click="$set('departmentalDeliveryFilter', true)" 
+                        class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === true ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                        Sí
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
@@ -87,6 +106,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-3">#</th>
                     <th scope="col" class="px-6 py-3">Información del Paciente</th>
+                    <th scope="col" class="px-6 py-3">Entrega Depto.</th>
                     <th scope="col" class="px-6 py-3">Estado</th>
                     <th scope="col" class="px-6 py-3">Entregas del Mes</th>
                     <th scope="col" class="px-6 py-3 text-center">Acciones</th>
@@ -104,6 +124,17 @@
                             <div class="text-xs text-gray-500 dark:text-gray-200">📞 {{ $patient->phone ?? 'No especificado' }}</div>
                             <div class="text-xs text-gray-500 dark:text-gray-200">📍 {{ $patient->municipality->name ?? 'N/A' }}, {{ $patient->locality->name ?? 'N/A' }}</div>
                             <div class="text-xs text-gray-500 dark:text-gray-200"> 📅 {{ $patient->admission_date->format('d/m/Y') }}</div>
+                        </td>
+                        <td class="px-6 py-2 text-center">
+                            @if($patient->departmental_delivery)
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                    Sí
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    No
+                                </span>
+                            @endif
                         </td>
                         <td class="px-6 py-2">
                             @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp
@@ -257,7 +288,7 @@
                     </tr>
                 @empty
                     <tr class="bg-white dark:bg-gray-800">
-                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                             No hay pacientes con entregas programadas para este período.
                         </td>
                     </tr>

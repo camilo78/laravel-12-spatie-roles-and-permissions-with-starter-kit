@@ -34,6 +34,7 @@ class User extends Authenticatable
         'locality_id',
         'gender',
         'status',
+        'departmental_delivery',
         'admission_date',
         'password',
     ];
@@ -55,6 +56,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => 'boolean',
+            'departmental_delivery' => 'boolean',
             'admission_date' => 'date',
         ];
     }

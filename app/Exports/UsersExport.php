@@ -32,6 +32,7 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
                     $user->municipality->name ?? '',
                     $user->locality->name ?? '',
                     $user->gender,
+                    $user->departmental_delivery ? 'Sí' : 'No',
                     $user->admission_date ? $user->admission_date->format('d/m/Y') : '',
                 ];
             });
@@ -51,6 +52,7 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
                     $user->municipality->name ?? '',
                     $user->locality->name ?? '',
                     $user->gender,
+                    $user->departmental_delivery ? 'Sí' : 'No',
                     $user->admission_date ? $user->admission_date->format('d/m/Y') : '',
                 ];
             });
@@ -68,6 +70,7 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
             'Municipio',
             'Localidad',
             'Género',
+            'Entrega Departamental',
             'Fecha de Ingreso'
         ];
     }
@@ -84,7 +87,8 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
             'G' => NumberFormat::FORMAT_TEXT, // Municipio
             'H' => NumberFormat::FORMAT_TEXT, // Localidad
             'I' => NumberFormat::FORMAT_TEXT, // Género
-            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
+            'J' => NumberFormat::FORMAT_TEXT, // Entrega Departamental
+            'K' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
         ];
     }
 }

@@ -67,54 +67,74 @@
         </button>
         <button wire:click="exportTemplate" wire:loading.attr="disabled" wire:target="exportTemplate"
             class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
-                <span wire:loading.remove wire:target="exportTemplate" class="flex items-center gap-2">
-                    <flux:icon.document-text variant="micro" class="w-4 h-4" />
-                    Descargar Muestra Excel
-                </span>
-                <span wire:loading wire:target="exportTemplate" class="flex items-center gap-2">
-                    <span>Descargando</span><span class="animate-bounce">...</span>
-                </span>
+            <span wire:loading.remove wire:target="exportTemplate" class="flex items-center gap-2">
+                <flux:icon.document-text variant="micro" class="w-4 h-4" />
+                Descargar Muestra Excel
+            </span>
+            <span wire:loading wire:target="exportTemplate" class="flex items-center gap-2">
+                <span>Descargando</span><span class="animate-bounce">...</span>
+            </span>
         </button>
         <button wire:click="exportAll" wire:loading.attr="disabled" wire:target="exportAll"
             class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
-                <span wire:loading.remove wire:target="exportAll" class="flex items-center gap-2">
-                    <flux:icon.arrow-up-tray variant="micro" class="w-4 h-4" />
-                    Exportar Todo
-                </span>
-                <span wire:loading wire:target="exportAll" class="flex items-center gap-2">
-                    <span>Generando</span><span class="animate-bounce">...</span>
-                </span>
+            <span wire:loading.remove wire:target="exportAll" class="flex items-center gap-2">
+                <flux:icon.arrow-up-tray variant="micro" class="w-4 h-4" />
+                Exportar Todo
+            </span>
+            <span wire:loading wire:target="exportAll" class="flex items-center gap-2">
+                <span>Generando</span><span class="animate-bounce">...</span>
+            </span>
         </button>
         <button wire:click="exportFiltered" wire:loading.attr="disabled" wire:target="exportFiltered"
             class="cursor-pointer px-3 py-2 text-xs font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 text-center inline-flex items-center justify-center gap-2 disabled:opacity-50">
-                <span wire:loading.remove wire:target="exportFiltered" class="flex items-center gap-2">
-                    <flux:icon.funnel variant="micro" class="w-4 h-4" />
-                    Exportar Filtrados
-                </span>
-                <span wire:loading wire:target="exportFiltered" class="flex items-center gap-2">
-                    <span>Generando</span><span class="animate-bounce">...</span>
-                </span>
+            <span wire:loading.remove wire:target="exportFiltered" class="flex items-center gap-2">
+                <flux:icon.funnel variant="micro" class="w-4 h-4" />
+                Exportar Filtrados
+            </span>
+            <span wire:loading wire:target="exportFiltered" class="flex items-center gap-2">
+                <span>Generando</span><span class="animate-bounce">...</span>
+            </span>
         </button>
+        <!-- Toggle para entrega departamental -->
+        <div class="flex items-center justify-end gap-2 flex-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega
+                Depto.:</label>
+            <div class="flex items-center gap-1">
+                <button wire:click="$set('departmentalDeliveryFilter', false)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === false ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    No
+                </button>
+                <button wire:click="$set('departmentalDeliveryFilter', null)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === null ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    Todos
+                </button>
+                <button wire:click="$set('departmentalDeliveryFilter', true)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === true ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    Sí
+                </button>
+            </div>
+        </div>
     </div>
-    
+
     <!-- Filtros y búsqueda -->
     <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-6">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Fecha ingreso:</label>
-            <input type="date" wire:model.live="startDate" 
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Fecha
+                ingreso:</label>
+            <input type="date" wire:model.live="startDate"
                 class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
             <span class="text-gray-400">-</span>
-            <input type="date" wire:model.live="endDate" 
+            <input type="date" wire:model.live="endDate"
                 class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-                            <button wire:click="resetFilters" title="Limpiar filtros"
+            <button wire:click="resetFilters" title="Limpiar filtros"
                 class="inline-flex items-center justify-center h-10 w-10 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-white transition-colors">
                 ✕
             </button>
         </div>
         <div class="flex items-center justify-end gap-2 flex-1">
-    <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
-        class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
-</div>
+            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
+                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
+        </div>
 
     </div>
 
@@ -127,29 +147,51 @@
                     <th scope="col" class="px-6 py-3">Nombre</th>
                     <th scope="col" class="px-6 py-3">Teléfono</th>
                     <th scope="col" class="px-6 py-3">Género</th>
+                    <th scope="col" class="px-6 py-3">Entrega Depto.</th>
                     <th scope="col" class="px-6 py-3">Fecha Ingreso</th>
                     <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($users as $key => $user)
-                    <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
-                        <td class="px-6 py-2 font-medium whitespace-nowrap {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                    <tr class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        @if (!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 font-medium whitespace-nowrap {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                         </td>
-                        <td class="px-6 py-2 font-medium {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 font-medium {{ !$user->status ? 'text-gray-900' : 'text-gray-900 dark:text-white' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->name }}
                         </td>
-                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->phone ?? 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 capitalize {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 capitalize {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->gender ?? 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 text-center {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
+                            @if ($user->departmental_delivery)
+                                <span
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                    Sí
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    No
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-2 {{ !$user->status ? 'text-gray-700' : 'text-gray-600 dark:text-gray-300' }}"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             {{ $user->admission_date ? $user->admission_date->format('d/m/Y') : 'No especificado' }}
                         </td>
-                        <td class="px-6 py-2 text-center" @if(!$user->status) style="background-color: #fecaca !important;" @endif>
+                        <td class="px-6 py-2 text-center"
+                            @if (!$user->status) style="background-color: #fecaca !important;" @endif>
                             <div
                                 class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:justify-center lg:flex-row lg:w-auto lg:gap-1 lg:flex-nowrap">
                                 @can('users.index')
@@ -200,7 +242,7 @@
                     </tr>
                 @empty
                     <tr class="bg-white dark:bg-gray-800">
-                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                             No se encontraron usuarios.
                         </td>
                     </tr>
@@ -224,7 +266,7 @@
         {{ $users->links('vendor.livewire.tailwind') }}
     </div>
 
-        <!-- Modal de importación -->
+    <!-- Modal de importación -->
     <dialog x-ref="importModal" class="modal rounded-lg">
         <div class="bg-white dark:bg-gray-800 rounded  shadow border border-gray-200 dark:border-gray-700  max-w-lg ">
             <!-- Header del modal -->
