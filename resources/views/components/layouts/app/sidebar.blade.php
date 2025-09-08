@@ -29,7 +29,7 @@
                     </flux:navlist.item>
                     <flux:navlist.item wire:navigate icon="truck" :href="route('deliveries.index')"
                         :current="request()->routeIs('deliveries.index', 'deliveries.create', 'deliveries.edit', 'deliveries.show')">
-                        Entregas
+                        Programar Entregas
                     </flux:navlist.item>
                 @endif
             </flux:navlist.group>
