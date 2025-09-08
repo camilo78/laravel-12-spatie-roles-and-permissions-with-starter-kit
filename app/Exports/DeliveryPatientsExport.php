@@ -19,16 +19,22 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
 
     public function collection()
     {
-        return $this->patients;
+        return $this->patients->where('status', 1);
     }
 
     public function headings(): array
     {
         return [
-            'Paciente',
+            'Nombre',
+            'Correo Electrónico',
             'DNI',
             'Teléfono',
-            'Ubicación'
+            'Dirección',
+            'Departamento',
+            'Municipio',
+            'Localidad',
+            'Género',
+            'Fecha de Ingreso'
         ];
     }
 
@@ -36,19 +42,31 @@ class DeliveryPatientsExport implements FromCollection, WithHeadings, WithMappin
     {
         return [
             $patient->name,
+            $patient->email,
             $patient->dni,
-            $patient->phone ?? 'No especificado',
-            ($patient->municipality->name ?? 'N/A') . ', ' . ($patient->locality->name ?? 'N/A')
+            $patient->phone ?? '',
+            $patient->address ?? '',
+            $patient->department->name ?? '',
+            $patient->municipality->name ?? '',
+            $patient->locality->name ?? '',
+            $patient->gender,
+            $patient->admission_date ? $patient->admission_date->format('d/m/Y') : '',
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'A' => NumberFormat::FORMAT_TEXT,
-            'B' => NumberFormat::FORMAT_NUMBER, // DNI como número sin decimales
-            'C' => NumberFormat::FORMAT_TEXT,
-            'D' => NumberFormat::FORMAT_TEXT,
+            'A' => NumberFormat::FORMAT_TEXT, // Nombre
+            'B' => NumberFormat::FORMAT_TEXT, // Correo
+            'C' => NumberFormat::FORMAT_NUMBER, // DNI
+            'D' => NumberFormat::FORMAT_NUMBER, // Teléfono
+            'E' => NumberFormat::FORMAT_TEXT, // Dirección
+            'F' => NumberFormat::FORMAT_TEXT, // Departamento
+            'G' => NumberFormat::FORMAT_TEXT, // Municipio
+            'H' => NumberFormat::FORMAT_TEXT, // Localidad
+            'I' => NumberFormat::FORMAT_TEXT, // Género
+            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
         ];
     }
 }

@@ -22,7 +22,6 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
                 'La Ceiba',
                 'Col. Las Tres Posas',
                 'masculino',
-                'true',
                 '15/01/2024',
                 'password123'
             ]
@@ -32,36 +31,34 @@ class UsersTemplateExport implements FromArray, WithHeadings, WithColumnFormatti
     public function headings(): array
     {
         return [
-            'name',
-            'email', 
-            'dni',
-            'phone',
-            'address',
-            'department',
-            'municipality',
-            'locality',
-            'gender',
-            'status',
-            'admission_date',
-            'password'
+            'Nombre',
+            'Correo Electrónico', 
+            'DNI',
+            'Teléfono',
+            'Dirección',
+            'Departamento',
+            'Municipio',
+            'Localidad',
+            'Género',
+            'Fecha de Ingreso',
+            'Contraseña'
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'A' => NumberFormat::FORMAT_TEXT, // name
-            'B' => NumberFormat::FORMAT_TEXT, // email
-            'C' => NumberFormat::FORMAT_NUMBER, // dni
-            'D' => NumberFormat::FORMAT_NUMBER, // phone
-            'E' => NumberFormat::FORMAT_TEXT, // address
-            'F' => NumberFormat::FORMAT_TEXT, // department
-            'G' => NumberFormat::FORMAT_TEXT, // municipality
-            'H' => NumberFormat::FORMAT_TEXT, // locality
-            'I' => NumberFormat::FORMAT_TEXT, // gender
-            'J' => NumberFormat::FORMAT_TEXT, // status
-            'K' => NumberFormat::FORMAT_TEXT, // admission_date
-            'L' => NumberFormat::FORMAT_TEXT, // password
+            'A' => NumberFormat::FORMAT_TEXT, // Nombre
+            'B' => NumberFormat::FORMAT_TEXT, // Correo
+            'C' => NumberFormat::FORMAT_NUMBER, // DNI
+            'D' => NumberFormat::FORMAT_NUMBER, // Teléfono
+            'E' => NumberFormat::FORMAT_TEXT, // Dirección
+            'F' => NumberFormat::FORMAT_TEXT, // Departamento
+            'G' => NumberFormat::FORMAT_TEXT, // Municipio
+            'H' => NumberFormat::FORMAT_TEXT, // Localidad
+            'I' => NumberFormat::FORMAT_TEXT, // Género
+            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
+            'K' => NumberFormat::FORMAT_TEXT, // Contraseña
         ];
     }
 }

@@ -29,11 +29,7 @@
                 class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                 <span wire:loading.remove wire:target="exportWeeklySchedule">Exportar Excel</span>
                 <span wire:loading wire:target="exportWeeklySchedule" class="flex items-center gap-2">
-                    <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Generando
+                    <span>Generando</span><span class="animate-bounce">...</span>
                 </span>
             </button>
         </div>
@@ -60,9 +56,9 @@
                         </td>
                         <td class="px-6 py-2 text-gray-600 dark:text-gray-300">
                             <div class="text-sm text-gray-900 dark:text-white">{{ $patient->name }}</div>
-                            <div class="text-xs text-gray-200">📞 {{ $patient->phone ?? 'No especificado' }}</div>
-                            <div class="text-xs text-gray-200">📍 {{ $patient->municipality->name ?? 'N/A' }}, {{ $patient->locality->name ?? 'N/A' }}</div>
-                            <div class="text-xs text-gray-200"> 📅 {{ $patient->admission_date->format('d/m/Y') }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-200">📞 {{ $patient->phone ?? 'No especificado' }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-200">📍 {{ $patient->municipality->name ?? 'N/A' }}, {{ $patient->locality->name ?? 'N/A' }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-200"> 📅 {{ $patient->admission_date->format('d/m/Y') }}</div>
                         </td>
                         <td class="px-6 py-2">
                             @php $deliveryPatient = $patient->deliveryPatients->first(); @endphp

@@ -17,33 +17,45 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
 {
     public function model(array $row)
     {
-        // Buscar IDs por nombres
-        $department = Department::where('name', $row['department'])->first();
-        $municipality = Municipality::where('name', $row['municipality'])->first();
-        $locality = Locality::where('name', $row['locality'])->first();
+        // Mapear encabezados en español a campos internos
+        $mappedRow = [
+            'name' => $row['nombre'] ?? $row['name'] ?? null,
+            'email' => $row['correo_electronico'] ?? $row['email'] ?? null,
+            'dni' => $row['dni'] ?? null,
+            'phone' => $row['telefono'] ?? $row['phone'] ?? null,
+            'address' => $row['direccion'] ?? $row['address'] ?? null,
+            'department' => $row['departamento'] ?? $row['department'] ?? null,
+            'municipality' => $row['municipio'] ?? $row['municipality'] ?? null,
+            'locality' => $row['localidad'] ?? $row['locality'] ?? null,
+            'gender' => $row['genero'] ?? $row['gender'] ?? null,
+            'admission_date' => $row['fecha_de_ingreso'] ?? $row['admission_date'] ?? null,
+            'password' => $row['contrasena'] ?? $row['password'] ?? null,
+        ];
         
-        // Convertir status de texto a boolean
-        $status = strtolower($row['status']) === 'true' || $row['status'] === '1' || $row['status'] === 1;
+        // Buscar IDs por nombres
+        $department = Department::where('name', $mappedRow['department'])->first();
+        $municipality = Municipality::where('name', $mappedRow['municipality'])->first();
+        $locality = Locality::where('name', $mappedRow['locality'])->first();
         
         // Convertir fecha y agregar hora 00:00
         $admissionDate = null;
-        if (!empty($row['admission_date'])) {
-            $admissionDate = Carbon::createFromFormat('d/m/Y', $row['admission_date'])->startOfDay();
+        if (!empty($mappedRow['admission_date'])) {
+            $admissionDate = Carbon::createFromFormat('d/m/Y', $mappedRow['admission_date'])->startOfDay();
         }
         
         $user = User::create([
-            'name' => $row['name'],
-            'email' => $row['email'] ?? null,
-            'dni' => $row['dni'],
-            'phone' => $row['phone'] ?? null,
-            'address' => $row['address'],
+            'name' => $mappedRow['name'],
+            'email' => $mappedRow['email'],
+            'dni' => $mappedRow['dni'],
+            'phone' => $mappedRow['phone'],
+            'address' => $mappedRow['address'],
             'department_id' => $department?->id,
             'municipality_id' => $municipality?->id,
             'locality_id' => $locality?->id,
-            'gender' => $row['gender'] ?? null,
-            'status' => $status,
+            'gender' => $mappedRow['gender'],
+            'status' => 1, // Todos los usuarios activos
             'admission_date' => $admissionDate,
-            'password' => Hash::make($row['password']),
+            'password' => Hash::make($mappedRow['password']),
         ]);
         
         $user->assignRole('User');
@@ -54,17 +66,16 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email',
+            'nombre' => 'required|string|max:255',
+            'correo_electronico' => 'nullable|email|unique:users,email',
             'dni' => 'required|string|max:13|unique:users,dni',
-            'address' => 'required|string|max:255',
-            'department' => 'required|string|exists:departments,name',
-            'municipality' => 'required|string|exists:municipalities,name',
-            'locality' => 'required|string|exists:localities,name',
-            'gender' => 'nullable|string|in:Masculino,Femenino,masculino,femenino',
-            'status' => 'required|string|in:true,false,1,0',
-            'admission_date' => 'required|string',
-            'password' => 'required|string|min:6',
+            'direccion' => 'required|string|max:255',
+            'departamento' => 'required|string|exists:departments,name',
+            'municipio' => 'required|string|exists:municipalities,name',
+            'localidad' => 'required|string|exists:localities,name',
+            'genero' => 'nullable|string|in:Masculino,Femenino,masculino,femenino',
+            'fecha_de_ingreso' => 'required|string',
+            'contrasena' => 'required|string|min:6',
         ];
     }
 }

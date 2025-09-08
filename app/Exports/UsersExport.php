@@ -23,67 +23,68 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting
         if ($this->users) {
             return $this->users->map(function ($user) {
                 return [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'dni' => $user->dni,
-                    'phone' => $user->phone,
-                    'address' => $user->address,
-                    'department_id' => $user->department_id,
-                    'municipality_id' => $user->municipality_id,
-                    'locality_id' => $user->locality_id,
-                    'gender' => $user->gender,
-                    'status' => $user->status,
-                    'admission_date' => $user->admission_date,
+                    $user->name,
+                    $user->email,
+                    $user->dni,
+                    $user->phone,
+                    $user->address,
+                    $user->department->name ?? '',
+                    $user->municipality->name ?? '',
+                    $user->locality->name ?? '',
+                    $user->gender,
+                    $user->admission_date ? $user->admission_date->format('d/m/Y') : '',
                 ];
             });
         }
 
-        return User::select(
-            'name', 
-            'email', 
-            'dni', 
-            'phone', 
-            'address', 
-            'department_id', 
-            'municipality_id', 
-            'locality_id', 
-            'gender', 
-            'status',
-            'admission_date'
-        )->get();
+        return User::with(['department', 'municipality', 'locality'])
+            ->where('status', 1)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    $user->name,
+                    $user->email,
+                    $user->dni,
+                    $user->phone,
+                    $user->address,
+                    $user->department->name ?? '',
+                    $user->municipality->name ?? '',
+                    $user->locality->name ?? '',
+                    $user->gender,
+                    $user->admission_date ? $user->admission_date->format('d/m/Y') : '',
+                ];
+            });
     }
 
     public function headings(): array
     {
         return [
-            'name', 
-            'email', 
-            'dni', 
-            'phone', 
-            'address', 
-            'department_id', 
-            'municipality_id', 
-            'locality_id', 
-            'gender', 
-            'status',
-            'admission_date'
+            'Nombre',
+            'Correo Electrónico',
+            'DNI',
+            'Teléfono',
+            'Dirección',
+            'Departamento',
+            'Municipio',
+            'Localidad',
+            'Género',
+            'Fecha de Ingreso'
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'A' => NumberFormat::FORMAT_TEXT,
-            'B' => NumberFormat::FORMAT_TEXT,
-            'C' => NumberFormat::FORMAT_NUMBER, // DNI como número sin decimales
-            'D' => NumberFormat::FORMAT_NUMBER, // Teléfono como número sin decimales
-            'E' => NumberFormat::FORMAT_TEXT,
-            'F' => NumberFormat::FORMAT_TEXT,
-            'G' => NumberFormat::FORMAT_TEXT,
-            'H' => NumberFormat::FORMAT_TEXT,
-            'I' => NumberFormat::FORMAT_TEXT,
-            'J' => NumberFormat::FORMAT_TEXT,
-            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY, // admission_date como fecha
+            'A' => NumberFormat::FORMAT_TEXT, // Nombre
+            'B' => NumberFormat::FORMAT_TEXT, // Correo
+            'C' => NumberFormat::FORMAT_NUMBER, // DNI
+            'D' => NumberFormat::FORMAT_NUMBER, // Teléfono
+            'E' => NumberFormat::FORMAT_TEXT, // Dirección
+            'F' => NumberFormat::FORMAT_TEXT, // Departamento
+            'G' => NumberFormat::FORMAT_TEXT, // Municipio
+            'H' => NumberFormat::FORMAT_TEXT, // Localidad
+            'I' => NumberFormat::FORMAT_TEXT, // Género
+            'J' => NumberFormat::FORMAT_TEXT, // Fecha de Ingreso
         ];
     }
 }
