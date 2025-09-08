@@ -109,8 +109,8 @@
                     <th scope="col" class="px-6 py-3">Entrega Depto.</th>
                     <th scope="col" class="px-6 py-3">Estado</th>
                     <th scope="col" class="px-6 py-3">Entregas del Mes</th>
-                    <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                     <th scope="col" class="px-6 py-3">Medicamentos</th>
+                    <th scope="col" class="px-6 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>

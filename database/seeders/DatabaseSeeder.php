@@ -30,9 +30,9 @@ class DatabaseSeeder extends Seeder
 
             MedicineSeeder::class,
 
-             PatientPathologySeeder::class,
+             //PatientPathologySeeder::class,
 
-             PatientMedicineSeeder::class,
+             //PatientMedicineSeeder::class,
 
             SystemConfigurationSeeder::class,
 
