@@ -57,6 +57,31 @@
             </button>
         </div>
     @endsession
+    {{-- Botones de exportar --}}
+    <div class="flex flex-wrap gap-2 mb-4 justify-start">
+        <button wire:click="exportWeeklySchedule" wire:loading.attr="disabled" wire:target="exportWeeklySchedule"
+            class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+            <span wire:loading.remove wire:target="exportWeeklySchedule">Exportar Excel</span>
+            <span wire:loading wire:target="exportWeeklySchedule" class="flex items-center gap-2">
+                <span>Generando</span><span class="animate-bounce">...</span>
+            </span>
+        </button>
+        <button wire:click="exportPatientsPDF" wire:loading.attr="disabled" wire:target="exportPatientsPDF"
+            class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+            <span wire:loading.remove wire:target="exportPatientsPDF">Exportar PDF</span>
+            <span wire:loading wire:target="exportPatientsPDF" class="flex items-center gap-2">
+                <span>Generando</span><span class="animate-bounce">...</span>
+            </span>
+        </button>
+        <button wire:click="exportReceptionForms" wire:loading.attr="disabled" wire:target="exportReceptionForms"
+            class="px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+            <span wire:loading.remove wire:target="exportReceptionForms">Formatos Recepción</span>
+            <span wire:loading wire:target="exportReceptionForms" class="flex items-center gap-2">
+                <span>Generando</span><span class="animate-bounce">...</span>
+            </span>
+        </button>
+    </div>
+
     {{-- Filtros --}}
     <div class="flex flex-col sm:flex-row lg:flex-row gap-4 mb-4">
         <div class="flex flex-col sm:flex-row gap-2">
@@ -84,23 +109,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex gap-2">
-            <button wire:click="exportWeeklySchedule" wire:loading.attr="disabled" wire:target="exportWeeklySchedule"
-                class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <span wire:loading.remove wire:target="exportWeeklySchedule">Exportar Excel</span>
-                <span wire:loading wire:target="exportWeeklySchedule" class="flex items-center gap-2">
-                    <span>Generando</span><span class="animate-bounce">...</span>
-                </span>
-            </button>
-            <button wire:click="exportPatientsPDF" wire:loading.attr="disabled" wire:target="exportPatientsPDF"
-                class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <span wire:loading.remove wire:target="exportPatientsPDF">Exportar PDF</span>
-                <span wire:loading wire:target="exportPatientsPDF" class="flex items-center gap-2">
-                    <span>Generando</span><span class="animate-bounce">...</span>
-                </span>
-            </button>
-        </div>
-                <div class="flex-1">
+        <div class="flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
         </div>
