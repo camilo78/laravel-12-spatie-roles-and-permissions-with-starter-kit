@@ -12,9 +12,9 @@
                 @endphp
                 
                 <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
-                    <span class="flex h-16 w-16 mb-1 items-center justify-center rounded-md">
+                    <span class="flex mb-1 items-center justify-center rounded-md" style="height: 150px; width: 150px;">
                         @if($appLogo)
-                            <img src="{{ Storage::url($appLogo) }}" alt="Logo" class="h-16 w-16 object-contain">
+                            <img src="{{ Storage::url($appLogo) }}" alt="Logo" class="h-25 w-25 object-contain">
                         @else
                             <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
                         @endif
