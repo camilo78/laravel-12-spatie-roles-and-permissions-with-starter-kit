@@ -53,10 +53,10 @@ class DeliveryReportController extends Controller
         // Pathologies
         $pathologies = $deliveredPatients->flatMap(fn($patient) => 
             $patient->user->patientPathologies->pluck('pathology')
-        )->groupBy('clave')
+        )->groupBy('code')
         ->map(fn($group) => [
-            'clave' => $group->first()->clave,
-            'descripcion' => $group->first()->descripcion,
+            'code' => $group->first()->code,
+            'description' => $group->first()->description,
             'count' => $group->count()
         ])->sortByDesc('count');
 

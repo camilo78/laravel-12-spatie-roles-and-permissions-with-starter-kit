@@ -178,8 +178,8 @@
                 @foreach($pathologies as $pathology)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $pathology['clave'] }}</td>
-                    <td>{{ $pathology['descripcion'] }}</td>
+                    <td>{{ $pathology['code'] }}</td>
+                    <td>{{ $pathology['description'] }}</td>
                     <td style="text-align: right;">{{ $pathology['count'] }}</td>
                 </tr>
                 @endforeach
