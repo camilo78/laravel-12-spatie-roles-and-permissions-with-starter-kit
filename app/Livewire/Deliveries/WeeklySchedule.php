@@ -94,6 +94,75 @@ class WeeklySchedule extends Component
         );
     }
 
+    public function exportPatientsPDF()
+    {
+        $currentMonth = Carbon::now();
+        $startDate = $this->startDate ? Carbon::parse($this->startDate) : $currentMonth->copy()->startOfMonth();
+        $endDate = $this->endDate ? Carbon::parse($this->endDate) : $currentMonth->copy()->endOfMonth();
+
+        $medicineDelivery = \App\Models\MedicineDelivery::where('start_date', '<=', $endDate)
+            ->where('end_date', '>=', $startDate)
+            ->first();
+            
+        $query = User::query()
+            ->where('status', true)
+            ->whereNotNull('admission_date')
+            ->with(['department', 'municipality', 'locality', 'patientMedicines']);
+            
+        if ($medicineDelivery) {
+            $query->with(['deliveryPatients' => function($q) use ($medicineDelivery) {
+                $q->where('medicine_delivery_id', $medicineDelivery->id)
+                  ->with(['deliveryMedicines.patientMedicine.medicine']);
+            }]);
+        }
+            
+        if ($this->departmentalDeliveryFilter !== null) {
+            $query->where('departmental_delivery', $this->departmentalDeliveryFilter);
+        }
+
+        if ($this->search) {
+            $search = trim($this->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('dni', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $allUsers = $query->get();
+        $filteredUsers = collect();
+
+        foreach ($allUsers as $user) {
+            $nextDelivery = $user->getNextDeliveryDate();
+            if ($nextDelivery && $nextDelivery->between($startDate, $endDate)) {
+                $filteredUsers->push($user);
+            }
+        }
+
+        // Obtener configuración del sistema
+        $config = \App\Models\SystemConfiguration::first();
+        $appLogo = $config->app_logo ?? public_path('img/salud.png');
+        $hospitalLogo = $config->hospital_logo ?? public_path('img/hga.png');
+        $programManager = $config->program_manager ?? 'Lic. Sandra Patricia Nuñez Hernández';
+        $hospitalName = $config->hospital_name ?? 'Hospital General Atlántida';
+        $programName = $config->program_name ?? 'Programa de Entrega de Medicamentos en Casa';
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.weekly-schedule-patients', [
+            'patients' => $filteredUsers,
+            'weekStart' => $startDate->format('d/m/Y'),
+            'weekEnd' => $endDate->format('d/m/Y'),
+            'appLogo' => $appLogo,
+            'hospitalLogo' => $hospitalLogo,
+            'programManager' => $programManager,
+            'hospitalName' => $hospitalName,
+            'programName' => $programName
+        ])->setPaper('a4', 'landscape');
+
+        return response()->streamDownload(function() use ($pdf) {
+            echo $pdf->output();
+        }, 'pacientes_programados_' . $startDate->format('Y-m-d') . '_' . $endDate->format('Y-m-d') . '.pdf');
+    }
+
     public function render()
     {
         // Fechas del mes actual
