@@ -96,25 +96,7 @@
                 <span>Generando</span><span class="animate-bounce">...</span>
             </span>
         </button>
-        <!-- Toggle para entrega departamental -->
-        <div class="flex items-center justify-end gap-2 flex-1">
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega
-                Depto.:</label>
-            <div class="flex items-center gap-1">
-                <button wire:click="$set('departmentalDeliveryFilter', false)"
-                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === false ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
-                    No
-                </button>
-                <button wire:click="$set('departmentalDeliveryFilter', null)"
-                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === null ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
-                    Todos
-                </button>
-                <button wire:click="$set('departmentalDeliveryFilter', true)"
-                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === true ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
-                    Sí
-                </button>
-            </div>
-        </div>
+
     </div>
 
     <!-- Filtros y búsqueda -->
@@ -132,9 +114,28 @@
                 ✕
             </button>
         </div>
-        <div class="flex items-center justify-end gap-2 flex-1">
+                <!-- Toggle para entrega departamental -->
+        <div class="flex items-center gap-2 flex-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega
+                Depto.:</label>
+            <div class="flex items-center gap-1">
+                <button wire:click="$set('departmentalDeliveryFilter', false)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === false ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    No
+                </button>
+                <button wire:click="$set('departmentalDeliveryFilter', null)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === null ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    Todos
+                </button>
+                <button wire:click="$set('departmentalDeliveryFilter', true)"
+                    class="px-2 py-1 text-xs rounded {{ $departmentalDeliveryFilter === true ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }} transition-colors">
+                    Sí
+                </button>
+            </div>
+        </div>
+        <div class="flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuario..."
-                class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 flex-1 max-w-md" />
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
         </div>
 
     </div>
