@@ -56,7 +56,8 @@
     <div class="flex flex-wrap items-center gap-3 mb-4">
         @can('users.create')
             <a wire:navigate href="{{ route('users.create') }}"
-                class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                class="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center gap-2">
+                <flux:icon.user-plus variant="micro" class="w-4 h-4" />
                 Crear Usuario
             </a>
         @endcan
@@ -127,7 +128,7 @@
             <input type="date" wire:model.live="endDate"
                 class="h-10 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
             <button wire:click="resetFilters" title="Limpiar filtros"
-                class="inline-flex items-center justify-center h-10 w-10 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-white transition-colors">
+              class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none">
                 ✕
             </button>
         </div>

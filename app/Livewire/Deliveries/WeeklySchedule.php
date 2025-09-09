@@ -33,6 +33,15 @@ class WeeklySchedule extends Component
         $this->resetPage();
     }
 
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->startDate = '';
+        $this->endDate = '';
+        $this->departmentalDeliveryFilter = null;
+        $this->resetPage();
+    }
+
     public function updatePatientState($deliveryPatientId, $state)
     {
         $deliveryPatient = DeliveryPatient::findOrFail($deliveryPatientId);

@@ -60,22 +60,37 @@
     {{-- Botones de exportar --}}
     <div class="flex flex-wrap gap-2 mb-4 justify-start">
         <button wire:click="exportWeeklySchedule" wire:loading.attr="disabled" wire:target="exportWeeklySchedule"
-            class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-            <span wire:loading.remove wire:target="exportWeeklySchedule">Exportar Excel</span>
+            class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap inline-flex items-center gap-2">
+            <span wire:loading.remove wire:target="exportWeeklySchedule" class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Exportar Excel
+            </span>
             <span wire:loading wire:target="exportWeeklySchedule" class="flex items-center gap-2">
                 <span>Generando</span><span class="animate-bounce">...</span>
             </span>
         </button>
         <button wire:click="exportPatientsPDF" wire:loading.attr="disabled" wire:target="exportPatientsPDF"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-            <span wire:loading.remove wire:target="exportPatientsPDF">Exportar PDF</span>
+            class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap inline-flex items-center gap-2">
+            <span wire:loading.remove wire:target="exportPatientsPDF" class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Exportar PDF
+            </span>
             <span wire:loading wire:target="exportPatientsPDF" class="flex items-center gap-2">
                 <span>Generando</span><span class="animate-bounce">...</span>
             </span>
         </button>
         <button wire:click="exportReceptionForms" wire:loading.attr="disabled" wire:target="exportReceptionForms"
-            class="px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-            <span wire:loading.remove wire:target="exportReceptionForms">Formatos Recepción</span>
+            class="px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap inline-flex items-center gap-2">
+            <span wire:loading.remove wire:target="exportReceptionForms" class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Formatos Recepción
+            </span>
             <span wire:loading wire:target="exportReceptionForms" class="flex items-center gap-2">
                 <span>Generando</span><span class="animate-bounce">...</span>
             </span>
@@ -89,7 +104,12 @@
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
             <input type="date" wire:model.live="endDate" placeholder="Fecha fin"
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
-            
+            <button wire:click="resetFilters" 
+              class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium bg-white border border-gray-600 rounded-lg hover:bg-red-50 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-700 dark:border-white dark:hover:bg-grey-900 dark:focus:ring-grey-800 flex-grow sm:flex-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
             <!-- Toggle para entrega departamental -->
             <div class="flex items-center gap-2">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega Depto.:</label>
