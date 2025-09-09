@@ -26,7 +26,7 @@
             margin-bottom: 14px;
         }
         .campo {
-            margin-top: 17px;
+            margin-top: 16px;
         }
         .firma {
             margin-top: 20px;
