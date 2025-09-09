@@ -84,10 +84,6 @@
                 </div>
             </div>
         </div>
-        <div class="flex-1">
-            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
-        </div>
         <div class="flex gap-2">
             <button wire:click="exportWeeklySchedule" wire:loading.attr="disabled" wire:target="exportWeeklySchedule"
                 class="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
@@ -103,6 +99,10 @@
                     <span>Generando</span><span class="animate-bounce">...</span>
                 </span>
             </button>
+        </div>
+                <div class="flex-1">
+            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
         </div>
     </div>
 
