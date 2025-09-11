@@ -333,10 +333,22 @@
                 @endforelse
             </tbody>
         </table>
+
+        <!-- Overlay de carga -->
+        <div wire:loading wire:target="search, startDate, endDate, previousPage, nextPage, gotoPage"
+            class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 dark:bg-gray-800 dark:bg-opacity-40 z-10">
+            <div
+                class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+                <x-placeholder-pattern
+                    class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+            </div>
+        </div>
     </div>
 
-    {{-- Paginación --}}
+    <!-- Paginación -->
     @if($patients->hasPages())
-        <div class="mt-4">{{ $patients->links() }}</div>
+        <div class="mt-4">
+            {{ $patients->links('vendor.livewire.tailwind') }}
+        </div>
     @endif
 </div>
