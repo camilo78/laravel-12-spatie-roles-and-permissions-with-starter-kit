@@ -98,9 +98,9 @@
     </div>
 
     {{-- Filtros --}}
-    <div class="flex flex-col sm:flex-row lg:flex-row gap-4 mb-4">
+    <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-6">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Fecha
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Fecha
                 de Entrega:</label>
             <input type="date" wire:model.live="startDate" placeholder="Fecha inicio"
                 class="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
@@ -112,8 +112,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
+        </div>   
             <!-- Toggle para entrega departamental -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-1">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Entrega Depto.:</label>
                 <div class="flex items-center gap-1">
                     <button wire:click="$set('departmentalDeliveryFilter', false)" 
@@ -130,7 +131,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+       
         <div class="flex-1">
             <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar paciente..."
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
