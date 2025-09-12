@@ -86,7 +86,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Top 5 Medicamentos</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Medicamentos más utilizados en entregas</p>
                     </div>
-                    <div class="p-4 h-80 overflow-y-auto">
+                    <div class="p-4 overflow-y-auto">
                         <div class="overflow-x-auto">
                             <table class="w-full table-auto">
                                 <thead>
@@ -108,9 +108,9 @@
                                             <td
                                                 class="px-2 sm:px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400">
                                                 {{ $index + 1 }}</td>
-                                            <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0"
+                                            <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-0"
                                                 title="{{ $medicine->generic_name }}">
-                                                {{ str($medicine->generic_name)->limit(45) }}</td>
+                                                {{ $medicine->generic_name }}</td>
                                             <div id="tooltip-default" role="tooltip"
                                                 class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
                                                 Tooltip content
@@ -151,7 +151,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Top 5 Patologías</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Patologías más frecuentes en pacientes</p>
                     </div>
-                    <div class="p-4 h-80 overflow-y-auto">
+                    <div class="p-4 overflow-y-auto">
                         <div class="overflow-x-auto">
                             <table class="w-full table-auto">
                                 <thead>
@@ -177,10 +177,10 @@
                                                 class="px-2 sm:px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400">
                                                 {{ $index + 1 }}</td>
                                             <td class="px-2 sm:px-4 py-3 text-sm font-mono text-gray-900 dark:text-white">
-                                                {{ $pathology->pathology->clave ?? 'N/A' }}</td>
-                                            <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white truncate max-w-0"
-                                                title="{{ $pathology->pathology->descripcion }}">
-                                                {{ Str::limit($pathology->pathology->descripcion ?? 'Sin descripción', 45) }}
+                                                {{ $pathology->pathology->code ?? 'N/A' }}</td>
+                                            <td class="px-2 sm:px-4 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-0"
+                                                title="{{ $pathology->pathology->description }}">
+                                                {{ $pathology->pathology->description ?? 'Sin descripción' }}
                                             </td>
                                             <td
                                                 class="px-2 sm:px-4 py-3 text-sm text-gray-600 dark:text-gray-300 text-center">
@@ -386,8 +386,8 @@
                                                 class="{{ $key % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700' }} border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
                                                 <td
                                                     class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $pathology->pathology->clave }} -
-                                                    {{ Str::limit($pathology->pathology->descripcion, 40) }}
+                                                    {{ $pathology->pathology->code }} -
+                                                    {{ Str::limit($pathology->pathology->description, 40) }}
                                                 </td>
                                                 <td class="px-6 py-2">
                                                     <span
